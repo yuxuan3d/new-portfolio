@@ -1,0 +1,193 @@
+import React from 'react';
+import styled from 'styled-components';
+import { FaHammer, FaCode, FaMagic, FaPlay, FaFileAlt } from 'react-icons/fa';
+
+const About = () => {
+  const skillCategories = [
+    {
+      icon: <FaHammer size={32} />,
+      title: "3D & Visual Effects",
+      description: "Specializing in high-quality 3D asset creation and physics-based visual effects. From concept to final render, crafting impactful visuals through modeling, texturing, and dynamic simulations. Expert in particle systems, fluids, and procedural effects for enhanced visual storytelling.",
+      tools: ["Houdini", "3ds Max", "Maya", "Blender", "Substance Painter"]
+    },
+    {
+      icon: <FaMagic size={32} />,
+      title: "Motion Graphics & Production",
+      description: "Creating compelling 2D/3D motion graphics for commercial, broadcast, web, and interactive applications. Skilled in animation, visual effects compositing, and dynamic typography to deliver engaging visual narratives.",
+      tools: ["After Effects", "Premiere Pro", "Photoshop"]
+    },
+    {
+      icon: <FaCode size={32} />,
+      title: "Interactive Development & AI",
+      description: "Building engaging web experiences with modern technologies, specializing in 3D web integration. Leveraging AI tools for workflow optimization and content creation, combining technical expertise with creative innovation.",
+      tools: ["React", "Three.js", "Node.js", "Python", "AI Tools"]
+    }
+  ];
+
+  return (
+    <Container>
+      <Header>
+        <Title>Hi! I'm Yu Xuan</Title>
+        <Subtitle>Crafting digital experiences at the intersection of creativity and technology</Subtitle>
+        <ButtonContainer>
+          <ActionButton href="https://vimeo.com/673431850" target="_blank" rel="noopener noreferrer">
+            <FaPlay /> DemoReel 2021
+          </ActionButton>
+          <ActionButton href="https://res.cloudinary.com/dkivbhexf/image/upload/v1744731023/YuXuan_Resume_2025_tzxcfw.pdf" target="_blank" rel="noopener noreferrer">
+            <FaFileAlt /> Resume
+          </ActionButton>
+        </ButtonContainer>
+      </Header>
+
+      <SkillsGrid>
+        {skillCategories.map((category, index) => (
+          <SkillCard key={index}>
+            <IconWrapper>
+              {category.icon}
+            </IconWrapper>
+            <CardTitle>{category.title}</CardTitle>
+            <Description>{category.description}</Description>
+            <ToolsList>
+              {category.tools.map((tool, toolIndex) => (
+                <Tool key={toolIndex}>{tool}</Tool>
+              ))}
+            </ToolsList>
+          </SkillCard>
+        ))}
+      </SkillsGrid>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4rem 6vw;
+`;
+
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 4rem;
+`;
+
+const Title = styled.h1`
+  font-size: 2.5rem;
+  color: ${({ theme }) => theme.text.primary};
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+`;
+
+const Subtitle = styled.p`
+  font-size: 1.2rem;
+  color: ${({ theme }) => theme.text.secondary};
+  max-width: 600px;
+  margin: 0 auto;
+  transition: color 0.3s ease;
+`;
+
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const SkillCard = styled.div`
+  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+  box-shadow: 0 4px 6px ${({ theme }) => theme.card.hover};
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px ${({ theme }) => theme.card.hover};
+  }
+`;
+
+const IconWrapper = styled.div`
+  color: ${({ theme }) => theme.accent};
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+`;
+
+const CardTitle = styled.h2`
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.text.primary};
+  margin: 0;
+  transition: color 0.3s ease;
+`;
+
+const Description = styled.p`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.text.secondary};
+  line-height: 1.6;
+  transition: color 0.3s ease;
+`;
+
+const ToolsList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: auto;
+`;
+
+const Tool = styled.span`
+  background: ${({ theme }) => theme.card.background};
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.text.secondary};
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.card.hover};
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 2rem;
+`;
+
+const ActionButton = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: ${({ theme }) => theme.button.background};
+  color: ${({ theme }) => theme.button.text};
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  svg {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.button.hover};
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+`;
+
+export default About; 
