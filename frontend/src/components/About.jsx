@@ -5,19 +5,19 @@ import { FaHammer, FaCode, FaMagic, FaPlay, FaFileAlt } from 'react-icons/fa';
 const About = () => {
   const skillCategories = [
     {
-      icon: <FaHammer size={32} />,
+      icon: <FaHammer size={32} aria-hidden="true" />,
       title: "3D & Visual Effects",
       description: "Specializing in high-quality 3D asset creation and physics-based visual effects. From concept to final render, crafting impactful visuals through modeling, texturing, and dynamic simulations. Expert in particle systems, fluids, and procedural effects for enhanced visual storytelling.",
       tools: ["Houdini", "3ds Max", "Maya", "Blender", "Substance Painter"]
     },
     {
-      icon: <FaMagic size={32} />,
+      icon: <FaMagic size={32} aria-hidden="true" />,
       title: "Motion Graphics & Production",
       description: "Creating compelling 2D/3D motion graphics for commercial, broadcast, web, and interactive applications. Skilled in animation, visual effects compositing, and dynamic typography to deliver engaging visual narratives.",
       tools: ["After Effects", "Premiere Pro", "Photoshop"]
     },
     {
-      icon: <FaCode size={32} />,
+      icon: <FaCode size={32} aria-hidden="true" />,
       title: "Interactive Development & AI",
       description: "Building engaging web experiences with modern technologies, specializing in 3D web integration. Leveraging AI tools for workflow optimization and content creation, combining technical expertise with creative innovation.",
       tools: ["React", "Three.js", "Node.js", "Python", "AI Tools"]
@@ -25,31 +25,43 @@ const About = () => {
   ];
 
   return (
-    <Container>
-      <Header>
-        <Title>Hi! I'm Yu Xuan</Title>
-        <Subtitle>Crafting digital experiences at the intersection of creativity and technology</Subtitle>
+    <Container as="main" role="main">
+      <Header as="header">
+        <Title as="h1">Hi! I'm Yu Xuan</Title>
+        <Subtitle as="p">Crafting digital experiences at the intersection of creativity and technology</Subtitle>
         <ButtonContainer>
-          <ActionButton href="https://vimeo.com/673431850" target="_blank" rel="noopener noreferrer">
-            <FaPlay /> DemoReel 2021
+          <ActionButton 
+            href="https://vimeo.com/673431850" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            aria-label="Watch Demo Reel 2021"
+          >
+            <FaPlay aria-hidden="true" /> 
+            <span>DemoReel 2021</span>
           </ActionButton>
-          <ActionButton href="https://res.cloudinary.com/dkivbhexf/image/upload/v1744731023/YuXuan_Resume_2025_tzxcfw.pdf" target="_blank" rel="noopener noreferrer">
-            <FaFileAlt /> Resume
+          <ActionButton 
+            href="https://res.cloudinary.com/dkivbhexf/image/upload/v1744731023/YuXuan_Resume_2025_tzxcfw.pdf" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            aria-label="Download Resume"
+          >
+            <FaFileAlt aria-hidden="true" /> 
+            <span>Resume</span>
           </ActionButton>
         </ButtonContainer>
       </Header>
 
-      <SkillsGrid>
+      <SkillsGrid as="section" role="region" aria-label="Professional Skills">
         {skillCategories.map((category, index) => (
-          <SkillCard key={index}>
+          <SkillCard key={index} as="article">
             <IconWrapper>
               {category.icon}
             </IconWrapper>
-            <CardTitle>{category.title}</CardTitle>
+            <CardTitle as="h2">{category.title}</CardTitle>
             <Description>{category.description}</Description>
-            <ToolsList>
+            <ToolsList aria-label={`${category.title} tools and technologies`}>
               {category.tools.map((tool, toolIndex) => (
-                <Tool key={toolIndex}>{tool}</Tool>
+                <Tool key={toolIndex} role="listitem">{tool}</Tool>
               ))}
             </ToolsList>
           </SkillCard>
@@ -143,7 +155,7 @@ const ToolsList = styled.div`
 `;
 
 const Tool = styled.span`
-  background: ${({ theme }) => theme.card.background};
+  background: ${({ theme }) => theme.card.hover};
   padding: 0.4rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;

@@ -334,10 +334,12 @@ const PortfolioTile = styled.div`
     transform: scale(1.02);
   }
 
-  &:hover {
-    div > div > img {
-      filter: brightness(0.3);
-    }
+  img {
+    transition: filter 0.3s ease;
+  }
+
+  &:hover img {
+    filter: brightness(0.2);
   }
 `;
 
@@ -352,7 +354,8 @@ const TileOverlay = styled.div`
   justify-content: center;
   padding: 1rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.2);
   
   h3 {
     color: white;
@@ -360,10 +363,17 @@ const TileOverlay = styled.div`
     font-size: 1.5rem;
     font-weight: 500;
     margin: 0;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
   }
 
   ${PortfolioTile}:hover & {
     opacity: 1;
+    background: rgba(0, 0, 0, 0.2);
+    
+    h3 {
+      transform: translateY(0);
+    }
   }
 `;
 
