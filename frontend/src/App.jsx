@@ -96,10 +96,15 @@ function PortfolioGrid() {
                 .auto('format')
                 .width(800)
                 .height(800)
-                .fit('crop')
+                .fit('fill')
                 .quality(90)
                 .url()}
               alt={item.title}
+              sizes="(max-width: 500px) 100vw,
+                     (max-width: 800px) 50vw,
+                     (max-width: 1100px) 33vw,
+                     (max-width: 1400px) 25vw,
+                     20vw"
             />
             <TileOverlay>
               <h3>{item.title}</h3>
@@ -327,7 +332,8 @@ const Grid = styled.div`
 
 const PortfolioTile = styled.div`
   position: relative;
-  aspect-ratio: 1;
+  width: 100%;
+  padding-bottom: 100%; /* Creates a square aspect ratio */
   overflow: hidden;
   border-radius: 8px;
   cursor: pointer;
@@ -338,7 +344,21 @@ const PortfolioTile = styled.div`
     transform: scale(1.02);
   }
 
+  & > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: filter 0.3s ease;
   }
 

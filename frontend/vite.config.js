@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -13,7 +14,14 @@ export default defineConfig(({ command, mode }) => {
   })
 
   return {
-    plugins: [react()],
+    plugins: [
+      react(),
+      visualizer({
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+      }),
+    ],
     define: {
       // Ensure environment variables are properly stringified
       'import.meta.env.VITE_SANITY_PROJECT_ID': JSON.stringify(env.VITE_SANITY_PROJECT_ID || '5gu0ubge'),
@@ -25,9 +33,45 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            'sanity-client': ['@sanity/client', '@sanity/image-url']
+            'vendor': [
+              'react',
+              'react-dom',
+              'react-router-dom',
+              'styled-components'
+            ],
+            'sanity': [
+              '@sanity/client',
+              '@sanity/image-url'
+            ],
+            'icons': ['react-icons'],
+            'analytics': ['@vercel/analytics']
           }
         }
+      },
+      // Optimize dependencies
+      commonjsOptions: {
+        include: [/node_modules/],
+        extensions: ['.js', '.cjs'],
+      },
+      // Minification options
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      },
+      // CSS optimization
+      cssCodeSplit: true,
+      cssMinify: true,
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react-router-dom', 'styled-components'],
+      exclude: ['@vercel/analytics']
+    },
+    server: {
+      hmr: {
+        overlay: true
       }
     }
   }

@@ -23,7 +23,10 @@ const Placeholder = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.card.background};
+  background: ${({ theme, blurDataURL }) => blurDataURL ? `url(${blurDataURL})` : theme.card.background};
+  background-size: cover;
+  background-position: center;
+  filter: ${({ blurDataURL }) => blurDataURL ? 'blur(20px)' : 'none'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,23 +34,46 @@ const Placeholder = styled.div`
   transition: opacity 0.3s ease;
 `;
 
-const LazyImage = ({ src, alt, onLoad: parentOnLoad }) => {
+const LazyImage = ({ src, alt, onLoad: parentOnLoad, sizes = "100vw" }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [blurDataURL, setBlurDataURL] = useState('');
   const imageRef = useRef();
   const observerRef = useRef();
+
+  // Generate srcSet from the original src
+  const generateSrcSet = (src) => {
+    const widths = [400, 800, 1200, 1600];
+    return widths
+      .map((width) => {
+        const url = new URL(src);
+        url.searchParams.set('w', width.toString());
+        return `${url.toString()} ${width}w`;
+      })
+      .join(', ');
+  };
+
+  // Generate blur placeholder
+  useEffect(() => {
+    if (src) {
+      const url = new URL(src);
+      url.searchParams.set('w', '50');
+      url.searchParams.set('blur', '50');
+      url.searchParams.set('q', '20');
+      setBlurDataURL(url.toString());
+    }
+  }, [src]);
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           setIsVisible(true);
-          // Disconnect the observer once the image is visible
           observerRef.current.disconnect();
         }
       },
       {
-        rootMargin: '50px 0px', // Start loading images 50px before they enter the viewport
+        rootMargin: '50px 0px',
         threshold: 0.1
       }
     );
@@ -75,12 +101,16 @@ const LazyImage = ({ src, alt, onLoad: parentOnLoad }) => {
       {isVisible && (
         <StyledImage
           src={src}
+          srcSet={generateSrcSet(src)}
+          sizes={sizes}
           alt={alt}
           onLoad={handleImageLoad}
           isLoaded={isLoaded}
+          loading="lazy"
+          decoding="async"
         />
       )}
-      <Placeholder isLoaded={isLoaded} />
+      <Placeholder isLoaded={isLoaded} blurDataURL={blurDataURL} />
     </ImageWrapper>
   );
 };
