@@ -11,9 +11,9 @@ console.log('Environment Variables Status:', {
 const config = {
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || '5gu0ubge',
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  useCdn: false,
+  useCdn: true,
   apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-03-14',
-  withCredentials: true,
+  withCredentials: false,
 };
 
 // Only log non-sensitive information

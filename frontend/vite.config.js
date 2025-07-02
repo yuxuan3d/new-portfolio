@@ -19,6 +19,16 @@ export default defineConfig(({ command, mode }) => {
       'import.meta.env.VITE_SANITY_PROJECT_ID': JSON.stringify(env.VITE_SANITY_PROJECT_ID || '5gu0ubge'),
       'import.meta.env.VITE_SANITY_DATASET': JSON.stringify(env.VITE_SANITY_DATASET || 'production'),
       'import.meta.env.VITE_SANITY_API_VERSION': JSON.stringify(env.VITE_SANITY_API_VERSION || '2024-03-14')
+    },
+    build: {
+      sourcemap: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'sanity-client': ['@sanity/client', '@sanity/image-url']
+          }
+        }
+      }
     }
   }
 })
