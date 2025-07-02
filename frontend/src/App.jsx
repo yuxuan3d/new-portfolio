@@ -9,7 +9,7 @@ import Contact from './components/Contact';
 import LazyImage from './components/LazyImage';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { lightTheme, darkTheme } from './styles/theme';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -123,9 +123,12 @@ function ThemeToggle() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <ThemedApp />
-    </ThemeProvider>
+    <>
+      <ThemeProvider>
+        <ThemedApp />
+      </ThemeProvider>
+      <Analytics />
+    </>
   );
 }
 
