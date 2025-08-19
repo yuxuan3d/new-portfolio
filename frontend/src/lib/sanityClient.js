@@ -12,8 +12,9 @@ const config = {
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || '5gu0ubge',
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
   useCdn: true,
-  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-03-14',
-  withCredentials: false,
+  apiVersion: '2024-03-14', // Using a fixed date for API version
+  perspective: 'published', // Explicitly set the perspective
+  token: import.meta.env.VITE_SANITY_TOKEN, // Add token if you have one
 };
 
 // Only log non-sensitive information
@@ -22,7 +23,7 @@ console.log('Sanity Config:', {
   dataset: config.dataset,
   useCdn: config.useCdn,
   apiVersion: config.apiVersion,
-  withCredentials: config.withCredentials
+  perspective: config.perspective
 });
 
 export const client = createClient(config);

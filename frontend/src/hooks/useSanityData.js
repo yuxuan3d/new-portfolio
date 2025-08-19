@@ -5,7 +5,7 @@ import { client } from '../lib/sanityClient';
 const cache = new Map();
 const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
 
-export function useSanityData(query) {
+export function useSanityData(query, params = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [isValidating, setIsValidating] = useState(false);
@@ -15,7 +15,7 @@ export function useSanityData(query) {
       setIsValidating(true);
       
       // Check cache first
-      const cacheKey = query;
+      const cacheKey = JSON.stringify({ query, params });
       const cachedData = cache.get(cacheKey);
       if (cachedData && Date.now() - cachedData.timestamp < CACHE_TIME) {
         if (shouldUpdateState) {
@@ -26,7 +26,9 @@ export function useSanityData(query) {
       }
 
       // Fetch fresh data
-      const result = await client.fetch(query);
+      console.log('Fetching from Sanity:', { query, params });
+      const result = await client.fetch(query, params);
+      console.log('Sanity response:', result);
       
       // Update cache
       cache.set(cacheKey, {

@@ -7,6 +7,8 @@ import ProjectDetail from './components/ProjectDetail';
 import About from './components/About';
 import Contact from './components/Contact';
 import LazyImage from './components/LazyImage';
+import RnDBlog from './components/RnDBlog';
+import BlogPost from './components/BlogPost';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { lightTheme, darkTheme } from './styles/theme';
 import { Analytics } from "@vercel/analytics/react"
@@ -152,6 +154,7 @@ function ThemedApp() {
               <Nav>
                 <NavLink as={Link} to="/about">About</NavLink>
                 <NavLink as={Link} to="/contact">Contact</NavLink>
+                <NavLink as={Link} to="/rnd">Latest R&D</NavLink>
                 <ThemeToggle />
                 <SocialLinks>
                   <SocialIconLink href="https://www.linkedin.com/in/yu-xuan-chong" target="_blank" rel="noopener noreferrer">
@@ -171,6 +174,8 @@ function ThemedApp() {
               <Route path="/project/:slug" element={<ProjectDetail />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/rnd" element={<RnDBlog />} />
+              <Route path="/rnd/:slug" element={<BlogPost />} />
             </Routes>
           </MainContent>
 
