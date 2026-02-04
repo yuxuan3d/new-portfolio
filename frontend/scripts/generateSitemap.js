@@ -2,14 +2,22 @@ import { createClient } from '@sanity/client';
 import fs from 'fs';
 import path from 'path';
 
+const projectId = process.env.VITE_SANITY_PROJECT_ID;
+const dataset = process.env.VITE_SANITY_DATASET || 'production';
+const apiVersion = process.env.VITE_SANITY_API_VERSION || '2024-03-21';
+const siteUrl = process.env.SITE_URL || 'https://www.yxperiments.com';
+
+if (!projectId) {
+  console.error('Missing required env var: VITE_SANITY_PROJECT_ID');
+  process.exit(1);
+}
+
 const sanityClient = createClient({
-  projectId: process.env.VITE_SANITY_PROJECT_ID,
-  dataset: process.env.VITE_SANITY_DATASET,
-  apiVersion: '2024-03-21',
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: true,
 });
-
-const YOUR_DOMAIN = 'https://your-domain.com'; // Replace with your actual domain
 
 async function generateSitemap() {
   try {
@@ -25,7 +33,7 @@ async function generateSitemap() {
 
     // Fetch blog posts
     const posts = await sanityClient.fetch(`
-      *[_type == "post"] {
+      *[_type == "blogPost"] {
         slug {
           current
         },
@@ -38,6 +46,7 @@ async function generateSitemap() {
       { url: '/', priority: '1.0', changefreq: 'weekly' },
       { url: '/about', priority: '0.8', changefreq: 'monthly' },
       { url: '/contact', priority: '0.8', changefreq: 'monthly' },
+      { url: '/rnd', priority: '0.7', changefreq: 'weekly' },
     ];
 
     // Generate XML
@@ -45,21 +54,21 @@ async function generateSitemap() {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticRoutes.map(route => `
   <url>
-    <loc>${YOUR_DOMAIN}${route.url}</loc>
+    <loc>${siteUrl}${route.url}</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
   </url>`).join('')}
 ${portfolioItems.map(item => `
   <url>
-    <loc>${YOUR_DOMAIN}/portfolio/${item.slug.current}</loc>
+    <loc>${siteUrl}/project/${item.slug.current}</loc>
     <lastmod>${new Date(item._updatedAt).toISOString().split('T')[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>`).join('')}
 ${posts.map(post => `
   <url>
-    <loc>${YOUR_DOMAIN}/blog/${post.slug.current}</loc>
+    <loc>${siteUrl}/rnd/${post.slug.current}</loc>
     <lastmod>${new Date(post._updatedAt).toISOString().split('T')[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

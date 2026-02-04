@@ -1,12 +1,14 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 
-// Debug environment variables
-console.log('Environment Variables Status:', {
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'not set',
-  dataset: import.meta.env.VITE_SANITY_DATASET || 'not set',
-  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || 'not set'
-});
+if (import.meta.env.DEV) {
+  // Debug environment variables (non-sensitive only)
+  console.log('Environment Variables Status:', {
+    projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'not set',
+    dataset: import.meta.env.VITE_SANITY_DATASET || 'not set',
+    apiVersion: import.meta.env.VITE_SANITY_API_VERSION || 'not set'
+  });
+}
 
 const config = {
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || '5gu0ubge',
@@ -17,14 +19,16 @@ const config = {
   token: import.meta.env.VITE_SANITY_TOKEN, // Add token if you have one
 };
 
-// Only log non-sensitive information
-console.log('Sanity Config:', {
-  projectId: config.projectId,
-  dataset: config.dataset,
-  useCdn: config.useCdn,
-  apiVersion: config.apiVersion,
-  perspective: config.perspective
-});
+if (import.meta.env.DEV) {
+  // Only log non-sensitive information
+  console.log('Sanity Config:', {
+    projectId: config.projectId,
+    dataset: config.dataset,
+    useCdn: config.useCdn,
+    apiVersion: config.apiVersion,
+    perspective: config.perspective
+  });
+}
 
 export const client = createClient(config);
 

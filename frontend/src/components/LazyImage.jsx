@@ -47,7 +47,15 @@ const LazyImage = ({ src, alt, onLoad: parentOnLoad, sizes = "100vw" }) => {
     return widths
       .map((width) => {
         const url = new URL(src);
+        const baseWidth = parseInt(url.searchParams.get('w') || '', 10);
+        const baseHeight = parseInt(url.searchParams.get('h') || '', 10);
+        const hasBaseSize = Number.isFinite(baseWidth) && baseWidth > 0 && Number.isFinite(baseHeight) && baseHeight > 0;
+        const ratio = hasBaseSize ? baseHeight / baseWidth : null;
+
         url.searchParams.set('w', width.toString());
+        if (ratio) {
+          url.searchParams.set('h', Math.round(width * ratio).toString());
+        }
         return `${url.toString()} ${width}w`;
       })
       .join(', ');
@@ -57,7 +65,15 @@ const LazyImage = ({ src, alt, onLoad: parentOnLoad, sizes = "100vw" }) => {
   useEffect(() => {
     if (src) {
       const url = new URL(src);
+      const baseWidth = parseInt(url.searchParams.get('w') || '', 10);
+      const baseHeight = parseInt(url.searchParams.get('h') || '', 10);
+      const hasBaseSize = Number.isFinite(baseWidth) && baseWidth > 0 && Number.isFinite(baseHeight) && baseHeight > 0;
+      const ratio = hasBaseSize ? baseHeight / baseWidth : null;
+
       url.searchParams.set('w', '50');
+      if (ratio) {
+        url.searchParams.set('h', Math.round(50 * ratio).toString());
+      }
       url.searchParams.set('blur', '50');
       url.searchParams.set('q', '20');
       setBlurDataURL(url.toString());

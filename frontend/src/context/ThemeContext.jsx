@@ -1,14 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-const ThemeContext = createContext();
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
-};
+import React, { useState, useEffect } from 'react';
+import { ThemeContext } from './themeContext';
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -22,8 +13,18 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    const theme = isDarkMode ? 'dark' : 'light';
+
     // Save theme preference to localStorage
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    localStorage.setItem('theme', theme);
+
+    // Improve UA defaults (form controls, scrollbars, etc.)
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+
+    // Keep the root element in sync (prevents “flash” on overscroll/background)
+    document.documentElement.style.backgroundColor = isDarkMode ? '#1a1a1a' : '#fafafa';
+    document.documentElement.style.color = isDarkMode ? '#ffffff' : '#333333';
   }, [isDarkMode]);
 
   const toggleTheme = () => {

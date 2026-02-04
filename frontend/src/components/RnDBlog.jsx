@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useSanityData } from '../hooks/useSanityData';
 import LazyImage from './LazyImage';
 import { urlFor } from '../lib/sanityClient';
+import LoadingState from './LoadingState';
 
 const BlogGrid = styled.div`
   display: grid;
@@ -86,19 +87,20 @@ const RnDBlog = () => {
   
   const [blogPosts, error, { isValidating }] = useSanityData(query);
 
-  if (isValidating && !blogPosts) return <div>Loading...</div>;
-  if (error) return <div>Error loading blog posts: {JSON.stringify(error)}</div>;
-  
-  // Debug information
-  console.log('Blog posts:', blogPosts);
-  
-  if (!blogPosts || !Array.isArray(blogPosts) || blogPosts.length === 0) {
+  if (error) {
+    return <ErrorState>{error}</ErrorState>;
+  }
+
+  if (isValidating && !blogPosts) {
+    return <LoadingState label="Loading R&D Posts" margin="2rem 0" />;
+  }
+
+  if (!Array.isArray(blogPosts) || blogPosts.length === 0) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>No blog posts found</h2>
-        <p>Query: {query}</p>
-        <p>Raw data received: {JSON.stringify(blogPosts)}</p>
-      </div>
+      <EmptyState>
+        <h2>No R&amp;D posts yet</h2>
+        <p>Check back soon.</p>
+      </EmptyState>
     );
   }
 
@@ -110,7 +112,7 @@ const RnDBlog = () => {
             {post.mainImage && (
               <BlogImage>
                 <LazyImage
-                  src={urlFor(post.mainImage).width(600).url()}
+                  src={urlFor(post.mainImage).auto('format').width(600).fit('max').url()}
                   alt={post.title}
                 />
               </BlogImage>
@@ -139,5 +141,27 @@ const RnDBlog = () => {
     </BlogGrid>
   );
 };
+
+const EmptyState = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 6vw;
+  text-align: center;
+  color: ${({ theme }) => theme.text.secondary};
+
+  h2 {
+    color: ${({ theme }) => theme.text.primary};
+    margin-bottom: 0.5rem;
+  }
+`;
+
+const ErrorState = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 6vw;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #e74c3c;
+`;
 
 export default RnDBlog;

@@ -1,23 +1,9 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { urlFor } from '../lib/sanityClient';
 import { useSanityData } from '../hooks/useSanityData';
-
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const bounce = keyframes`
-  0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-10px); }
-`;
-
-const fadeInOut = keyframes`
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-`;
+import LoadingState from './LoadingState';
 
 const VideoEmbed = memo(({ embedCode }) => (
   <VideoContainer>
@@ -32,15 +18,13 @@ const BackButtonWrapper = styled.div`
 const ProjectDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [isNavigating, setIsNavigating] = useState(false);
 
   const handleBack = () => {
-    setIsNavigating(true);
     navigate('/');
   };
 
-  const [project] = useSanityData(`
-    *[_type == "portfolioItem" && slug.current == "${slug}"][0] {
+  const query = `
+    *[_type == "portfolioItem" && slug.current == $slug][0] {
       _id,
       title,
       mainImage,
@@ -54,21 +38,33 @@ const ProjectDetail = () => {
       },
       tags
     }
-  `);
+  `;
+
+  const [project, error, { isValidating }] = useSanityData(query, { slug });
+
+  if (error) {
+    return (
+      <Container>
+        <BackButtonWrapper>
+          <BackButton onClick={handleBack}>← Back to Projects</BackButton>
+        </BackButtonWrapper>
+        <ErrorText>{error}</ErrorText>
+      </Container>
+    );
+  }
+
+  if (isValidating && !project) {
+    return <LoadingState label="Loading Project" margin="2rem 0" />;
+  }
 
   if (!project) {
     return (
-      <LoadingContainer>
-        <LoadingContent>
-          <LoadingSpinner />
-          <LoadingText>Loading Project</LoadingText>
-          <LoadingDots>
-            <Dot />
-            <Dot />
-            <Dot />
-          </LoadingDots>
-        </LoadingContent>
-      </LoadingContainer>
+      <Container>
+        <BackButtonWrapper>
+          <BackButton onClick={handleBack}>← Back to Projects</BackButton>
+        </BackButtonWrapper>
+        <ErrorText>Project not found.</ErrorText>
+      </Container>
     );
   }
 
@@ -78,21 +74,7 @@ const ProjectDetail = () => {
   return (
     <Container>
       <BackButtonWrapper>
-        {isNavigating ? (
-          <LoadingContainer style={{ margin: 0 }}>
-            <LoadingContent>
-              <LoadingSpinner />
-              <LoadingText>Loading Projects</LoadingText>
-              <LoadingDots>
-                <Dot />
-                <Dot />
-                <Dot />
-              </LoadingDots>
-            </LoadingContent>
-          </LoadingContainer>
-        ) : (
-          <BackButton onClick={handleBack}>← Back to Projects</BackButton>
-        )}
+        <BackButton onClick={handleBack}>← Back to Projects</BackButton>
       </BackButtonWrapper>
       
       <MainContent>
@@ -167,7 +149,7 @@ const ProjectDetail = () => {
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 6vw;
+  padding: 2rem 0;
 `;
 
 const BackButton = styled.button`
@@ -333,59 +315,11 @@ const Tag = styled.span`
   color: ${({ theme }) => theme.text.secondary};
 `;
 
-const LoadingContainer = styled.div`
-  min-height: 60vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${({ theme }) => theme.surface};
-  border-radius: 12px;
-  margin: 2rem 6vw;
-  transition: background-color 0.3s ease;
-`;
-
-const LoadingContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-`;
-
-const LoadingSpinner = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 3px solid ${({ theme }) => theme.spinner.border};
-  border-top: 3px solid ${({ theme }) => theme.spinner.accent};
-  border-radius: 50%;
-  animation: ${spin} 1s linear infinite;
-`;
-
-const LoadingText = styled.div`
+const ErrorText = styled.div`
+  text-align: center;
+  padding: 2rem;
   font-size: 1.2rem;
-  color: ${({ theme }) => theme.text.primary};
-  font-weight: 500;
-  animation: ${fadeInOut} 2s ease-in-out infinite;
+  color: #e74c3c;
 `;
 
-const LoadingDots = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
-const Dot = styled.div`
-  width: 8px;
-  height: 8px;
-  background-color: ${({ theme }) => theme.accent};
-  border-radius: 50%;
-  animation: ${bounce} 1.4s ease-in-out infinite;
-
-  &:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-
-  &:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-`;
-
-export default ProjectDetail; 
+export default ProjectDetail;

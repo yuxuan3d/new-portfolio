@@ -131,11 +131,12 @@ const components = {
   types: {
     image: ({value}) => {
       // Get the original image dimensions if available
-      const imageAsset = value?.asset?._ref;
-      const dimensions = imageAsset ? {
-        width: parseInt(imageAsset.split('-')[2]),
-        height: parseInt(imageAsset.split('-')[3])
-      } : null;
+      const imageAssetRef = value?.asset?._ref;
+      const sizePart = imageAssetRef?.split('-')?.[2]; // e.g. "800x600"
+      const [width, height] = (sizePart?.split('x') || []).map((v) => parseInt(v, 10));
+      const dimensions = Number.isFinite(width)
+        ? { width, height: Number.isFinite(height) ? height : undefined }
+        : null;
       
       return (
         <figure>

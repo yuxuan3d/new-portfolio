@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FaHammer, FaCode, FaMagic, FaPlay, FaFileAlt } from 'react-icons/fa';
+import { EXTERNAL_LINKS } from '../constants/social';
 
 const About = () => {
   const skillCategories = [
@@ -31,7 +32,7 @@ const About = () => {
         <Subtitle as="p">Crafting digital experiences at the intersection of creativity and technology</Subtitle>
         <ButtonContainer>
           <ActionButton 
-            href="https://vimeo.com/673431850" 
+            href={EXTERNAL_LINKS.DEMO_REEL}
             target="_blank" 
             rel="noopener noreferrer"
             aria-label="Watch Demo Reel 2021"
@@ -40,7 +41,7 @@ const About = () => {
             <span>DemoReel 2021</span>
           </ActionButton>
           <ActionButton 
-            href="https://res.cloudinary.com/dkivbhexf/image/upload/v1744731023/YuXuan_Resume_2025_tzxcfw.pdf" 
+            href={EXTERNAL_LINKS.RESUME}
             target="_blank" 
             rel="noopener noreferrer"
             aria-label="Download Resume"
@@ -52,8 +53,8 @@ const About = () => {
       </Header>
 
       <SkillsGrid as="section" role="region" aria-label="Professional Skills">
-        {skillCategories.map((category, index) => (
-          <SkillCard key={index} as="article">
+        {skillCategories.map((category) => (
+          <SkillCard key={category.title} as="article">
             <IconWrapper>
               {category.icon}
             </IconWrapper>
@@ -74,7 +75,7 @@ const About = () => {
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 4rem 6vw;
+  padding: 4rem 0;
 `;
 
 const Header = styled.div`

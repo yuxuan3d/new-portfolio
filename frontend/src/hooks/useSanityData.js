@@ -1,81 +1,104 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { client } from '../lib/sanityClient';
 
 // Simple cache implementation
 const cache = new Map();
 const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
 
+const safeStringify = (value) => {
+  try {
+    return JSON.stringify(value ?? {});
+  } catch {
+    return '';
+  }
+};
+
 export function useSanityData(query, params = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [isValidating, setIsValidating] = useState(false);
+  const paramsKey = safeStringify(params);
+  const paramsRef = useRef(params);
 
-  const fetchData = useCallback(async (shouldUpdateState = true) => {
-    try {
-      setIsValidating(true);
-      
-      // Check cache first
-      const cacheKey = JSON.stringify({ query, params });
-      const cachedData = cache.get(cacheKey);
-      if (cachedData && Date.now() - cachedData.timestamp < CACHE_TIME) {
+  useEffect(() => {
+    paramsRef.current = params;
+  }, [paramsKey, params]);
+
+  const fetchData = useCallback(
+    async (shouldUpdateState = true, bypassCache = false) => {
+      const cacheKey = `${query}::${paramsKey}`;
+
+      try {
+        // Check cache first unless explicitly bypassed (revalidation).
+        if (!bypassCache) {
+          const cachedData = cache.get(cacheKey);
+          if (cachedData && Date.now() - cachedData.timestamp < CACHE_TIME) {
+            if (shouldUpdateState) {
+              setData(cachedData.data);
+              setError(null);
+            }
+            return cachedData.data;
+          }
+        }
+
         if (shouldUpdateState) {
-          setData(cachedData.data);
+          setIsValidating(true);
+        }
+
+        const result = await client.fetch(query, paramsRef.current);
+
+        cache.set(cacheKey, {
+          data: result,
+          timestamp: Date.now(),
+        });
+
+        if (shouldUpdateState) {
+          setData(result);
           setError(null);
         }
-        return cachedData.data;
-      }
 
-      // Fetch fresh data
-      console.log('Fetching from Sanity:', { query, params });
-      const result = await client.fetch(query, params);
-      console.log('Sanity response:', result);
-      
-      // Update cache
-      cache.set(cacheKey, {
-        data: result,
-        timestamp: Date.now()
-      });
+        return result;
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        const errorMessage = 'Failed to load data. Please try again later.';
 
-      if (shouldUpdateState) {
-        setData(result);
-        setError(null);
+        if (shouldUpdateState) {
+          setError(errorMessage);
+        }
+
+        throw new Error(errorMessage);
+      } finally {
+        if (shouldUpdateState) {
+          setIsValidating(false);
+        }
       }
-      return result;
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      const errorMessage = 'Failed to load data. Please try again later.';
-      if (shouldUpdateState) {
-        setError(errorMessage);
-      }
-      throw new Error(errorMessage);
-    } finally {
-      setIsValidating(false);
-    }
-  }, [query]);
+    },
+    [query, paramsKey]
+  );
 
   // Initial fetch
   useEffect(() => {
-    fetchData();
+    fetchData().catch(() => {});
   }, [fetchData]);
 
   // Revalidate data periodically
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData(false).then((newData) => {
-        if (JSON.stringify(newData) !== JSON.stringify(data)) {
-          setData(newData);
-        }
-      }).catch(() => {
-        // Silent fail for background revalidation
-      });
+      fetchData(false, true)
+        .then((newData) => {
+          if (safeStringify(newData) !== safeStringify(data)) {
+            setData(newData);
+          }
+        })
+        .catch(() => {
+          // Silent fail for background revalidation
+        });
     }, CACHE_TIME / 2);
 
     return () => clearInterval(interval);
   }, [fetchData, data]);
 
-  const mutate = useCallback(async () => {
-    return fetchData();
-  }, [fetchData]);
+  const mutate = useCallback(async () => fetchData(), [fetchData]);
 
   return [data, error, { isValidating, mutate }];
-} 
+}

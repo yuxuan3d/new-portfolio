@@ -6,5 +6,5 @@ export const SOCIAL_LINKS = {
 
 export const EXTERNAL_LINKS = {
   DEMO_REEL: 'https://vimeo.com/673431850',
-  RESUME: 'https://res.cloudinary.com/dkivbhexf/image/upload/v1744731023/YuXuan_Resume_2025_tzxcfw.pdf'
+  RESUME: 'https://res.cloudinary.com/dkivbhexf/image/upload/v1770191034/YX_Resume_2026_pbgk0t.pdf'
 }; 

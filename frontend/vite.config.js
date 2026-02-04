@@ -6,21 +6,25 @@ import { visualizer } from 'rollup-plugin-visualizer'
 export default defineConfig(({ command, mode }) => {
   // Load env file based on `mode` in the current working directory.
   const env = loadEnv(mode, process.cwd(), '')
+  const isAnalyze = mode === 'analyze' || env.ANALYZE === 'true'
   
   // Log available environment variables (excluding sensitive data)
-  console.log('Available Vite Env Variables:', {
-    MODE: mode,
-    VITE_VARS_PRESENT: Object.keys(env).filter(key => key.startsWith('VITE_')).join(', ')
-  })
+  if (command === 'serve') {
+    console.log('Available Vite Env Variables:', {
+      MODE: mode,
+      VITE_VARS_PRESENT: Object.keys(env).filter(key => key.startsWith('VITE_')).join(', ')
+    })
+  }
 
   return {
     plugins: [
       react(),
-      visualizer({
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-      }),
+      isAnalyze &&
+        visualizer({
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+        }),
     ],
     define: {
       // Ensure environment variables are properly stringified
@@ -43,8 +47,7 @@ export default defineConfig(({ command, mode }) => {
               '@sanity/client',
               '@sanity/image-url'
             ],
-            'icons': ['react-icons'],
-            'analytics': ['@vercel/analytics']
+            'icons': ['react-icons']
           }
         }
       },

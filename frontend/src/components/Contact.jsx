@@ -176,7 +176,7 @@ const Contact = () => {
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 4rem 6vw;
+  padding: 4rem 0;
 `;
 
 const Header = styled.div`
