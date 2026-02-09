@@ -25,6 +25,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     width: 100%;
     min-height: 100vh;
+    color-scheme: ${({ theme }) => theme.mode || 'dark'};
   }
 
   :root {
@@ -159,7 +160,10 @@ function App() {
 
 function ThemedApp() {
   const { isDarkMode } = useTheme();
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  const theme = {
+    ...(isDarkMode ? darkTheme : lightTheme),
+    mode: isDarkMode ? 'dark' : 'light',
+  };
 
   return (
     <StyledThemeProvider theme={theme}>

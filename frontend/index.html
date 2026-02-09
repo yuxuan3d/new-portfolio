@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/src/assets/Orb_Small.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
     <meta name="description" content="Yu Xuan's creative portfolio - Explore innovative 3D visual effects, motion graphics, and interactive web experiences. Specializing in Houdini, Three.js, and AI integration for cutting-edge digital storytelling." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +14,7 @@
         const savedTheme = localStorage.getItem('theme');
         const isDark = savedTheme 
           ? savedTheme === 'dark'
-          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          : true;
         const theme = isDark ? 'dark' : 'light';
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;

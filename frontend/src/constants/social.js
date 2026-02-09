@@ -1,7 +1,7 @@
 export const SOCIAL_LINKS = {
   LINKEDIN: 'https://www.linkedin.com/in/yu-xuan-chong',
   INSTAGRAM: 'https://www.instagram.com/yxperiments',
-  EMAIL: 'yuxua3dart@gmail.com'
+  EMAIL: 'yuxuan3dart@gmail.com'
 };
 
 export const EXTERNAL_LINKS = {

@@ -1,4 +1,17 @@
-﻿[PLANS]
+[PLANS]
+- 2026-02-09T09:36:50Z [USER] Make `All Projects` cards approximately half their current size.
+- 2026-02-09T09:33:21Z [USER] Ensure hero gradient extends cleanly to the bottom of the first screen by eliminating remaining offset/seam artifacts.
+- 2026-02-09T09:28:07Z [USER] Remove the visible seam under the header so the homepage hero gradient reads continuous to the top edge.
+- 2026-02-09T09:23:06Z [USER] Fix hero so gradient reaches the very top of the screen and adjust `Yu Xuan` highlight to non-italic with true Y-to-n gradient flow.
+- 2026-02-09T09:19:49Z [USER] Refine first section so hero text and CTA buttons are centered and scaled to match the provided visual reference.
+- 2026-02-09T09:14:55Z [USER] Remove hero card look, make hero fill exactly one screen on mobile/desktop, and ensure the hero gradient spans the full screen.
+- 2026-02-09T09:09:40Z [USER] Second homepage pass requested: remove the Featured Spotlight and keep refining the homepage visual rhythm.
+- 2026-02-09T09:03:10Z [USER] Restyle only the homepage to feel closer to a provided dark agency reference, keep all existing sections, and apply current dark-mode best practices.
+- 2026-02-09T08:33:41Z [USER] Increase separator spacing, reduce excessive top-section whitespace, and restore card styling for Featured Spotlight.
+- 2026-02-09T08:22:46Z [USER] Remove the header/body divider line, then unify all remaining section separators to the same color and equal vertical spacing.
+- 2026-02-09T08:13:34Z [USER] Remove the circle marker in the middle of the horizontal section divider.
+- 2026-02-09T08:08:52Z [USER] Add a stylish horizontal separator between homepage sections after removing card containers.
+- 2026-02-09T08:03:19Z [USER] Remove card-style containers for the homepage sections so content sits directly on the gradient background.
 - 2026-02-09T07:39:53Z [USER] Change the Yu Xuan heading gradient to a clear left-to-right flow instead of center-weighted styling.
 - 2026-02-09T07:35:20Z [USER] Reapply the hero gradient styling to the Yu Xuan segment within the Hi, I''m Yu Xuan heading.
 - 2026-02-09T07:27:54Z [USER] Make dark mode the default theme on first load.
@@ -9,7 +22,7 @@
 - 2026-02-09T06:51:56Z [USER] Replace prior single-role palette mapping with a new two-palette system: first swatch set for light mode, second swatch set for dark mode.
 - 2026-02-09T06:41:50Z [USER] Correct the palette by assigning each swatch to its stated role (Background/Text/Accent1/Accent2/Button), since prior mapping still felt wrong.
 - 2026-02-09T06:37:25Z [USER] Recolor the website using the provided 5-color palette (#2C2C2C, #E4E4E4, #A8DADC, #FFC1CC, #B39CD0) while preserving intentional frontend-design quality.
-- 2026-02-09T03:28:23Z [USER] Replace the hero heading’s cutesy type feel with a more professional font treatment while preserving visual impact.
+- 2026-02-09T03:28:23Z [USER] Replace the hero heading閳ユ獨 cutesy type feel with a more professional font treatment while preserving visual impact.
 - 2026-02-09T03:25:04Z [USER] Remove the secondary hero line and make "Hi, I'm Yu Xuan" the dominant large headline.
 - 2026-02-09T03:17:56Z [USER] Increase hero kicker prominence and reduce the hero headline size; use gradient-text styling for the colored greeting.
 - 2026-02-09T03:08:34Z [USER] Improve the header brand lockup so the tagline no longer awkwardly sticks out under the site name.
@@ -24,6 +37,25 @@
 - 2026-02-09T02:29:14Z [TOOL] Apply a cohesive shared-style refinement pass (global typography/atmosphere, header/footer hierarchy, about-page information flow), then verify with lint/build and Playwright.
 
 [DECISIONS]
+- 2026-02-09T09:36:50Z [TOOL] Reduce `All Projects` card size by increasing `ProjectsGrid` density from 2->4 columns on desktop and 1->2 on mobile.
+- 2026-02-09T09:33:21Z [TOOL] Replace heuristic hero header offsets with a real measured `--site-header-height` CSS variable to prevent top/bottom seams across breakpoints.
+- 2026-02-09T09:28:07Z [TOOL] Make the sticky header wrapper fade to transparent on the homepage so the hero background can show through without a hard boundary line.
+- 2026-02-09T09:23:06Z [TOOL] Pull hero upward behind the header using a negative top margin plus header-offset top padding, while keeping hero min-height at full viewport.
+- 2026-02-09T09:23:06Z [TOOL] Change `KickerHighlight` to non-italic inherited typography and a strict 2-stop left-to-right gradient with inline-block clipping.
+- 2026-02-09T09:19:49Z [TOOL] Keep full-screen hero structure, but shift to reference-like composition by re-scaling headline/subtitle and normalizing CTA button proportions around a centered vertical stack.
+- 2026-02-09T09:19:49Z [TOOL] Use viewport-minus-header min-height (`calc(100svh/100dvh - clamp(...))`) so content appears visually centered in the first screen with sticky header present.
+- 2026-02-09T09:14:55Z [TOOL] Convert Home hero to a full-bleed viewport section (100svh/100dvh) and remove card chrome (border, radius, shadow, framed background layer).
+- 2026-02-09T09:14:55Z [TOOL] Keep downstream sections constrained while hero alone breaks out to viewport width using negative viewport margins.
+- 2026-02-09T09:09:40Z [TOOL] Remove Spotlight as a distinct hero feature and promote all featured items directly into Featured Work cards.
+- 2026-02-09T09:09:40Z [TOOL] Rebalance Home layout after spotlight removal by tightening hero spacing and restoring a 3-up desktop Featured grid.
+- 2026-02-09T09:03:10Z [TOOL] Keep Home data and section count unchanged; focus this pass on visual language (hero treatment, separators, card rhythm, project-grid presentation).
+- 2026-02-09T09:03:10Z [TOOL] Apply dark-mode compatibility improvements globally (meta color-scheme, CSS color-scheme, first-paint root colors) while limiting major visual redesign to Home.
+- 2026-02-09T09:03:10Z [TOOL] frontend-design skill was requested but is UNCONFIRMED in the active skill list for this session; proceeded with a manual design pass.
+- 2026-02-09T08:33:41Z [TOOL] Increase `SectionSeparator` vertical margins, reduce `Page` top padding and remove extra hero internal spacing, and reintroduce spotlight card chrome (`border`, `background`, `shadow`, rounded corners) while preserving section de-card layout elsewhere.
+- 2026-02-09T08:22:46Z [TOOL] Remove `HeaderWrapper::after` in SiteHeader, and normalize Home `SectionSeparator` to header-divider color (`theme.border`) with symmetric margins while removing extra `Section` top margin.
+- 2026-02-09T08:13:34Z [TOOL] Keep SectionSeparator as a single gradient line and remove the center marker pseudo-element to reduce visual clutter.
+- 2026-02-09T08:08:52Z [TOOL] Introduce a dedicated SectionSeparator component between Hero/Featured and Featured/All sections, using theme-driven gradient styling on transparent layout.
+- 2026-02-09T08:03:19Z [TOOL] Strip card chrome from section wrappers (Hero, Section) and spotlight container while preserving project-card components and core spacing hierarchy.
 - 2026-02-09T07:39:53Z [TOOL] Simplified name highlight gradient to a 2-stop horizontal blend (90deg) from accent to accentAlt for explicit left-to-right directionality.
 - 2026-02-09T07:35:20Z [TOOL] Apply gradient treatment only to the name substring via a dedicated span so the Hi, I''m prefix stays plain for readability.
 - 2026-02-09T07:27:54Z [TOOL] Keep persisted user preference behavior, but change first-run fallback to dark mode when no saved theme exists.
@@ -32,7 +64,7 @@
 - 2026-02-09T07:04:35Z [TOOL] SUPERSEDED dark-mode green-biased bases (#001815 family) with navy-blue bases while preserving established CTA role mapping and light-mode tokens.
 - 2026-02-09T06:58:22Z [TOOL] For readability, avoid accent-colored text in hero/spotlight metadata; reserve Primary/Secondary mainly for CTA fills and subtle surfaces.
 - 2026-02-09T06:51:56Z [TOOL] SUPERSEDED: prior exact-hex role mapping is replaced by user-specified mode-specific swatches (light and dark each have distinct Text/Background/Primary/Secondary/Accent colors).
-- 2026-02-09T06:51:56Z [TOOL] Keep token semantics stable (`accent`=Primary, `accentAlt`=Secondary, `button.background`=Accent) while swapping each mode’s color values to the new visual reference.
+- 2026-02-09T06:51:56Z [TOOL] Keep token semantics stable (`accent`=Primary, `accentAlt`=Secondary, `button.background`=Accent) while swapping each mode閳ユ獨 color values to the new visual reference.
 - 2026-02-09T06:37:25Z [TOOL] Use the supplied swatches as core theme tokens for both light and dark modes; keep component styling untouched where it already consumes theme variables.
 - 2026-02-09T03:28:23Z [TOOL] Override the hero `h1` font family to `Red Hat Display` (sans) instead of Fraunces serif; retain gradient text with cooler blue-cyan stops.
 - 2026-02-09T03:25:04Z [TOOL] Promote the hero kicker to the primary heading and remove the separate hero title node to simplify focus hierarchy.
@@ -52,11 +84,46 @@
 - 2026-02-09T02:29:14Z [TOOL] Keep data-fetch/query logic unchanged; focus this pass on visual hierarchy, typography, navigation clarity, and content scannability.
 
 [PROGRESS]
+- 2026-02-09T09:36:50Z [CODE] Updated `frontend/src/pages/Home.jsx` `ProjectsGrid` columns to `repeat(4, ...)` (desktop) and `repeat(2, ...)` under `720px` to halve visual card size.
+- 2026-02-09T09:36:50Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after project-card sizing update (pass).
+- 2026-02-09T09:33:21Z [CODE] Updated `frontend/src/components/SiteHeader.jsx`: measure `HeaderWrapper` height with `ResizeObserver` and set `--site-header-height` on `documentElement`.
+- 2026-02-09T09:33:21Z [CODE] Updated `frontend/src/pages/Home.jsx`: hero now uses `var(--site-header-height, clamp(...))` so the overlap offset always matches the true sticky header height.
+- 2026-02-09T09:33:21Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after header-height variable update (pass).
+- 2026-02-09T09:28:07Z [CODE] Updated `frontend/src/components/SiteHeader.jsx`: header wrapper now uses a home-route-only background fade (`chrome -> transparent`) to eliminate the seam between header chrome and hero gradient.
+- 2026-02-09T09:28:07Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after header fade update (pass).
+- 2026-02-09T09:23:06Z [CODE] Updated `frontend/src/pages/Home.jsx`: Hero now uses `--hero-header-offset`, negative `margin-top`, full `100svh/100dvh` min-height, and adjusted top padding so the background gradient visibly reaches the top of the viewport.
+- 2026-02-09T09:23:06Z [CODE] Updated `frontend/src/pages/Home.jsx`: `KickerHighlight` now uses normal (non-italic) inherited font styling and a 90deg accent-to-accentAlt gradient constrained to the highlighted word span.
+- 2026-02-09T09:23:06Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after top-bleed and highlight-gradient fixes (pass).
+- 2026-02-09T09:19:49Z [CODE] Updated `frontend/src/pages/Home.jsx`: tuned Hero center stack spacing, adjusted radial-gradient focal points, and changed hero height logic to viewport-minus-header behavior for better first-screen centering.
+- 2026-02-09T09:19:49Z [CODE] Updated `frontend/src/pages/Home.jsx`: resized headline/subtitle and rebalanced CTA button dimensions/min-widths to match the reference section scale.
+- 2026-02-09T09:19:49Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after hero centering/scale pass (pass).
+- 2026-02-09T09:14:55Z [CODE] Updated frontend/src/pages/Home.jsx: Page top padding set to 0, and Hero converted to full-bleed plus full-viewport height with layered gradients and no card-style pseudo-element.
+- 2026-02-09T09:14:55Z [CODE] Updated frontend/src/pages/Home.jsx: hero typography/content wrapper tuned for viewport-fit behavior across desktop/mobile while preserving CTA hierarchy.
+- 2026-02-09T09:14:55Z [TOOL] Ran npm run lint and npm run build in frontend after full-screen hero update (pass).
+- 2026-02-09T09:09:40Z [CODE] Updated frontend/src/pages/Home.jsx: removed spotlight JSX/data flow and deleted related styled components (Spotlight*, SkeletonTag*, ErrorText).
+- 2026-02-09T09:09:40Z [CODE] Updated frontend/src/pages/Home.jsx: featuredList now uses all featuredItems; hero padding/gap tuned for single-content hero; Featured grid changed to 3/2/1 responsive columns.
+- 2026-02-09T09:09:40Z [TOOL] Ran npm run lint and npm run build in frontend after spotlight removal pass (pass).
+- 2026-02-09T09:03:10Z [CODE] Updated frontend/src/pages/Home.jsx with a new dark hero atmosphere, centered headline hierarchy, horizontal spotlight composition, refined section separators, and denser 2-column featured/all-project grids while preserving all existing sections and data bindings.
+- 2026-02-09T09:03:10Z [CODE] Updated frontend/index.html, frontend/src/App.jsx, and frontend/src/context/ThemeContext.jsx to improve dark-mode UA behavior (color-scheme) and first-paint theme consistency.
+- 2026-02-09T09:03:10Z [TOOL] Ran npm run lint and npm run build in frontend after the homepage and dark-mode compatibility updates (pass).
+- 2026-02-09T08:33:41Z [CODE] Updated frontend/src/pages/Home.jsx: set Page padding to `2.1rem 0 4.3rem` (mobile `1.55rem 0 3rem`), removed Hero bottom margin and HeroText extra padding, increased SectionSeparator margin to `2.1rem` (mobile `1.5rem`).
+- 2026-02-09T08:33:41Z [CODE] Updated frontend/src/pages/Home.jsx spotlight styles: restored card treatment on SpotlightLink/SpotlightPlaceholder with border/background/shadow/radius and adjusted SpotlightBody padding.
+- 2026-02-09T08:33:41Z [TOOL] Ran npm run lint and npm run build in frontend after spacing/spotlight update (pass).
+- 2026-02-09T08:33:41Z [TOOL] Playwright verification on http://localhost:5173/ confirmed both separators now use identical `33.6px` top/bottom margins and the spotlight renders as a bordered 20px-radius card with shadow.
+- 2026-02-09T08:22:46Z [CODE] Updated frontend/src/components/SiteHeader.jsx to remove the decorative divider pseudo-element under the sticky header.
+- 2026-02-09T08:22:46Z [CODE] Updated frontend/src/pages/Home.jsx: changed SectionSeparator gradient to `theme.border`, set symmetric separator margins (`1.6rem` desktop, `1.2rem` mobile), and removed additional `Section` top margin for consistent spacing around all separators.
+- 2026-02-09T08:22:46Z [TOOL] Ran npm run lint and npm run build in frontend after separator consistency pass (pass).
+- 2026-02-09T08:13:34Z [CODE] Updated frontend/src/pages/Home.jsx: removed the SectionSeparator `&::after` pseudo-element so the divider renders as line-only.
+- 2026-02-09T08:13:34Z [TOOL] Ran npm run lint and npm run build in frontend after divider cleanup (pass).
+- 2026-02-09T08:08:52Z [CODE] Updated frontend/src/pages/Home.jsx to insert SectionSeparator nodes between section blocks and added SectionSeparator styled definition (gradient line + center accent dot).
+- 2026-02-09T08:08:52Z [TOOL] Ran npm run lint and npm run build in frontend after separator update (pass).
+- 2026-02-09T08:08:52Z [TOOL] Playwright verification on http://localhost:5173/ confirms two separator instances render with linear-gradient backgrounds and expected spacing.
+- 2026-02-09T08:03:19Z [CODE] Updated frontend/src/pages/Home.jsx: removed background/border/shadow/backdrop card styling from Hero and Section, flattened SpotlightLink card chrome, and adjusted spotlight spacing (SpotlightMedia, SpotlightBody, SpotlightPlaceholder) for direct-on-background presentation.
+- 2026-02-09T08:03:19Z [TOOL] Ran npm run lint and npm run build in frontend after section de-card pass (pass).
+- 2026-02-09T08:03:19Z [TOOL] Playwright verification on http://localhost:5173/ confirmed Hero, featured/all section wrappers, and spotlight link now render transparent backgrounds with no box-shadow.
 - 2026-02-09T07:39:53Z [CODE] Updated frontend/src/pages/Home.jsx KickerHighlight gradient from angled 3-stop to horizontal 2-stop (linear-gradient(90deg, accent -> accentAlt)).
 - 2026-02-09T07:39:53Z [TOOL] Ran npm run lint and npm run build in frontend after gradient direction update (pass).
-- 2026-02-09T07:39:53Z [TOOL] Playwright confirmed computed style on main h1 span is linear-gradient(90deg, rgb(59, 197, 194) 0%, rgb(46, 99, 183) 100%) with text clipping active.
-pm run lint and 
-pm run build in rontend after gradient direction update (pass).
+- 2026-02-09T07:39:53Z [TOOL] Playwright confirmed computed style on main h1 span is linear-gradient(90deg, rgb(59, 197, 194) 0%, rgb(46, 99, 183) 100%) with text clipping active. pm run lint and pm run build in rontend after gradient direction update (pass).
 - 2026-02-09T07:35:20Z [CODE] Updated frontend/src/pages/Home.jsx hero heading markup to wrap Yu Xuan in a dedicated span and added KickerHighlight gradient text style using background-clip.
 - 2026-02-09T07:35:20Z [TOOL] Ran npm run lint and npm run build in frontend after hero gradient update (pass).
 - 2026-02-09T07:35:20Z [TOOL] Playwright check on http://localhost:5173/ confirmed span text Yu Xuan has linear-gradient background, text clip, and transparent text fill while the rest of the heading remains normal.
@@ -140,6 +207,18 @@ pm run build in rontend after gradient direction update (pass).
 - 2026-02-09T02:29:14Z [TOOL] Ran npm run build in frontend (pass).
 
 [DISCOVERIES]
+- 2026-02-09T09:33:21Z [TOOL] Header height varies enough by breakpoint/font rendering that a measured CSS variable is more reliable than clamp-based estimates for full-bleed hero overlap.
+- 2026-02-09T09:23:06Z [TOOL] With an opaque sticky header in normal flow, extending hero background to viewport top requires visual overlap (`margin-top` offset) rather than only height calculations.
+- 2026-02-09T09:19:49Z [TOOL] With a sticky header in normal document flow, pure `100dvh` hero height can make content feel low; subtracting a responsive header offset restores optical centering in the first viewport.
+- 2026-02-09T09:14:55Z [TOOL] To make one section span the whole screen inside a constrained layout, width: 100vw with margin-left/right calc(50% - 50vw) is the lowest-risk full-bleed pattern in this codebase.
+- 2026-02-09T09:09:40Z [TOOL] Once spotlight is removed, using featuredItems.slice(1) silently drops one featured card; mapping Featured Work directly from all featured items preserves expected content density.
+- 2026-02-09T09:03:10Z [TOOL] Pairing meta color-scheme with runtime documentElement colorScheme and aligned root colors gives a cleaner dark-mode first paint than relying on media-query fallback alone.
+- 2026-02-09T09:03:10Z [TOOL] A single-column hero plus split spotlight card can emulate the reference editorial flow without adding or removing homepage sections.
+- 2026-02-09T08:33:41Z [TOOL] Excess top whitespace was driven by stacked vertical spacing (`Page` top padding + Hero bottom margin + HeroText inner padding); reducing all three produced better rhythm with the updated separator spacing.
+- 2026-02-09T08:22:46Z [TOOL] Uneven separator spacing was caused by compounded spacing (`SectionSeparator` margins plus `Section` top margin); flattening section top margin makes separator rhythm consistent.
+- 2026-02-09T08:13:34Z [TOOL] After card removal, a plain gradient divider line reads cleaner than a line-plus-dot treatment and keeps section rhythm without drawing excess focus.
+- 2026-02-09T08:08:52Z [TOOL] A thin gradient line with a small center dot preserves the clean no-card layout while still giving clear section delineation.
+- 2026-02-09T08:03:19Z [TOOL] Removing wrapper-card chrome from sections improves continuity with the global gradient while leaving item-level cards available for project scannability.
 - 2026-02-09T07:39:53Z [TOOL] The previous 3-stop gradient could read center-weighted in dark mode because first and final stops converged; a 2-stop horizontal gradient removes that effect.
 - 2026-02-09T07:35:20Z [TOOL] Splitting the heading into plain text plus styled span gives fine-grained gradient emphasis without reintroducing full-heading readability issues from earlier iterations.
 - 2026-02-09T07:27:54Z [TOOL] Theme default behavior is controlled entirely by ThemeContext fallback branch; changing it does not affect saved user preference restore logic.
@@ -152,7 +231,7 @@ pm run build in rontend after gradient direction update (pass).
 - 2026-02-09T06:37:25Z [TOOL] LocalStorage kept dark mode active on first load; explicit theme-toggle verification was required to confirm both palette variants.
 - 2026-02-09T03:28:23Z [TOOL] The cutesy feel came from inherited Fraunces serif on `h1`; a local hero override to `Red Hat Display` changes tone without affecting other headings.
 - 2026-02-09T03:25:52Z [TOOL] Converting the kicker to `h1` preserves semantic primary heading while simplifying layout by removing the extra hero title block.
-- 2026-02-09T03:10:46Z [TOOL] Playwright bounding boxes confirm the tagline aligns on the same row as the logo pill, eliminating the prior “subtitle sticking out below” effect.
+- 2026-02-09T03:10:46Z [TOOL] Playwright bounding boxes confirm the tagline aligns on the same row as the logo pill, eliminating the prior 閳ユ笩ubtitle sticking out below閳?effect.
 - 2026-02-09T03:02:16Z [TOOL] Live runtime at `http://localhost:5173/` matches source-level typography adjustments for the brand name in both header and footer.
 - 2026-02-09T03:01:33Z [TOOL] Additional uppercase text remains intentional on non-name elements (e.g., taglines); brand name itself is already lowercase by string and CSS transform rules.
 - 2026-02-09T03:00:48Z [TOOL] Header and footer previously appeared all-caps due to CSS text-transform, not string casing; changing style preserved existing brand text content.
@@ -168,6 +247,20 @@ pm run build in rontend after gradient direction update (pass).
 - 2026-02-09T02:29:14Z [TOOL] A transient HMR runtime error appeared after mid-edit refresh; full browser restart/reload cleared stale module state.
 
 [OUTCOMES]
+- 2026-02-09T09:36:50Z [TOOL] `All Projects` cards now render at approximately half previous visual size through denser grid layout; lint/build verification passed.
+- 2026-02-09T09:33:21Z [TOOL] Hero background now overlaps the exact sticky header height, removing the remaining bottom seam while keeping the top blend intact; lint/build verification passed.
+- 2026-02-09T09:28:07Z [TOOL] Header-to-hero transition no longer shows a hard line on the homepage; hero background reads continuous to the top edge; lint/build verification passed.
+- 2026-02-09T09:23:06Z [TOOL] Hero background now reaches the top edge of the viewport, and `Yu Xuan` highlight is non-italic with a clean left-to-right gradient from first to last character; lint/build verification passed.
+- 2026-02-09T09:19:49Z [TOOL] First section now has centered/scaled heading and CTA controls aligned to the provided reference style while keeping the full-bleed dark hero treatment; lint/build verification passed.
+- 2026-02-09T09:14:55Z [TOOL] Hero now renders without card framing, occupies one full viewport on mobile/desktop, and carries a full-screen gradient treatment; lint/build verification passed.
+- 2026-02-09T09:09:40Z [TOOL] Homepage second pass completed: spotlight removed, featured content consolidated, and top-of-page layout remains balanced with successful lint/build verification.
+- 2026-02-09T09:03:10Z [TOOL] Homepage now has a reference-inspired dark presentation (cinematic hero, tighter typography, calmer accents, stronger image-led cards) while retaining all original sections and interactions.
+- 2026-02-09T09:03:10Z [TOOL] Dark-mode handling now follows modern web practices more closely via explicit color-scheme metadata/CSS and synchronized first-paint root colors; lint/build verification passed.
+- 2026-02-09T08:33:41Z [TOOL] Homepage now has looser separator breathing room, a tighter top-section start, and a restored featured-spotlight card while keeping the rest of the section layout on the gradient background.
+- 2026-02-09T08:22:46Z [TOOL] Header/body divider removed, and remaining homepage separators now share one border-based color treatment with matched top/bottom spacing.
+- 2026-02-09T08:13:34Z [TOOL] Section separators now render as clean horizontal gradient lines with no center circle.
+- 2026-02-09T08:08:52Z [TOOL] Homepage now has stylish horizontal separators between major sections without reintroducing card containers.
+- 2026-02-09T08:03:19Z [TOOL] Homepage section containers now sit directly on the gradient background instead of appearing as framed cards.
 - 2026-02-09T07:39:53Z [TOOL] Yu Xuan highlight now sweeps cleanly left-to-right across the name with no center-radial impression.
 - 2026-02-09T07:35:20Z [TOOL] Hero heading now emphasizes Yu Xuan with gradient styling while keeping the rest of the title clean and legible.
 - 2026-02-09T07:27:54Z [TOOL] Default/first-run experience now opens in dark mode while existing users retain their last saved theme selection.
@@ -181,7 +274,7 @@ pm run build in rontend after gradient direction update (pass).
 - 2026-02-09T06:37:25Z [TOOL] Website palette now follows the reference swatches across both light/dark themes, including background atmospherics, accents, controls, and hero gradient text.
 - 2026-02-09T03:28:23Z [TOOL] Hero heading now reads more professional while keeping the large single-line focus and gradient identity.
 - 2026-02-09T03:25:52Z [TOOL] Homepage hero now uses one dominant line (`Hi, I'm Yu Xuan`) with the secondary line removed, matching the requested cleaner visual focus.
-- 2026-02-09T03:10:46Z [TOOL] Header brand lockup improved: tagline no longer sits below and “sticks out” from the site name on desktop.
+- 2026-02-09T03:10:46Z [TOOL] Header brand lockup improved: tagline no longer sits below and 閳ユ笩ticks out閳?from the site name on desktop.
 - 2026-02-09T03:02:16Z [TOOL] Browser-level check passed: classier lowercase brand name presentation is visible on the running site.
 - 2026-02-09T03:01:33Z [TOOL] Post-change verification complete: classier lowercase website name remains correctly applied in both header and footer.
 - 2026-02-09T03:00:48Z [TOOL] Requested typography update completed: website name now uses a classier serif face and no forced caps.
@@ -192,17 +285,4 @@ pm run build in rontend after gradient direction update (pass).
 - 2026-02-09T02:34:00Z [TOOL] Requested change completed: hero background circle now anchors to the bottom-right.
 - 2026-02-09T02:32:47Z [TOOL] Requested simplification applied: Projects/Featured/Top Tags cards no longer render on the homepage hero.
 - 2026-02-09T02:29:14Z [TOOL] Completed second UI/UX refinement pass using frontend-design skill principles with verified improvements to shared visual cohesion, navigation readability, and About-page content flow.
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -23,9 +23,9 @@ export const ThemeProvider = ({ children }) => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
 
-    // Keep the root element in sync (prevents “flash” on overscroll/background)
-    document.documentElement.style.backgroundColor = isDarkMode ? '#1a1a1a' : '#fafafa';
-    document.documentElement.style.color = isDarkMode ? '#ffffff' : '#333333';
+    // Keep the root element in sync to avoid theme flash on first paint.
+    document.documentElement.style.backgroundColor = isDarkMode ? '#060C1A' : '#DDE4E4';
+    document.documentElement.style.color = isDarkMode ? '#D8E3F4' : '#001B1A';
   }, [isDarkMode]);
 
   const toggleTheme = () => {
@@ -37,4 +37,4 @@ export const ThemeProvider = ({ children }) => {
       {children}
     </ThemeContext.Provider>
   );
-}; 
+};

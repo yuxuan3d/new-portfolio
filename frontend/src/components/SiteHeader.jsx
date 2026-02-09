@@ -21,10 +21,41 @@ export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const menuId = useId();
+  const isHome = location.pathname === '/';
 
+  const headerRef = useRef(null);
   const menuButtonRef = useRef(null);
   const firstMenuLinkRef = useRef(null);
   const drawerRef = useRef(null);
+
+  useEffect(() => {
+    const element = headerRef.current;
+    if (!element) return undefined;
+
+    let frame = 0;
+    const setHeaderHeight = () => {
+      if (!headerRef.current) return;
+      const height = Math.round(headerRef.current.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--site-header-height', `${height}px`);
+    };
+
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(setHeaderHeight);
+    };
+
+    schedule();
+
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule);
+    observer?.observe(element);
+    window.addEventListener('resize', schedule);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      window.removeEventListener('resize', schedule);
+    };
+  }, []);
 
   const closeMenu = (restoreFocus = false) => {
     setIsMenuOpen(false);
@@ -159,7 +190,7 @@ export default function SiteHeader() {
 
   return (
     <>
-      <HeaderWrapper>
+      <HeaderWrapper ref={headerRef} $isHome={isHome}>
         <HeaderInner>
           <BrandCluster>
             <Logo to="/">yxperiments</Logo>
@@ -234,28 +265,13 @@ const HeaderWrapper = styled.header`
   padding: 1rem 6vw 0.85rem;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  background: linear-gradient(
-    180deg,
-    ${({ theme }) => theme.chrome || theme.surface} 0%,
-    ${({ theme }) => theme.chromeAlt || theme.surfaceAlt || theme.surface} 100%
-  );
+  background: ${({ $isHome, theme }) =>
+    $isHome
+      ? `linear-gradient(180deg, ${theme.chrome || theme.surface} 0%, transparent 100%)`
+      : `linear-gradient(180deg, ${theme.chrome || theme.surface} 0%, ${
+        theme.chromeAlt || theme.surfaceAlt || theme.surface
+      } 100%)`};
   transition: background 0.3s ease;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 6vw;
-    right: 6vw;
-    bottom: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      ${({ theme }) => theme.border} 15%,
-      ${({ theme }) => theme.border} 85%,
-      transparent 100%
-    );
-  }
 
   @media (max-width: 720px) {
     padding: 0.88rem 6vw 0.78rem;
