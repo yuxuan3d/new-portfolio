@@ -12,7 +12,7 @@ const VideoEmbed = memo(({ embedCode }) => (
 ));
 
 const BackButtonWrapper = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const ProjectDetail = () => {
@@ -46,7 +46,7 @@ const ProjectDetail = () => {
     return (
       <Container>
         <BackButtonWrapper>
-          <BackButton onClick={handleBack}>← Back to Projects</BackButton>
+          <BackButton onClick={handleBack}>Back to Projects</BackButton>
         </BackButtonWrapper>
         <ErrorText>{error}</ErrorText>
       </Container>
@@ -61,22 +61,21 @@ const ProjectDetail = () => {
     return (
       <Container>
         <BackButtonWrapper>
-          <BackButton onClick={handleBack}>← Back to Projects</BackButton>
+          <BackButton onClick={handleBack}>Back to Projects</BackButton>
         </BackButtonWrapper>
         <ErrorText>Project not found.</ErrorText>
       </Container>
     );
   }
 
-  // Only include additional images
   const allImages = project.additionalImages || [];
 
   return (
     <Container>
       <BackButtonWrapper>
-        <BackButton onClick={handleBack}>← Back to Projects</BackButton>
+        <BackButton onClick={handleBack}>Back to Projects</BackButton>
       </BackButtonWrapper>
-      
+
       <MainContent>
         <ContentGrid>
           <TextColumn>
@@ -127,12 +126,12 @@ const ProjectDetail = () => {
             <ImagesGrid>
               {allImages.map((image, index) => (
                 <ImageContainer key={index}>
-                  <ProjectImage 
+                  <ProjectImage
                     src={urlFor(image)
                       .auto('format')
                       .fit('max')
                       .quality(90)
-                      .url()} 
+                      .url()}
                     alt={`${project.title} - Image ${index + 1}`}
                     loading="lazy"
                   />
@@ -149,24 +148,26 @@ const ProjectDetail = () => {
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 2.6rem 0 3.5rem;
 `;
 
 const BackButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 1.1rem;
+  background: ${({ theme }) => theme.surface};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: ${({ theme }) => theme.text.primary};
   cursor: pointer;
-  padding: 0.5rem 0;
-  margin-bottom: 2rem;
-  transition: color 0.2s ease;
-  display: flex;
+  padding: 0.62rem 1rem;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
 
   &:hover {
-    color: ${({ theme }) => theme.text.secondary};
+    color: ${({ theme }) => theme.button.text};
+    background: ${({ theme }) => theme.button.background};
+    transform: translateY(-1px);
   }
 
   &:disabled {
@@ -177,17 +178,19 @@ const BackButton = styled.button`
 
 const MainContent = styled.div`
   background: ${({ theme }) => theme.surface};
-  border-radius: 12px;
+  border-radius: 20px;
+  border: 1px solid ${({ theme }) => theme.border};
   overflow: hidden;
-  padding: 2rem;
+  padding: 1.55rem;
   transition: background-color 0.3s ease;
+  box-shadow: 0 16px 38px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
 `;
 
 const ContentGrid = styled.div`
   display: grid;
   grid-template-columns: minmax(300px, 40%) 1fr;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 1.5rem;
+  margin-bottom: 2.3rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -203,14 +206,15 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
   margin: 0 0 1rem 0;
   color: ${({ theme }) => theme.text.primary};
+  line-height: 1.06;
 `;
 
 const Description = styled.div`
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.65;
   color: ${({ theme }) => theme.text.secondary};
   white-space: pre-wrap;
   margin-bottom: 2rem;
@@ -221,9 +225,9 @@ const ArsenalSection = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   color: ${({ theme }) => theme.text.primary};
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 1.1rem 0;
 `;
 
 const ToolsList = styled.div`
@@ -233,33 +237,34 @@ const ToolsList = styled.div`
 `;
 
 const ToolItem = styled.span`
-  background: ${({ theme }) => theme.card.background};
-  padding: 0.4rem 1rem;
+  background: ${({ theme }) => theme.accentSoft || `${theme.accent}20`};
+  padding: 0.35rem 0.85rem;
   border-radius: 20px;
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.text.secondary};
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-size: 0.82rem;
+  color: ${({ theme }) => theme.accent};
+  font-weight: 700;
+  transition: filter 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.card.hover};
-    transform: translateY(-1px);
+    filter: brightness(1.05);
   }
 `;
 
 const VideosSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.15rem;
 `;
 
 const VideoContainer = styled.div``;
 
 const VideoWrapper = styled.div`
   position: relative;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio */
-  border-radius: 8px;
+  padding-top: 56.25%;
+  border-radius: 14px;
+  border: 1px solid ${({ theme }) => theme.border};
   overflow: hidden;
+  box-shadow: 0 12px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
 
   iframe {
     position: absolute;
@@ -279,7 +284,7 @@ const ImagesSection = styled.div`
 const ImagesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  gap: 1rem;
 `;
 
 const ImageContainer = styled.div`
@@ -293,11 +298,14 @@ const ProjectImage = styled.img`
   max-width: 100%;
   height: auto;
   object-fit: contain;
-  border-radius: 8px;
-  transition: transform 0.2s ease;
+  border-radius: 14px;
+  border: 1px solid ${({ theme }) => theme.border};
+  box-shadow: 0 12px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 38px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
   }
 `;
 
@@ -308,18 +316,23 @@ const TagContainer = styled.div`
 `;
 
 const Tag = styled.span`
-  background: ${({ theme }) => theme.card.background};
-  padding: 0.4rem 1rem;
+  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
+  padding: 0.35rem 0.85rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
   color: ${({ theme }) => theme.text.secondary};
+  border: 1px solid ${({ theme }) => theme.border};
 `;
 
 const ErrorText = styled.div`
   text-align: center;
   padding: 2rem;
-  font-size: 1.2rem;
-  color: #e74c3c;
+  font-size: 1.1rem;
+  color: #d44841;
+  border: 1px solid rgba(212, 72, 65, 0.45);
+  border-radius: 14px;
+  background: rgba(212, 72, 65, 0.1);
 `;
 
 export default ProjectDetail;

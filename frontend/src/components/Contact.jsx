@@ -70,8 +70,13 @@ const Contact = () => {
   return (
     <Container>
       <Header>
-        <Title>Let's Connect</Title>
-        <Subtitle>Have a project in mind? I'd love to hear about it.</Subtitle>
+        <Kicker>Contact</Kicker>
+        <Title>Let&apos;s Connect</Title>
+        <Subtitle>Have a project in mind? I&apos;d love to hear about it.</Subtitle>
+        <MetaRow>
+          <MetaChip>Usually replies within 2 business days</MetaChip>
+          <MetaChip>Open to remote collaborations</MetaChip>
+        </MetaRow>
       </Header>
 
       <ContentWrapper>
@@ -176,53 +181,102 @@ const Contact = () => {
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 4rem 0;
+  padding: 2.9rem 0 4rem;
 `;
 
 const Header = styled.div`
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 22px;
+  padding: 1.65rem 1.1rem;
+  background: ${({ theme }) => theme.surface};
+  box-shadow: 0 16px 38px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto -10% -70% auto;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.accentSoft || `${theme.accent}1f`};
+    pointer-events: none;
+  }
+`;
+
+const Kicker = styled.p`
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: ${({ theme }) => theme.accent};
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
   color: ${({ theme }) => theme.text.primary};
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   transition: color 0.3s ease;
+  line-height: 1.04;
 `;
 
 const Subtitle = styled.p`
-  font-size: 1.2rem;
+  font-size: 1.06rem;
+  font-weight: 600;
   color: ${({ theme }) => theme.text.secondary};
   max-width: 600px;
   margin: 0 auto;
   transition: color 0.3s ease;
 `;
 
+const MetaRow = styled.div`
+  margin-top: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+`;
+
+const MetaChip = styled.span`
+  display: inline-flex;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: 0.78rem;
+  font-weight: 700;
+`;
+
 const ContentWrapper = styled.div`
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 4rem;
+  grid-template-columns: 1.3fr 0.85fr;
+  gap: 1.3rem;
   align-items: start;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 1rem;
   }
 `;
 
 const FormSection = styled.div`
-  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
-  border-radius: 12px;
-  padding: 2rem;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 6px ${({ theme }) => theme.card.hover};
+  background: linear-gradient(160deg, ${({ theme }) => theme.surface} 0%, ${({ theme }) => theme.surfaceAlt || theme.surface} 100%);
+  border-radius: 20px;
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 1.45rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 16px 36px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 `;
 
 const InputGroup = styled.div`
@@ -232,24 +286,27 @@ const InputGroup = styled.div`
 `;
 
 const Label = styled.label`
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.text.primary};
   transition: color 0.3s ease;
 `;
 
 const Input = styled.input`
-  padding: 0.8rem;
+  padding: 0.84rem;
   border: 1px solid ${({ theme }) => theme.input.border};
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   background: ${({ theme }) => theme.input.background};
   color: ${({ theme }) => theme.text.primary};
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.accent};
+    box-shadow: 0 0 0 4px ${({ theme }) => theme.accentSoft || `${theme.accent}22`};
   }
 
   &:disabled {
@@ -259,19 +316,20 @@ const Input = styled.input`
 `;
 
 const TextArea = styled.textarea`
-  padding: 0.8rem;
+  padding: 0.84rem;
   border: 1px solid ${({ theme }) => theme.input.border};
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   resize: vertical;
   min-height: 120px;
   background: ${({ theme }) => theme.input.background};
   color: ${({ theme }) => theme.text.primary};
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.accent};
+    box-shadow: 0 0 0 4px ${({ theme }) => theme.accentSoft || `${theme.accent}22`};
   }
 
   &:disabled {
@@ -283,17 +341,19 @@ const TextArea = styled.textarea`
 const SubmitButton = styled.button`
   background: ${({ theme }) => theme.button.background};
   color: ${({ theme }) => theme.button.text};
-  padding: 1rem;
+  padding: 0.95rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
 
   &:hover:not(:disabled) {
     background: ${({ theme }) => theme.button.hover};
     transform: translateY(-2px);
+    box-shadow: 0 14px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.24)'};
   }
 
   &:disabled {
@@ -305,28 +365,35 @@ const SubmitButton = styled.button`
 const ContactInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
+  position: sticky;
+  top: 7.2rem;
+
+  @media (max-width: 1024px) {
+    position: static;
+  }
 `;
 
 const InfoCard = styled.div`
   background: ${({ theme }) => theme.surfaceAlt || theme.surface};
-  border-radius: 12px;
-  padding: 2rem;
+  border-radius: 20px;
+  padding: 1.4rem;
+  border: 1px solid ${({ theme }) => theme.border};
   transition: background-color 0.3s ease;
-  box-shadow: 0 4px 6px ${({ theme }) => theme.card.hover};
+  box-shadow: 0 14px 32px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
 `;
 
 const CardTitle = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: ${({ theme }) => theme.text.primary};
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   transition: color 0.3s ease;
 `;
 
 const ContactText = styled.p`
   color: ${({ theme }) => theme.text.secondary};
   line-height: 1.6;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
   transition: color 0.3s ease;
 `;
 
@@ -339,32 +406,44 @@ const SocialLinks = styled.div`
 const SocialLink = styled.a`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.7rem;
   color: ${({ theme }) => theme.text.primary};
   text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.2s ease;
+  font-size: 0.98rem;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  padding: 0.7rem 0.75rem;
+  background: ${({ theme }) => theme.surface};
 
   svg {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: ${({ theme }) => theme.accent};
   }
 
   &:hover {
-    color: ${({ theme }) => theme.accent};
+    color: ${({ theme }) => theme.button.text};
+    background: ${({ theme }) => theme.button.background};
+    border-color: ${({ theme }) => theme.accent};
+
+    svg {
+      color: ${({ theme }) => theme.button.text};
+    }
   }
 `;
 
 const ErrorMessage = styled.div`
-  color: #e74c3c;
+  color: #d44841;
   font-size: 0.9rem;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
+  font-weight: 700;
 `;
 
 const SuccessMessage = styled.div`
-  color: #2ecc71;
+  color: #0f8f60;
   font-size: 0.9rem;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
+  font-weight: 700;
 `;
 
 export default Contact; 

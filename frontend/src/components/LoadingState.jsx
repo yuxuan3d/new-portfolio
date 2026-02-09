@@ -18,14 +18,15 @@ const fadeInOut = keyframes`
 
 export default function LoadingState({
   label = 'Loading',
-  minHeight = '60vh',
-  margin = '2rem 0',
+  minHeight = '34vh',
+  margin = '1.25rem 0',
 }) {
   return (
     <LoadingContainer role="status" aria-live="polite" $minHeight={minHeight} $margin={margin}>
       <LoadingContent>
         <LoadingSpinner />
         <LoadingText>{label}</LoadingText>
+        <LoadingSubtext>Fetching latest content</LoadingSubtext>
         <LoadingDots>
           <Dot />
           <Dot />
@@ -41,8 +42,11 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme }) => theme.surface};
-  border-radius: 12px;
+  background:
+    linear-gradient(160deg, ${({ theme }) => theme.surface} 0%, ${({ theme }) => theme.surfaceAlt || theme.surface} 100%);
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.border};
+  box-shadow: 0 12px 28px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.12)'};
   margin: ${({ $margin }) => $margin};
   transition: background-color 0.3s ease;
 `;
@@ -51,23 +55,32 @@ const LoadingContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.65rem;
+  text-align: center;
 `;
 
 const LoadingSpinner = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border: 3px solid ${({ theme }) => theme.spinner.border};
   border-top: 3px solid ${({ theme }) => theme.spinner.accent};
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
+  margin-bottom: 0.45rem;
 `;
 
 const LoadingText = styled.div`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: ${({ theme }) => theme.text.primary};
-  font-weight: 500;
+  font-weight: 700;
   animation: ${fadeInOut} 2s ease-in-out infinite;
+`;
+
+const LoadingSubtext = styled.div`
+  font-size: 0.85rem;
+  color: ${({ theme }) => theme.text.secondary};
+  font-weight: 600;
+  margin-bottom: 0.35rem;
 `;
 
 const LoadingDots = styled.div`
@@ -90,4 +103,3 @@ const Dot = styled.div`
     animation-delay: 0.4s;
   }
 `;
-

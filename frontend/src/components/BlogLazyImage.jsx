@@ -13,7 +13,7 @@ const StyledImage = styled.img`
   height: 100%;
   object-fit: contain;
   transition: opacity 0.3s ease;
-  opacity: ${({ isLoaded }) => (isLoaded ? 1 : 0)};
+  opacity: ${({ $isLoaded }) => ($isLoaded ? 1 : 0)};
 `;
 
 const BlogLazyImage = ({ src, alt, style, className }) => {
@@ -33,7 +33,7 @@ const BlogLazyImage = ({ src, alt, style, className }) => {
         src={src}
         alt={alt}
         style={style}
-        isLoaded={isLoaded}
+        $isLoaded={isLoaded}
         onLoad={() => setIsLoaded(true)}
       />
     </ImageWrapper>
