@@ -78,8 +78,8 @@ const FooterWrapper = styled.footer`
   width: 100%;
   background: linear-gradient(
     180deg,
-    ${({ theme }) => theme.surfaceAlt || theme.surface} 0%,
-    ${({ theme }) => theme.surfaceStrong || theme.surface} 100%
+    ${({ theme }) => theme.chromeAlt || theme.surfaceAlt || theme.surface} 0%,
+    ${({ theme }) => theme.chromeStrong || theme.surfaceStrong || theme.surface} 100%
   );
   border-top: 1px solid ${({ theme }) => theme.border};
   padding: 2.5rem 6vw 1.6rem;
@@ -121,7 +121,7 @@ const BrandPanel = styled.div`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 18px;
   padding: 1.15rem 1.1rem;
-  background: ${({ theme }) => theme.surfaceStrong || theme.surface};
+  background: ${({ theme }) => theme.chromeStrong || theme.surfaceStrong || theme.surface};
   box-shadow: 0 10px 28px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.16)'};
   display: grid;
   gap: 0.65rem;
@@ -191,7 +191,7 @@ const LinkColumn = styled.section`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 18px;
   padding: 1.1rem;
-  background: ${({ theme }) => theme.surfaceStrong || theme.surface};
+  background: ${({ theme }) => theme.chromeStrong || theme.surfaceStrong || theme.surface};
 `;
 
 const ColumnTitle = styled.h2`

@@ -3,13 +3,14 @@ import { ThemeContext } from './themeContext';
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check if user has a saved preference
+    // Respect saved choice first.
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       return savedTheme === 'dark';
     }
-    // If no saved preference, use system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Default to dark when no preference has been saved yet.
+    return true;
   });
 
   useEffect(() => {

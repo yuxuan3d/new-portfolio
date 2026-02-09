@@ -92,7 +92,9 @@ export default function Home() {
     <Page>
       <Hero>
         <HeroText>
-          <Kicker>{HERO_COPY.kicker}</Kicker>
+          <Kicker>
+            Hi, I&apos;m <KickerHighlight>Yu Xuan</KickerHighlight>
+          </Kicker>
           <HeroSubtitle>{HERO_COPY.subtitle}</HeroSubtitle>
           <AvailabilityPill>{HERO_COPY.availability}</AvailabilityPill>
 
@@ -135,7 +137,6 @@ export default function Home() {
                     ))}
                   </TagRow>
                 )}
-                <SpotlightCta>View Project</SpotlightCta>
               </SpotlightBody>
             </SpotlightLink>
           ) : (
@@ -365,18 +366,20 @@ const Kicker = styled.h1`
   font-weight: 800;
   text-transform: none;
   letter-spacing: -0.032em;
-  color: ${({ theme }) => theme.accent};
+  color: ${({ theme }) => theme.text.primary};
   font-size: clamp(2.8rem, 7.8vw, 5.15rem);
   line-height: 0.93;
   text-wrap: balance;
+`;
 
-  /* Gradient-text technique for the colored greeting. */
+const KickerHighlight = styled.span`
+  color: ${({ theme }) => theme.accent};
+
   @supports ((-webkit-background-clip: text) or (background-clip: text)) {
     background: linear-gradient(
-      92deg,
+      90deg,
       ${({ theme }) => theme.accent} 0%,
-      #53b9f8 52%,
-      #7b9bff 100%
+      ${({ theme }) => theme.accentAlt || theme.accent} 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -400,11 +403,10 @@ const AvailabilityPill = styled.p`
   border-radius: 999px;
   border: 1px solid ${({ theme }) => theme.border};
   background: ${({ theme }) => theme.accentSoft || `${theme.accent}18`};
-  color: ${({ theme }) => theme.accent};
+  color: ${({ theme }) => theme.text.primary};
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
 `;
 
 const CtaRow = styled.div`
@@ -423,13 +425,13 @@ const PrimaryCta = styled.a`
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.01em;
-  background: ${({ theme }) => theme.button.background};
+  background: ${({ theme }) => theme.accent};
   color: ${({ theme }) => theme.button.text};
   box-shadow: 0 10px 24px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.button.hover};
+    background: ${({ theme }) => theme.button.hover || theme.accent};
     transform: translateY(-2px);
     box-shadow: 0 14px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.22)'};
   }
@@ -443,14 +445,15 @@ const SecondaryCta = styled(Link)`
   border-radius: 999px;
   text-decoration: none;
   font-weight: 700;
-  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
+  background: ${({ theme }) => theme.accentAlt || theme.surfaceAlt || theme.surface};
   color: ${({ theme }) => theme.text.primary};
-  border: 1px solid ${({ theme }) => theme.border};
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
+  box-shadow: 0 10px 24px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
     transform: translateY(-1px);
-    border-color: ${({ theme }) => theme.accent};
+    box-shadow: 0 14px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
   }
 `;
 
@@ -461,7 +464,7 @@ const TextCta = styled(Link)`
   border-radius: 10px;
   text-decoration: none;
   font-weight: 700;
-  color: ${({ theme }) => theme.accent};
+  color: ${({ theme }) => theme.text.primary};
 
   &:hover {
     text-decoration: underline;
@@ -511,22 +514,13 @@ const SpotlightLabel = styled.p`
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: ${({ theme }) => theme.accent};
+  color: ${({ theme }) => theme.text.primary};
 `;
 
 const SpotlightTitle = styled.h2`
   margin: 0 0 0.9rem;
   font-size: 1.55rem;
   color: ${({ theme }) => theme.text.primary};
-`;
-
-const SpotlightCta = styled.div`
-  margin-top: 1.1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-weight: 800;
-  color: ${({ theme }) => theme.accent};
 `;
 
 const SpotlightPlaceholder = styled.div`
@@ -654,7 +648,7 @@ const FilterButton = styled.button`
   border: 1px solid ${({ theme, $active }) => ($active ? theme.accent : theme.border)};
   background: ${({ theme, $active }) =>
     $active ? theme.accentSoft || `${theme.accent}28` : theme.surfaceAlt || theme.surface};
-  color: ${({ theme, $active }) => ($active ? theme.accent : theme.text.secondary)};
+  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.secondary)};
   border-radius: 999px;
   padding: 0.45rem 0.85rem;
   font-size: 0.82rem;
@@ -665,7 +659,7 @@ const FilterButton = styled.button`
   &:hover {
     transform: translateY(-1px);
     border-color: ${({ theme }) => theme.accent};
-    color: ${({ theme }) => theme.accent};
+    color: ${({ theme }) => theme.text.primary};
   }
 `;
 
@@ -740,7 +734,7 @@ const Tag = styled.span`
   font-size: 0.8rem;
   font-weight: 700;
   background: ${({ theme }) => theme.accentSoft || `${theme.accent}20`};
-  color: ${({ theme }) => theme.accent};
+  color: ${({ theme }) => theme.text.primary};
 `;
 
 const ProjectsGrid = styled.div`

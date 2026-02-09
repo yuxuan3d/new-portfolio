@@ -236,8 +236,8 @@ const HeaderWrapper = styled.header`
   -webkit-backdrop-filter: blur(14px);
   background: linear-gradient(
     180deg,
-    ${({ theme }) => theme.surface} 0%,
-    ${({ theme }) => theme.surfaceAlt || theme.surface} 100%
+    ${({ theme }) => theme.chrome || theme.surface} 0%,
+    ${({ theme }) => theme.chromeAlt || theme.surfaceAlt || theme.surface} 100%
   );
   transition: background 0.3s ease;
 
@@ -271,7 +271,7 @@ const HeaderInner = styled.div`
   gap: 1.25rem;
   border-radius: 24px;
   padding: 0.45rem 0.55rem 0.45rem 0.6rem;
-  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
+  background: ${({ theme }) => theme.chromeAlt || theme.surfaceAlt || theme.surface};
   border: 1px solid ${({ theme }) => theme.border};
   box-shadow: 0 10px 28px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
 `;
