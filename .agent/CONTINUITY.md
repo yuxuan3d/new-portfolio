@@ -1,288 +1,86 @@
-[PLANS]
-- 2026-02-09T09:36:50Z [USER] Make `All Projects` cards approximately half their current size.
-- 2026-02-09T09:33:21Z [USER] Ensure hero gradient extends cleanly to the bottom of the first screen by eliminating remaining offset/seam artifacts.
-- 2026-02-09T09:28:07Z [USER] Remove the visible seam under the header so the homepage hero gradient reads continuous to the top edge.
-- 2026-02-09T09:23:06Z [USER] Fix hero so gradient reaches the very top of the screen and adjust `Yu Xuan` highlight to non-italic with true Y-to-n gradient flow.
-- 2026-02-09T09:19:49Z [USER] Refine first section so hero text and CTA buttons are centered and scaled to match the provided visual reference.
-- 2026-02-09T09:14:55Z [USER] Remove hero card look, make hero fill exactly one screen on mobile/desktop, and ensure the hero gradient spans the full screen.
-- 2026-02-09T09:09:40Z [USER] Second homepage pass requested: remove the Featured Spotlight and keep refining the homepage visual rhythm.
-- 2026-02-09T09:03:10Z [USER] Restyle only the homepage to feel closer to a provided dark agency reference, keep all existing sections, and apply current dark-mode best practices.
-- 2026-02-09T08:33:41Z [USER] Increase separator spacing, reduce excessive top-section whitespace, and restore card styling for Featured Spotlight.
-- 2026-02-09T08:22:46Z [USER] Remove the header/body divider line, then unify all remaining section separators to the same color and equal vertical spacing.
-- 2026-02-09T08:13:34Z [USER] Remove the circle marker in the middle of the horizontal section divider.
-- 2026-02-09T08:08:52Z [USER] Add a stylish horizontal separator between homepage sections after removing card containers.
-- 2026-02-09T08:03:19Z [USER] Remove card-style containers for the homepage sections so content sits directly on the gradient background.
-- 2026-02-09T07:39:53Z [USER] Change the Yu Xuan heading gradient to a clear left-to-right flow instead of center-weighted styling.
-- 2026-02-09T07:35:20Z [USER] Reapply the hero gradient styling to the Yu Xuan segment within the Hi, I''m Yu Xuan heading.
-- 2026-02-09T07:27:54Z [USER] Make dark mode the default theme on first load.
-- 2026-02-09T07:19:08Z [USER] Darken header and footer surfaces so they read below content-card brightness in dark mode.
-- 2026-02-09T07:08:51Z [USER] Make dark mode background even darker because current blue still feels too bright for dark mode.
-- 2026-02-09T07:04:35Z [USER] Change dark mode from green-leaning to dark blue for a more professional portfolio look.
-- 2026-02-09T06:58:22Z [USER] Improve readability by removing cyan text emphasis, map primary to `View Resume`, secondary to `Contact`, and remove redundant `View Project` text.
-- 2026-02-09T06:51:56Z [USER] Replace prior single-role palette mapping with a new two-palette system: first swatch set for light mode, second swatch set for dark mode.
-- 2026-02-09T06:41:50Z [USER] Correct the palette by assigning each swatch to its stated role (Background/Text/Accent1/Accent2/Button), since prior mapping still felt wrong.
-- 2026-02-09T06:37:25Z [USER] Recolor the website using the provided 5-color palette (#2C2C2C, #E4E4E4, #A8DADC, #FFC1CC, #B39CD0) while preserving intentional frontend-design quality.
-- 2026-02-09T03:28:23Z [USER] Replace the hero heading閳ユ獨 cutesy type feel with a more professional font treatment while preserving visual impact.
-- 2026-02-09T03:25:04Z [USER] Remove the secondary hero line and make "Hi, I'm Yu Xuan" the dominant large headline.
-- 2026-02-09T03:17:56Z [USER] Increase hero kicker prominence and reduce the hero headline size; use gradient-text styling for the colored greeting.
-- 2026-02-09T03:08:34Z [USER] Improve the header brand lockup so the tagline no longer awkwardly sticks out under the site name.
-- 2026-02-09T03:00:48Z [USER] Apply a classier font to the site name and remove uppercase styling for the name.
-- 2026-02-09T02:43:58Z [USER] Remove the All Projects metadata line that reads 'Showing 8 of 8'.
-- 2026-02-09T02:41:14Z [USER] Restore prior footer layout but keep rounded button/chip text vertically centered.
-- 2026-02-09T02:38:45Z [USER] Center the footer brand-card arrangement and resume button alignment.
-- 2026-02-09T02:36:38Z [USER] Remove the hero decorative circle entirely after repositioning did not match desired look.
-- 2026-02-09T02:34:00Z [USER] Move the hero decorative background circle from bottom-left to bottom-right.
-- 2026-02-09T02:32:47Z [USER] Remove hero metrics row (Projects/Featured/Top Tags) from homepage because it is not useful for portfolio storytelling.
-- 2026-02-09T02:29:14Z [USER] Use frontend-design skill to review and further improve the website UI/UX.
-- 2026-02-09T02:29:14Z [TOOL] Apply a cohesive shared-style refinement pass (global typography/atmosphere, header/footer hierarchy, about-page information flow), then verify with lint/build and Playwright.
+﻿[PLANS]
+- 2026-02-10T07:33:04Z [USER] Replace visible-grid stable-fluid behavior with a ripple-shader-first hero that keeps smooth swirls and better frame pacing; validate against `http://localhost:5173/` with Playwright and preserve CTA clickability.
+- 2026-02-10T07:24:54Z [USER] Align Home hero warp with https://blog.olivierlarose.com/demos/ripple-shader: smooth swirls, no visible grid artifacts (any quality), faster decay, effect clipped to hero only; warp background + hero copy but never the CTA buttons; verify via Playwright on `http://localhost:5173/`.
 
 [DECISIONS]
-- 2026-02-09T09:36:50Z [TOOL] Reduce `All Projects` card size by increasing `ProjectsGrid` density from 2->4 columns on desktop and 1->2 on mobile.
-- 2026-02-09T09:33:21Z [TOOL] Replace heuristic hero header offsets with a real measured `--site-header-height` CSS variable to prevent top/bottom seams across breakpoints.
-- 2026-02-09T09:28:07Z [TOOL] Make the sticky header wrapper fade to transparent on the homepage so the hero background can show through without a hard boundary line.
-- 2026-02-09T09:23:06Z [TOOL] Pull hero upward behind the header using a negative top margin plus header-offset top padding, while keeping hero min-height at full viewport.
-- 2026-02-09T09:23:06Z [TOOL] Change `KickerHighlight` to non-italic inherited typography and a strict 2-stop left-to-right gradient with inline-block clipping.
-- 2026-02-09T09:19:49Z [TOOL] Keep full-screen hero structure, but shift to reference-like composition by re-scaling headline/subtitle and normalizing CTA button proportions around a centered vertical stack.
-- 2026-02-09T09:19:49Z [TOOL] Use viewport-minus-header min-height (`calc(100svh/100dvh - clamp(...))`) so content appears visually centered in the first screen with sticky header present.
-- 2026-02-09T09:14:55Z [TOOL] Convert Home hero to a full-bleed viewport section (100svh/100dvh) and remove card chrome (border, radius, shadow, framed background layer).
-- 2026-02-09T09:14:55Z [TOOL] Keep downstream sections constrained while hero alone breaks out to viewport width using negative viewport margins.
-- 2026-02-09T09:09:40Z [TOOL] Remove Spotlight as a distinct hero feature and promote all featured items directly into Featured Work cards.
-- 2026-02-09T09:09:40Z [TOOL] Rebalance Home layout after spotlight removal by tightening hero spacing and restoring a 3-up desktop Featured grid.
-- 2026-02-09T09:03:10Z [TOOL] Keep Home data and section count unchanged; focus this pass on visual language (hero treatment, separators, card rhythm, project-grid presentation).
-- 2026-02-09T09:03:10Z [TOOL] Apply dark-mode compatibility improvements globally (meta color-scheme, CSS color-scheme, first-paint root colors) while limiting major visual redesign to Home.
-- 2026-02-09T09:03:10Z [TOOL] frontend-design skill was requested but is UNCONFIRMED in the active skill list for this session; proceeded with a manual design pass.
-- 2026-02-09T08:33:41Z [TOOL] Increase `SectionSeparator` vertical margins, reduce `Page` top padding and remove extra hero internal spacing, and reintroduce spotlight card chrome (`border`, `background`, `shadow`, rounded corners) while preserving section de-card layout elsewhere.
-- 2026-02-09T08:22:46Z [TOOL] Remove `HeaderWrapper::after` in SiteHeader, and normalize Home `SectionSeparator` to header-divider color (`theme.border`) with symmetric margins while removing extra `Section` top margin.
-- 2026-02-09T08:13:34Z [TOOL] Keep SectionSeparator as a single gradient line and remove the center marker pseudo-element to reduce visual clutter.
-- 2026-02-09T08:08:52Z [TOOL] Introduce a dedicated SectionSeparator component between Hero/Featured and Featured/All sections, using theme-driven gradient styling on transparent layout.
-- 2026-02-09T08:03:19Z [TOOL] Strip card chrome from section wrappers (Hero, Section) and spotlight container while preserving project-card components and core spacing hierarchy.
-- 2026-02-09T07:39:53Z [TOOL] Simplified name highlight gradient to a 2-stop horizontal blend (90deg) from accent to accentAlt for explicit left-to-right directionality.
-- 2026-02-09T07:35:20Z [TOOL] Apply gradient treatment only to the name substring via a dedicated span so the Hi, I''m prefix stays plain for readability.
-- 2026-02-09T07:27:54Z [TOOL] Keep persisted user preference behavior, but change first-run fallback to dark mode when no saved theme exists.
-- 2026-02-09T07:19:08Z [TOOL] Added dedicated chrome tokens for page chrome and mapped header/footer wrappers/panels to those tokens so dark-mode shell surfaces can be tuned independently from content cards.
-- 2026-02-09T07:08:51Z [TOOL] Refined dark mode to a deeper navy base and reduced dark-mode atmospheric glow intensity instead of changing CTA role colors.
-- 2026-02-09T07:04:35Z [TOOL] SUPERSEDED dark-mode green-biased bases (#001815 family) with navy-blue bases while preserving established CTA role mapping and light-mode tokens.
-- 2026-02-09T06:58:22Z [TOOL] For readability, avoid accent-colored text in hero/spotlight metadata; reserve Primary/Secondary mainly for CTA fills and subtle surfaces.
-- 2026-02-09T06:51:56Z [TOOL] SUPERSEDED: prior exact-hex role mapping is replaced by user-specified mode-specific swatches (light and dark each have distinct Text/Background/Primary/Secondary/Accent colors).
-- 2026-02-09T06:51:56Z [TOOL] Keep token semantics stable (`accent`=Primary, `accentAlt`=Secondary, `button.background`=Accent) while swapping each mode閳ユ獨 color values to the new visual reference.
-- 2026-02-09T06:37:25Z [TOOL] Use the supplied swatches as core theme tokens for both light and dark modes; keep component styling untouched where it already consumes theme variables.
-- 2026-02-09T03:28:23Z [TOOL] Override the hero `h1` font family to `Red Hat Display` (sans) instead of Fraunces serif; retain gradient text with cooler blue-cyan stops.
-- 2026-02-09T03:25:04Z [TOOL] Promote the hero kicker to the primary heading and remove the separate hero title node to simplify focus hierarchy.
-- 2026-02-09T03:17:56Z [TOOL] Apply gradient-text via background-clip for the hero kicker; keep a solid accent-color fallback for non-supporting browsers.
-- 2026-02-09T03:08:34Z [TOOL] Move the header tagline to sit inline with the logo pill (desktop only) and remove forced uppercase styling for a more intentional brand lockup.
-- 2026-02-09T03:00:48Z [USER] Brand name should use serif styling and natural lowercase presentation in both header and footer.
-- 2026-02-09T02:43:58Z [USER] Keep the All Projects section subtitle and filter controls, but remove the count summary text row.
-- 2026-02-09T02:41:14Z [USER] Revert footer brand card from centered layout to previous alignment while preserving improved vertical text centering in rounded controls.
-- 2026-02-09T02:38:45Z [USER] Footer brand panel should use centered content alignment for text, chips, and CTA.
-- 2026-02-09T02:36:38Z [USER] Eliminate the hero background circle instead of repositioning it.
-- 2026-02-09T02:34:00Z [USER] Keep the hero ornament but reposition it to the bottom-right for better visual balance.
-- 2026-02-09T02:32:47Z [USER] Keep Home hero focused on positioning + CTA only; remove numeric summary cards.
-- 2026-02-09T01:32:33Z [TOOL] SUPERSEDED: Prior local test URL http://localhost:4173/ is replaced by user-confirmed http://localhost:5173/.
-- 2026-02-09T02:10:04Z [USER] Use Playwright against http://localhost:5173/ as authoritative local runtime.
-- 2026-02-09T02:16:51Z [TOOL] Previous redesign iteration completed and verified.
-- 2026-02-09T02:29:14Z [TOOL] frontend-design skill is available at C:/Users/USER/.codex/skills/frontend-design/SKILL.md and was used for this pass.
-- 2026-02-09T02:29:14Z [TOOL] Keep data-fetch/query logic unchanged; focus this pass on visual hierarchy, typography, navigation clarity, and content scannability.
+- 2026-02-10T08:31:14Z [USER] Hero text colors must remain correct in both dark and light themes after animated theme switching.
+- 2026-02-10T08:31:14Z [CODE] In fluid hero canvas capture, prioritize theme tokens for text fill colors (`theme.text.primary`/`theme.text.secondary`) over `getComputedStyle(...).color` to avoid sampling transitional colors during the 0.3s toggle animation.
+- 2026-02-10T08:27:47Z [USER] Theme toggle should animate light/dark transitions over 0.3 seconds instead of snapping instantly.
+- 2026-02-10T08:27:47Z [CODE] Scope transitions to explicit theme toggles by setting a temporary root data-flag in `toggleTheme`, then applying a 0.3s color/background/border/shadow transition rule only while that flag is present.
+- 2026-02-10T08:24:30Z [USER] Light theme must visibly switch the Home hero backdrop away from the dark palette.
+- 2026-02-10T08:24:30Z [CODE] Keep hero visuals theme-consistent by updating both the WebGL source-canvas background (`HeroStableFluids`) and the CSS fallback gradient (`Home` Hero styled section) for `theme.mode === 'light'`.
+- 2026-02-10T08:12:50Z [USER] Update All Projects tile titles from one-line truncation to a centered two-line clamp treatment.
+- 2026-02-10T08:09:59Z [USER] Normalize All Projects tile-title formatting so long entries (including 鈥淪top Asian Hate - ONE Championship鈥? follow the same title treatment as other cards.
+- 2026-02-10T08:04:37Z [CODE] Refactor `HeroStableFluids` to a single internal ripple configuration (current balanced tuning) and remove deprecated external `quality` API/preset branching to reduce complexity and maintenance overhead.
+- 2026-02-10T07:58:22Z [USER] Superseding 2026-02-10T06:49:42Z quality-control UI decision: remove Home hero fluid quality buttons/state because those runtime options are no longer part of the intended UX.
+- 2026-02-10T07:54:21Z [CODE] Keep analytic ripple-point displacement as the hero baseline (quality + perf); do not reintroduce grid/state-buffer simulation unless a specific visual regression requires it.
+- 2026-02-09T09:03:10Z [USER] Scope: restyle homepage only; do not change other pages.
+- 2026-02-09T09:09:40Z [USER] Remove Featured Spotlight; keep Featured Work + All Projects.
+- 2026-02-09T07:27:54Z [USER] Default theme is dark; preserve persisted user preference.
+- 2026-02-09T09:14:55Z [TOOL] Hero is full-bleed and exactly 1 viewport tall; remove card/chrome framing.
+- 2026-02-09T09:28:07Z [TOOL] On the home route, header wrapper fades to transparent so the hero gradient can extend behind it without a seam.
+- 2026-02-09T09:33:21Z [TOOL] Use measured sticky header height (`--site-header-height`) for hero overlap/padding to prevent top/bottom gradient seams across breakpoints.
+- 2026-02-09T12:49:53Z [TOOL] Warp affects hero background + hero copy only; CTAs remain normal DOM above (unwarped, clickable); effect clipped to the Hero section.
+- 2026-02-10T06:49:42Z [TOOL] Expose 3 runtime quality presets (`performance`, `balanced`, `rich`) via a Home hero control; persist selection in localStorage (`home-fluid-quality`) and pass `quality` into `HeroStableFluids`.
+- 2026-02-10T07:34:59Z [CODE] Keep the current WebGL ripple architecture but switch state buffers to prefer renderable half-float (`RGBA16F`) with automatic fallback to `RGBA8`, instead of forcing a full rewrite first.
+- 2026-02-10T07:44:21Z [CODE] Superseding prior buffer-precision-only approach: replace grid/state-buffer simulation with an analytic ripple-point displacement shader to remove persistent warp lattice artifacts while keeping the Hero text/background texture-capture pipeline and CTA isolation unchanged.
 
 [PROGRESS]
-- 2026-02-09T09:36:50Z [CODE] Updated `frontend/src/pages/Home.jsx` `ProjectsGrid` columns to `repeat(4, ...)` (desktop) and `repeat(2, ...)` under `720px` to halve visual card size.
-- 2026-02-09T09:36:50Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after project-card sizing update (pass).
-- 2026-02-09T09:33:21Z [CODE] Updated `frontend/src/components/SiteHeader.jsx`: measure `HeaderWrapper` height with `ResizeObserver` and set `--site-header-height` on `documentElement`.
-- 2026-02-09T09:33:21Z [CODE] Updated `frontend/src/pages/Home.jsx`: hero now uses `var(--site-header-height, clamp(...))` so the overlap offset always matches the true sticky header height.
-- 2026-02-09T09:33:21Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after header-height variable update (pass).
-- 2026-02-09T09:28:07Z [CODE] Updated `frontend/src/components/SiteHeader.jsx`: header wrapper now uses a home-route-only background fade (`chrome -> transparent`) to eliminate the seam between header chrome and hero gradient.
-- 2026-02-09T09:28:07Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after header fade update (pass).
-- 2026-02-09T09:23:06Z [CODE] Updated `frontend/src/pages/Home.jsx`: Hero now uses `--hero-header-offset`, negative `margin-top`, full `100svh/100dvh` min-height, and adjusted top padding so the background gradient visibly reaches the top of the viewport.
-- 2026-02-09T09:23:06Z [CODE] Updated `frontend/src/pages/Home.jsx`: `KickerHighlight` now uses normal (non-italic) inherited font styling and a 90deg accent-to-accentAlt gradient constrained to the highlighted word span.
-- 2026-02-09T09:23:06Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after top-bleed and highlight-gradient fixes (pass).
-- 2026-02-09T09:19:49Z [CODE] Updated `frontend/src/pages/Home.jsx`: tuned Hero center stack spacing, adjusted radial-gradient focal points, and changed hero height logic to viewport-minus-header behavior for better first-screen centering.
-- 2026-02-09T09:19:49Z [CODE] Updated `frontend/src/pages/Home.jsx`: resized headline/subtitle and rebalanced CTA button dimensions/min-widths to match the reference section scale.
-- 2026-02-09T09:19:49Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after hero centering/scale pass (pass).
-- 2026-02-09T09:14:55Z [CODE] Updated frontend/src/pages/Home.jsx: Page top padding set to 0, and Hero converted to full-bleed plus full-viewport height with layered gradients and no card-style pseudo-element.
-- 2026-02-09T09:14:55Z [CODE] Updated frontend/src/pages/Home.jsx: hero typography/content wrapper tuned for viewport-fit behavior across desktop/mobile while preserving CTA hierarchy.
-- 2026-02-09T09:14:55Z [TOOL] Ran npm run lint and npm run build in frontend after full-screen hero update (pass).
-- 2026-02-09T09:09:40Z [CODE] Updated frontend/src/pages/Home.jsx: removed spotlight JSX/data flow and deleted related styled components (Spotlight*, SkeletonTag*, ErrorText).
-- 2026-02-09T09:09:40Z [CODE] Updated frontend/src/pages/Home.jsx: featuredList now uses all featuredItems; hero padding/gap tuned for single-content hero; Featured grid changed to 3/2/1 responsive columns.
-- 2026-02-09T09:09:40Z [TOOL] Ran npm run lint and npm run build in frontend after spotlight removal pass (pass).
-- 2026-02-09T09:03:10Z [CODE] Updated frontend/src/pages/Home.jsx with a new dark hero atmosphere, centered headline hierarchy, horizontal spotlight composition, refined section separators, and denser 2-column featured/all-project grids while preserving all existing sections and data bindings.
-- 2026-02-09T09:03:10Z [CODE] Updated frontend/index.html, frontend/src/App.jsx, and frontend/src/context/ThemeContext.jsx to improve dark-mode UA behavior (color-scheme) and first-paint theme consistency.
-- 2026-02-09T09:03:10Z [TOOL] Ran npm run lint and npm run build in frontend after the homepage and dark-mode compatibility updates (pass).
-- 2026-02-09T08:33:41Z [CODE] Updated frontend/src/pages/Home.jsx: set Page padding to `2.1rem 0 4.3rem` (mobile `1.55rem 0 3rem`), removed Hero bottom margin and HeroText extra padding, increased SectionSeparator margin to `2.1rem` (mobile `1.5rem`).
-- 2026-02-09T08:33:41Z [CODE] Updated frontend/src/pages/Home.jsx spotlight styles: restored card treatment on SpotlightLink/SpotlightPlaceholder with border/background/shadow/radius and adjusted SpotlightBody padding.
-- 2026-02-09T08:33:41Z [TOOL] Ran npm run lint and npm run build in frontend after spacing/spotlight update (pass).
-- 2026-02-09T08:33:41Z [TOOL] Playwright verification on http://localhost:5173/ confirmed both separators now use identical `33.6px` top/bottom margins and the spotlight renders as a bordered 20px-radius card with shadow.
-- 2026-02-09T08:22:46Z [CODE] Updated frontend/src/components/SiteHeader.jsx to remove the decorative divider pseudo-element under the sticky header.
-- 2026-02-09T08:22:46Z [CODE] Updated frontend/src/pages/Home.jsx: changed SectionSeparator gradient to `theme.border`, set symmetric separator margins (`1.6rem` desktop, `1.2rem` mobile), and removed additional `Section` top margin for consistent spacing around all separators.
-- 2026-02-09T08:22:46Z [TOOL] Ran npm run lint and npm run build in frontend after separator consistency pass (pass).
-- 2026-02-09T08:13:34Z [CODE] Updated frontend/src/pages/Home.jsx: removed the SectionSeparator `&::after` pseudo-element so the divider renders as line-only.
-- 2026-02-09T08:13:34Z [TOOL] Ran npm run lint and npm run build in frontend after divider cleanup (pass).
-- 2026-02-09T08:08:52Z [CODE] Updated frontend/src/pages/Home.jsx to insert SectionSeparator nodes between section blocks and added SectionSeparator styled definition (gradient line + center accent dot).
-- 2026-02-09T08:08:52Z [TOOL] Ran npm run lint and npm run build in frontend after separator update (pass).
-- 2026-02-09T08:08:52Z [TOOL] Playwright verification on http://localhost:5173/ confirms two separator instances render with linear-gradient backgrounds and expected spacing.
-- 2026-02-09T08:03:19Z [CODE] Updated frontend/src/pages/Home.jsx: removed background/border/shadow/backdrop card styling from Hero and Section, flattened SpotlightLink card chrome, and adjusted spotlight spacing (SpotlightMedia, SpotlightBody, SpotlightPlaceholder) for direct-on-background presentation.
-- 2026-02-09T08:03:19Z [TOOL] Ran npm run lint and npm run build in frontend after section de-card pass (pass).
-- 2026-02-09T08:03:19Z [TOOL] Playwright verification on http://localhost:5173/ confirmed Hero, featured/all section wrappers, and spotlight link now render transparent backgrounds with no box-shadow.
-- 2026-02-09T07:39:53Z [CODE] Updated frontend/src/pages/Home.jsx KickerHighlight gradient from angled 3-stop to horizontal 2-stop (linear-gradient(90deg, accent -> accentAlt)).
-- 2026-02-09T07:39:53Z [TOOL] Ran npm run lint and npm run build in frontend after gradient direction update (pass).
-- 2026-02-09T07:39:53Z [TOOL] Playwright confirmed computed style on main h1 span is linear-gradient(90deg, rgb(59, 197, 194) 0%, rgb(46, 99, 183) 100%) with text clipping active. pm run lint and pm run build in rontend after gradient direction update (pass).
-- 2026-02-09T07:35:20Z [CODE] Updated frontend/src/pages/Home.jsx hero heading markup to wrap Yu Xuan in a dedicated span and added KickerHighlight gradient text style using background-clip.
-- 2026-02-09T07:35:20Z [TOOL] Ran npm run lint and npm run build in frontend after hero gradient update (pass).
-- 2026-02-09T07:35:20Z [TOOL] Playwright check on http://localhost:5173/ confirmed span text Yu Xuan has linear-gradient background, text clip, and transparent text fill while the rest of the heading remains normal.
-- 2026-02-09T07:27:54Z [CODE] Updated frontend/src/context/ThemeContext.jsx initializer to default isDarkMode to true when localStorage has no saved theme.
-- 2026-02-09T07:27:54Z [TOOL] Ran npm run lint and npm run build in frontend after default-theme update (pass).
-- 2026-02-09T07:27:54Z [TOOL] Playwright verification with localStorage theme key removed confirmed fresh load starts in dark mode (theme toggle shows Switch to light theme).
-- 2026-02-09T07:19:08Z [CODE] Updated frontend/src/styles/theme.js with chrome/chromeAlt/chromeStrong tokens; dark chromeStrong set to #0A1932 after contrast verification.
-- 2026-02-09T07:19:08Z [CODE] Updated frontend/src/components/SiteHeader.jsx backgrounds (HeaderWrapper, HeaderInner) to use chrome tokens.
-- 2026-02-09T07:19:08Z [CODE] Updated frontend/src/components/SiteFooter.jsx backgrounds (FooterWrapper, BrandPanel, LinkColumn) to use chrome tokens.
-- 2026-02-09T07:19:08Z [TOOL] Ran npm run lint and npm run build in frontend after header/footer darkening pass (pass).
-- 2026-02-09T07:19:08Z [TOOL] Playwright dark-mode check at http://localhost:5173/ confirmed header/footer luminance is below project-card luminance (header 0.007476, footer panel 0.009901, cards 0.011657/0.012424).
-- 2026-02-09T07:08:51Z [CODE] Updated `frontend/src/styles/theme.js` dark tokens again: base moved to `#060C1A`, background glows lowered (`backgroundAccentA/B`), and dark surfaces/cards/inputs deepened to reduce overall scene brightness.
-- 2026-02-09T07:08:51Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after darkening pass (pass).
-- 2026-02-09T07:08:51Z [TOOL] Playwright validation on `http://localhost:5173/` in dark mode confirmed `--bg-base: #060C1A`, with reduced background glow opacities (`--bg-accent-a: 0.14`, `--bg-accent-b: 0.22`).
-- 2026-02-09T07:04:35Z [CODE] Updated frontend/src/styles/theme.js dark theme tokens (background, surfaces, text, border/shadow, card, input, spinner/focus, and accentAlt) to blue-leaning values.
-- 2026-02-09T07:04:35Z [TOOL] Ran npm run lint and npm run build in frontend after dark-theme recolor (pass).
-- 2026-02-09T07:04:35Z [TOOL] Playwright validation on http://localhost:5173/ confirmed dark mode resolves --bg-base to #0B1730 and heading text to a light blue-gray; light-mode tokens remain #DDE4E4/#001B1A after toggle.
-- 2026-02-09T07:00:51Z [TOOL] Revalidated `http://localhost:5173/` in Playwright across both theme states: hero/main text uses text token, `View Resume` uses primary fill, `Contact` uses secondary fill, and `View Project` text is absent; reran `npm run lint` + `npm run build` in `frontend` (pass).
-- 2026-02-09T06:58:22Z [TOOL] Playwright verified hero CTA mapping in both modes: `View Resume` uses primary fill (`#3CC5C2/#3BC5C2`), `Contact` uses secondary fill (`#7BAAD6/#22558B`), and `View Project` no longer renders.
-- 2026-02-09T06:58:22Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after readability pass (pass).
-- 2026-02-09T06:58:22Z [CODE] Updated `frontend/src/pages/Home.jsx` to replace accent text with main text in hero/spotlight/filter/tags, map CTA fills to `accent` and `accentAlt`, and remove `SpotlightCta` render/style.
-- 2026-02-09T06:58:22Z [CODE] Updated `frontend/src/styles/theme.js` button tokens so global primary CTA fill follows primary color.
-- 2026-02-09T06:51:56Z [TOOL] Playwright verified new two-mode mapping: dark mode `#001815` background, `#CFE0E2` text, `#3BC5C2` primary, `#22558B` secondary, `#2E63B7` CTA; light mode `#DDE4E4` background, `#001B1A` text, `#3CC5C2` primary, `#7BAAD6` secondary, `#628FD6` CTA.
-- 2026-02-09T06:51:56Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after mode-specific palette remap (pass).
-- 2026-02-09T06:51:56Z [CODE] Updated `frontend/src/styles/theme.js` with new light/dark swatch assignments and updated `frontend/src/pages/Home.jsx` heading gradient to use theme CTA color as the third stop.
-- 2026-02-09T06:42:45Z [TOOL] Playwright confirmed CTA role color: `View Resume` computed background is `rgb(179, 156, 208)` (`#B39CD0`) with dark text for contrast.
-- 2026-02-09T06:41:50Z [TOOL] Playwright verification after role-corrective pass: both theme states report `--bg-base: #2C2C2C`, `--text-primary: #E4E4E4`, `--accent: #A8DADC`; hero gradient renders `#A8DADC -> #FFC1CC -> #B39CD0`; lint/build pass.
-- 2026-02-09T06:41:50Z [CODE] Reworked `frontend/src/styles/theme.js` token assignments to follow role text exactly and updated `frontend/src/pages/Home.jsx` kicker gradient to include accent-alt pink midpoint.
-- 2026-02-09T06:37:25Z [TOOL] Verified palette mapping via Playwright CSS variables (dark: `#2C2C2C/#FFC1CC`; light after toggle: `#E4E4E4/#B39CD0`) and ran `npm run lint` + `npm run build` in `frontend` (pass).
-- 2026-02-09T06:37:25Z [CODE] Updated `frontend/src/styles/theme.js` with full token remap to the provided swatches and updated `frontend/src/pages/Home.jsx` hero gradient stops to `#A8DADC` and `#B39CD0`.
-- 2026-02-09T03:28:23Z [TOOL] Playwright confirmed hero `h1` now computes as `Red Hat Display`, weight 800, with updated blue-cyan gradient; `npm run lint` and `npm run build` both pass.
-- 2026-02-09T03:28:23Z [CODE] Updated `frontend/src/pages/Home.jsx` `Kicker`: added explicit sans-serif family and tuned letter-spacing/line-height + gradient stops for a more professional tone.
-- 2026-02-09T03:25:52Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after single-line hero heading change (pass).
-- 2026-02-09T03:25:52Z [TOOL] Playwright check confirms `h1` text is `Hi, I'm Yu Xuan` (~82px at 1280px viewport) and legacy headline text no longer renders.
-- 2026-02-09T03:25:04Z [CODE] Updated `frontend/src/pages/Home.jsx`: removed `HERO_COPY.title` and `<HeroTitle>` render; converted `Kicker` to large `h1` with tighter display spacing.
-- 2026-02-09T03:19:34Z [TOOL] Playwright verified hero typography swap: kicker renders larger with gradient background-clip text; H1 renders smaller than previous clamp.
-- 2026-02-09T03:20:45Z [TOOL] Playwright verified dark theme: hero kicker gradient starts from dark-mode accent color after toggling theme.
-- 2026-02-09T03:20:01Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after hero typography update (pass).
-- 2026-02-09T03:17:56Z [CODE] Updated `frontend/src/pages/Home.jsx` hero typography: increased kicker size and removed uppercase/overline spacing; reduced H1 clamp range; added gradient-text technique to kicker.
-- 2026-02-09T03:11:39Z [TOOL] Ran `npm run lint` and `npm run build` in `frontend` after header brand lockup update (pass).
-- 2026-02-09T03:10:46Z [TOOL] Verified in Playwright (1200px viewport) that the header tagline now sits inline to the right of the logo pill (no stacked layout).
-- 2026-02-09T03:08:34Z [CODE] Updated `frontend/src/components/SiteHeader.jsx` BrandCluster/BrandTag styles: switched to inline flex lockup with separator dot, sentence-case tagline, and softened spacing/opacity.
-- 2026-02-09T03:02:16Z [TOOL] Used Playwright on `http://localhost:5173/`; snapshot confirms header link text and footer brand text both render as `yxperiments`.
-- 2026-02-09T03:01:33Z [TOOL] Re-verified `frontend/src/components/SiteHeader.jsx` and `frontend/src/components/SiteFooter.jsx` contain serif `Fraunces` brand styling with `text-transform: none`; no further code edits required for current request.
-- 2026-02-09T03:00:48Z [TOOL] Ran npm run build in frontend after brand typography update (pass).
-- 2026-02-09T03:00:48Z [TOOL] Ran npm run lint in frontend after brand typography update (pass).
-- 2026-02-09T03:00:48Z [CODE] Updated frontend/src/components/SiteFooter.jsx BrandName style to Fraunces with text-transform none and refined sizing/letter spacing.
-- 2026-02-09T03:00:48Z [CODE] Updated frontend/src/components/SiteHeader.jsx Logo style to Fraunces with text-transform none and refined sizing/letter spacing.
-- 2026-02-09T02:43:58Z [TOOL] Rechecked homepage in Playwright; 'Showing 8 of 8' is no longer present.
-- 2026-02-09T02:43:58Z [TOOL] Ran npm run build in frontend after removing All Projects count summary (pass).
-- 2026-02-09T02:43:58Z [TOOL] Ran npm run lint in frontend after removing All Projects count summary (pass).
-- 2026-02-09T02:43:58Z [CODE] Removed SectionMeta render block and deleted unused SectionMeta styled component from frontend/src/pages/Home.jsx.
-- 2026-02-09T02:41:14Z [TOOL] Reloaded homepage in Playwright on http://localhost:5173/ after footer changes.
-- 2026-02-09T02:41:14Z [TOOL] Ran npm run build in frontend after footer layout revert + button text centering (pass).
-- 2026-02-09T02:41:14Z [TOOL] Ran npm run lint in frontend after footer layout revert + button text centering (pass).
-- 2026-02-09T02:41:14Z [CODE] Updated frontend/src/components/SiteFooter.jsx: removed centered panel alignment; added align-items/justify-content/line-height adjustments to MetaChip and ResumeLink for vertical text centering.
-- 2026-02-09T02:38:45Z [TOOL] Reloaded homepage in Playwright on http://localhost:5173/ after footer alignment update.
-- 2026-02-09T02:38:45Z [TOOL] Ran npm run build in frontend after footer alignment update (pass).
-- 2026-02-09T02:38:45Z [TOOL] Ran npm run lint in frontend after footer alignment update (pass).
-- 2026-02-09T02:38:45Z [CODE] Updated frontend/src/components/SiteFooter.jsx: set BrandPanel justify-items/text-align to center, centered BrandText, and centered MetaRow chips.
-- 2026-02-09T02:36:38Z [TOOL] Ran npm run build in frontend after removing hero ornament (pass).
-- 2026-02-09T02:36:38Z [TOOL] Ran npm run lint in frontend after removing hero ornament (pass).
-- 2026-02-09T02:36:38Z [CODE] Removed Hero decorative &::before pseudo-element from frontend/src/pages/Home.jsx.
-- 2026-02-09T02:34:00Z [TOOL] Reopened homepage with Playwright on http://localhost:5173/ to confirm runtime stability after the style change.
-- 2026-02-09T02:34:00Z [TOOL] Ran npm run build in frontend after hero ornament reposition (pass).
-- 2026-02-09T02:34:00Z [TOOL] Ran npm run lint in frontend after hero ornament reposition (pass).
-- 2026-02-09T02:34:00Z [CODE] Updated `frontend/src/pages/Home.jsx` hero `&::before` inset from `auto auto -120px -130px` to `auto -130px -120px auto` to move the decorative circle to bottom-right.
-- 2026-02-09T02:32:47Z [CODE] Removed Home hero metrics JSX and related styled components/constant from frontend/src/pages/Home.jsx.
-- 2026-02-09T02:32:47Z [TOOL] Ran npm run lint in frontend after metrics removal (pass).
-- 2026-02-09T02:32:47Z [TOOL] Ran npm run build in frontend after metrics removal (pass).
-- 2026-02-09T02:32:47Z [TOOL] Rechecked homepage in Playwright; hero now transitions from availability pill directly to CTA buttons with no numeric metrics row.
-- 2026-02-09T02:16:51Z [MILESTONE] Completed first UI refresh pass (Home/Contact/R&D loading + hierarchy) with lint/build and Playwright checks.
-- 2026-02-09T02:29:14Z [TOOL] Re-audited /, /about, /contact, /rnd with Playwright and identified opportunities for stronger shared visual identity.
-- 2026-02-09T02:29:14Z [CODE] Updated frontend/src/App.jsx with new global typography stack, atmospheric background layering, consistent focus styling, and page-enter motion.
-- 2026-02-09T02:29:14Z [CODE] Updated frontend/index.html to load Fraunces + Red Hat Display fonts via <link> instead of CSS @import.
-- 2026-02-09T02:29:14Z [CODE] Updated frontend/src/components/SiteHeader.jsx with brand cluster/tagline, refined desktop nav affordances, and tighter control spacing.
-- 2026-02-09T02:29:14Z [CODE] Updated frontend/src/components/SiteFooter.jsx with meta chips and enhanced visual depth/structure.
-- 2026-02-09T02:29:14Z [CODE] Updated frontend/src/components/About.jsx with a 3-step workflow strip to improve narrative flow before detailed skill cards.
-- 2026-02-09T02:29:14Z [TOOL] Revalidated desktop and mobile routes with Playwright, including mobile menu behavior.
-- 2026-02-09T02:29:14Z [TOOL] Ran npm run lint in frontend (pass).
-- 2026-02-09T02:29:14Z [TOOL] Ran npm run build in frontend (pass).
+- 2026-02-10T08:31:14Z [CODE] Updated `frontend/src/components/HeroStableFluids.jsx` text color selection for kicker/subtitle canvas rendering to use stable theme values first, fixing post-transition color mismatch.
+- 2026-02-10T08:31:14Z [TOOL] Verification passed in `frontend`: `npm run lint` and `npm run build`.
+- 2026-02-10T08:27:47Z [CODE] Updated `frontend/src/context/ThemeContext.jsx` to set `document.documentElement.dataset.themeTransition='true'` before theme state flips, clear it after 300ms, and clean up pending timeouts on unmount.
+- 2026-02-10T08:27:47Z [CODE] Updated `frontend/src/App.jsx` global styles with a `:root[data-theme-transition='true']` transition block (0.3s) and aligned body color/background transition duration to 0.3s.
+- 2026-02-10T08:27:47Z [TOOL] Verification passed in `frontend`: `npm run lint` and `npm run build`.
+- 2026-02-10T08:24:30Z [CODE] Updated `frontend/src/components/HeroStableFluids.jsx` `drawHeroBackground` to branch on `theme.mode` and render a dedicated light gradient + radial accent set while preserving the existing dark palette for dark mode.
+- 2026-02-10T08:24:30Z [CODE] Updated `frontend/src/pages/Home.jsx` Hero fallback `background` style to use a light-mode gradient when `theme.mode === 'light'`, matching the fluid canvas look when the shader path is unavailable.
+- 2026-02-10T08:24:30Z [TOOL] Verification passed in `frontend`: `npm run lint` and `npm run build`.
+- 2026-02-10T08:12:50Z [CODE] Updated frontend/src/pages/Home.jsx TileTitle to centered two-line clamp (text-align:center, display:-webkit-box, -webkit-line-clamp:2, -webkit-box-orient:vertical, white-space:normal, overflow:hidden, text-overflow:ellipsis) including touch breakpoint.
+- 2026-02-10T08:12:50Z [TOOL] Verified with npm run lint + npm run build in frontend; Playwright computed style on Stop Asian Hate tile reports textAlign=center and lineClamp=2, and screenshot all-projects-two-line-centered.png was captured.
+- 2026-02-10T08:09:59Z [CODE] Updated `frontend/src/pages/Home.jsx` `TileTitle` styling to enforce uniform one-line formatting (`width: 100%`, `line-height: 1.2`, `white-space: nowrap`, `overflow: hidden`, `text-overflow: ellipsis`) across All Projects cards.
+- 2026-02-10T08:09:59Z [TOOL] Verified title-format fix with `npm run lint` + `npm run build` in `frontend`, then Playwright on `http://localhost:5173/` with section screenshot (`all-projects-title-formatting.png`) showing Stop Asian Hate title now matching the one-line format.
+- 2026-02-10T08:05:39Z [CODE] Further Home cleanup: replaced single-field `HERO_COPY` object with flat `HERO_SUBTITLE` constant to remove unnecessary indirection; revalidated with `npm run lint` and `npm run build` in `frontend`.
+- 2026-02-10T08:04:37Z [CODE] Refactored `frontend/src/components/HeroStableFluids.jsx`: removed quality-preset map and `quality` prop, consolidated pointer/last-frame reset literals into helper factories, removed redundant text helper indirection, and normalized ripple limits to `MAX_RIPPLE_POINTS`.
+- 2026-02-10T08:04:37Z [CODE] Cleaned `frontend/src/pages/Home.jsx` redundancies by removing unused `HERO_COPY.kicker` and unused `AvailabilityPill` styled component.
+- 2026-02-10T08:04:37Z [TOOL] Post-refactor checks passed in `frontend`: `npm run lint`, `npm run build`; Playwright sanity on `http://localhost:5173/` confirms hero canvas active (`heading opacity 0`, `hero background none`) and hero `Contact` CTA still routes `/ -> /contact -> /`.
+- 2026-02-10T07:59:14Z [TOOL] Playwright check on `http://localhost:5173/` confirmed the quality UI is gone (`hasFluidGroup=false`, no `Performance/Balanced/Rich` labels) while hero CTA links remain present.
+- 2026-02-10T07:58:22Z [CODE] Removed quality-control plumbing from `frontend/src/pages/Home.jsx` (storage key/options/constants, `fluidQuality` state/effect, quality buttons block, and related styled components); `HeroStableFluids` now uses its internal default quality path from Home.
+- 2026-02-10T07:58:22Z [TOOL] Post-change verification in `frontend`: `npm run lint` passed and `npm run build` passed.
+- 2026-02-10T07:54:21Z [TOOL] Playwright validation on `http://localhost:5173/`: hero canvas is active (`heading opacity 0`, `hero background none`, canvas dimensions match hero), and screenshots were captured before/after scripted drag (`hero-ripple-before-drag.png`, `hero-ripple-after-drag.png`).
+- 2026-02-10T07:54:21Z [TOOL] Verified runtime invariants in Playwright: quality controls toggle `performance`/`balanced`/`rich` while canvas stays active, and hero `Contact` CTA still navigates to `/contact` and back.
+- 2026-02-10T07:54:21Z [TOOL] Re-ran verification checks in `frontend`: `npm run lint` passed; `npm run build` passed.
+- 2026-02-10T07:44:21Z [TOOL] Began rewrite pass of `frontend/src/components/HeroStableFluids.jsx` simulation path (state FBO loop -> ripple-point uniforms) with goal of matching Olivier Larose ripple behavior more closely and reducing per-frame GPU workload.
+- 2026-02-10T07:34:59Z [CODE] Updated `frontend/src/components/HeroStableFluids.jsx` ripple shaders to use isotropic 8-neighbor sampling + smoother render gradients, and raised sim-resolution budgets per quality preset to reduce visible lattice artifacts.
+- 2026-02-10T07:33:04Z [TOOL] Started focused pass to remove persistent warp-grid artifacts by changing simulation precision/sampling first, then validating motion quality/perf in Playwright before further refactors.
+- 2026-02-09T09:36:50Z [TOOL] [MILESTONE] Homepage dark restyle pushed to `origin/main` (commit `e373a3f`), including denser All Projects grid (smaller cards).
+- 2026-02-09T11:02:55Z [CODE] Added `frontend/src/components/HeroStableFluids.jsx` and mounted it in `frontend/src/pages/Home.jsx` so the warp is clipped to the hero.
+- 2026-02-09T11:09:58Z [CODE] Hero warp loop pauses when offscreen (IntersectionObserver) and respects reduced-motion for accessibility/perf.
+- 2026-02-10T06:35:59Z [TOOL] Resolved severe hero-warp lag: Playwright drag benchmark improved from `avgDt~124ms` (~8fps) to `avgDt~16.7ms` (~60fps) by capping DPR, reducing sim/grid density, and lowering per-frame work.
+- 2026-02-10T07:24:54Z [CODE] `frontend/src/components/HeroStableFluids.jsx` currently uses a WebGL2 ripple/shader-style simulation (chosen to better match the reference demo quality/perf than the earlier CPU/canvas approach).
 
 [DISCOVERIES]
-- 2026-02-09T09:33:21Z [TOOL] Header height varies enough by breakpoint/font rendering that a measured CSS variable is more reliable than clamp-based estimates for full-bleed hero overlap.
-- 2026-02-09T09:23:06Z [TOOL] With an opaque sticky header in normal flow, extending hero background to viewport top requires visual overlap (`margin-top` offset) rather than only height calculations.
-- 2026-02-09T09:19:49Z [TOOL] With a sticky header in normal document flow, pure `100dvh` hero height can make content feel low; subtracting a responsive header offset restores optical centering in the first viewport.
-- 2026-02-09T09:14:55Z [TOOL] To make one section span the whole screen inside a constrained layout, width: 100vw with margin-left/right calc(50% - 50vw) is the lowest-risk full-bleed pattern in this codebase.
-- 2026-02-09T09:09:40Z [TOOL] Once spotlight is removed, using featuredItems.slice(1) silently drops one featured card; mapping Featured Work directly from all featured items preserves expected content density.
-- 2026-02-09T09:03:10Z [TOOL] Pairing meta color-scheme with runtime documentElement colorScheme and aligned root colors gives a cleaner dark-mode first paint than relying on media-query fallback alone.
-- 2026-02-09T09:03:10Z [TOOL] A single-column hero plus split spotlight card can emulate the reference editorial flow without adding or removing homepage sections.
-- 2026-02-09T08:33:41Z [TOOL] Excess top whitespace was driven by stacked vertical spacing (`Page` top padding + Hero bottom margin + HeroText inner padding); reducing all three produced better rhythm with the updated separator spacing.
-- 2026-02-09T08:22:46Z [TOOL] Uneven separator spacing was caused by compounded spacing (`SectionSeparator` margins plus `Section` top margin); flattening section top margin makes separator rhythm consistent.
-- 2026-02-09T08:13:34Z [TOOL] After card removal, a plain gradient divider line reads cleaner than a line-plus-dot treatment and keeps section rhythm without drawing excess focus.
-- 2026-02-09T08:08:52Z [TOOL] A thin gradient line with a small center dot preserves the clean no-card layout while still giving clear section delineation.
-- 2026-02-09T08:03:19Z [TOOL] Removing wrapper-card chrome from sections improves continuity with the global gradient while leaving item-level cards available for project scannability.
-- 2026-02-09T07:39:53Z [TOOL] The previous 3-stop gradient could read center-weighted in dark mode because first and final stops converged; a 2-stop horizontal gradient removes that effect.
-- 2026-02-09T07:35:20Z [TOOL] Splitting the heading into plain text plus styled span gives fine-grained gradient emphasis without reintroducing full-heading readability issues from earlier iterations.
-- 2026-02-09T07:27:54Z [TOOL] Theme default behavior is controlled entirely by ThemeContext fallback branch; changing it does not affect saved user preference restore logic.
-- 2026-02-09T07:19:08Z [TOOL] Footer panels were initially brighter than cards even after first chrome-token pass; lowering dark chromeStrong to #0A1932 established the intended depth ordering.
-- 2026-02-09T07:08:51Z [TOOL] Dark-mode perceived brightness is driven by both base color and radial-glow tokens; reducing `backgroundAccentA/B` materially darkens the scene without sacrificing hue identity.
-- 2026-02-09T07:04:35Z [TOOL] In this app, checking CSS variables (--bg-base, --text-primary) via Playwright is the most reliable way to verify theme-token swaps across persisted toggle states.
-- 2026-02-09T06:58:22Z [TOOL] Global link-name selectors can hit header links first; validating hero CTAs should be scoped under `main` to avoid false negatives.
-- 2026-02-09T06:51:56Z [TOOL] Theme toggle persisted prior mode in localStorage; validation must inspect `aria-label` and capture both states explicitly.
-- 2026-02-09T06:41:50Z [TOOL] Solid CTA color (`#B39CD0`) surfaces as `background-color` (not `background-image`), so verification for button role should inspect color property.
-- 2026-02-09T06:37:25Z [TOOL] LocalStorage kept dark mode active on first load; explicit theme-toggle verification was required to confirm both palette variants.
-- 2026-02-09T03:28:23Z [TOOL] The cutesy feel came from inherited Fraunces serif on `h1`; a local hero override to `Red Hat Display` changes tone without affecting other headings.
-- 2026-02-09T03:25:52Z [TOOL] Converting the kicker to `h1` preserves semantic primary heading while simplifying layout by removing the extra hero title block.
-- 2026-02-09T03:10:46Z [TOOL] Playwright bounding boxes confirm the tagline aligns on the same row as the logo pill, eliminating the prior 閳ユ笩ubtitle sticking out below閳?effect.
-- 2026-02-09T03:02:16Z [TOOL] Live runtime at `http://localhost:5173/` matches source-level typography adjustments for the brand name in both header and footer.
-- 2026-02-09T03:01:33Z [TOOL] Additional uppercase text remains intentional on non-name elements (e.g., taglines); brand name itself is already lowercase by string and CSS transform rules.
-- 2026-02-09T03:00:48Z [TOOL] Header and footer previously appeared all-caps due to CSS text-transform, not string casing; changing style preserved existing brand text content.
-- 2026-02-09T02:43:58Z [TOOL] Count summary removal is isolated to Home section heading and does not affect project filter behavior.
-- 2026-02-09T02:41:14Z [TOOL] Vertical text alignment issue was caused by inherited body line-height; explicit inline-flex centering + line-height on chips/button fixes it without affecting overall footer layout.
-- 2026-02-09T02:38:45Z [TOOL] Centering the footer layout required only local BrandPanel/MetaRow alignment changes; no grid column changes were needed.
-- 2026-02-09T02:36:38Z [TOOL] The requested result is achieved by deleting only Hero::before; no additional spacing or layout adjustments were required.
-- 2026-02-09T02:34:00Z [TOOL] Repositioning only the pseudo-element inset achieved the requested visual move without needing layout or spacing changes.
-- 2026-02-09T02:32:47Z [TOOL] Hero remains visually balanced after removing metrics because availability pill and CTA row preserve spacing hierarchy.
-- 2026-02-09T02:10:04Z [TOOL] Initial homepage and R&D snapshots showed loading placeholders before content arrived, indicating delayed/intermittent content availability.
-- 2026-02-09T02:15:10Z [TOOL] PowerShell Set-Content defaults can introduce UTF-16; UTF-8 encoding must be enforced for patch compatibility.
-- 2026-02-09T02:29:14Z [TOOL] styled-components warns against @import in createGlobalStyle; moving font loading to index.html removes the warning source.
-- 2026-02-09T02:29:14Z [TOOL] A transient HMR runtime error appeared after mid-edit refresh; full browser restart/reload cleared stale module state.
+- 2026-02-10T08:31:14Z [CODE] `HeroStableFluids` canvas text pass was reading `getComputedStyle(...).color` first; during theme-transition mode this can be an in-between animated value, leading to stale/wrong captured text colors until a later redraw.
+- 2026-02-10T08:04:37Z [CODE] Pre-refactor `resizeToContainer` only compared element width/height, so DPR-only changes (e.g., zoom/display scale changes) could skip canvas reconfiguration; fixed by including DPR in the resize guard.
+- 2026-02-10T07:54:21Z [TOOL] In headless Playwright, sampling the hero WebGL canvas via `drawImage(canvas)` returned zeroed pixel data (`brightness 0`, `changedPixels 0`) even while the canvas was visibly active; rely on DOM/click/screenshot checks unless explicit WebGL readback instrumentation is added.
+- 2026-02-09T10:55:33Z [TOOL] `npm install` cannot fetch uncached packages (ENOTCACHED / only-if-cached); avoid new deps or vendor them.
+- 2026-02-09T11:08:02Z [TOOL] `vite build` verification can fail in this sandbox (`esbuild` `spawn EPERM` when `stdio` is piped); `npm run lint` works.
+- 2026-02-09T02:15:10Z [TOOL] PowerShell `Set-Content` can default to UTF-16; prefer UTF-8 for repo text files.
+- 2026-02-09T13:19:00Z [TOOL] No-op warp bug root cause: cleanup nulled sim refs and a later rerun skipped resize/config because dimensions matched; fix is to force re-init when buffers are missing.
+- 2026-02-09T13:32:08Z [TOOL] White-haze artifact was driven by strong dye `screen` compositing + continuous low-motion injection; reduce dye/composite and require explicit click/tap impulse.
 
 [OUTCOMES]
-- 2026-02-09T09:36:50Z [TOOL] `All Projects` cards now render at approximately half previous visual size through denser grid layout; lint/build verification passed.
-- 2026-02-09T09:33:21Z [TOOL] Hero background now overlaps the exact sticky header height, removing the remaining bottom seam while keeping the top blend intact; lint/build verification passed.
-- 2026-02-09T09:28:07Z [TOOL] Header-to-hero transition no longer shows a hard line on the homepage; hero background reads continuous to the top edge; lint/build verification passed.
-- 2026-02-09T09:23:06Z [TOOL] Hero background now reaches the top edge of the viewport, and `Yu Xuan` highlight is non-italic with a clean left-to-right gradient from first to last character; lint/build verification passed.
-- 2026-02-09T09:19:49Z [TOOL] First section now has centered/scaled heading and CTA controls aligned to the provided reference style while keeping the full-bleed dark hero treatment; lint/build verification passed.
-- 2026-02-09T09:14:55Z [TOOL] Hero now renders without card framing, occupies one full viewport on mobile/desktop, and carries a full-screen gradient treatment; lint/build verification passed.
-- 2026-02-09T09:09:40Z [TOOL] Homepage second pass completed: spotlight removed, featured content consolidated, and top-of-page layout remains balanced with successful lint/build verification.
-- 2026-02-09T09:03:10Z [TOOL] Homepage now has a reference-inspired dark presentation (cinematic hero, tighter typography, calmer accents, stronger image-led cards) while retaining all original sections and interactions.
-- 2026-02-09T09:03:10Z [TOOL] Dark-mode handling now follows modern web practices more closely via explicit color-scheme metadata/CSS and synchronized first-paint root colors; lint/build verification passed.
-- 2026-02-09T08:33:41Z [TOOL] Homepage now has looser separator breathing room, a tighter top-section start, and a restored featured-spotlight card while keeping the rest of the section layout on the gradient background.
-- 2026-02-09T08:22:46Z [TOOL] Header/body divider removed, and remaining homepage separators now share one border-based color treatment with matched top/bottom spacing.
-- 2026-02-09T08:13:34Z [TOOL] Section separators now render as clean horizontal gradient lines with no center circle.
-- 2026-02-09T08:08:52Z [TOOL] Homepage now has stylish horizontal separators between major sections without reintroducing card containers.
-- 2026-02-09T08:03:19Z [TOOL] Homepage section containers now sit directly on the gradient background instead of appearing as framed cards.
-- 2026-02-09T07:39:53Z [TOOL] Yu Xuan highlight now sweeps cleanly left-to-right across the name with no center-radial impression.
-- 2026-02-09T07:35:20Z [TOOL] Hero heading now emphasizes Yu Xuan with gradient styling while keeping the rest of the title clean and legible.
-- 2026-02-09T07:27:54Z [TOOL] Default/first-run experience now opens in dark mode while existing users retain their last saved theme selection.
-- 2026-02-09T07:19:08Z [TOOL] Header and footer now sit visually behind content cards in dark mode, giving cleaner depth separation while preserving existing CTA/color hierarchy.
-- 2026-02-09T07:08:51Z [TOOL] Dark mode now lands on a deeper navy background that better matches expected dark-mode tone while preserving readability and CTA hierarchy.
-- 2026-02-09T07:04:35Z [TOOL] Dark mode now presents as navy/blue rather than green while maintaining readability and the previously established CTA color hierarchy.
-- 2026-02-09T07:00:51Z [TOOL] Final verification pass confirms the readability-focused color-role mapping is stable in both modes and the redundant spotlight `View Project` label remains removed.
-- 2026-02-09T06:58:22Z [TOOL] Readability improved: cyan text emphasis removed from key copy, CTA color hierarchy now matches requested primary/secondary mapping, and redundant spotlight CTA text is removed.
-- 2026-02-09T06:51:56Z [TOOL] Palette now follows the new design intent: light mode and dark mode each use their own swatch set while keeping consistent role semantics across the UI.
-- 2026-02-09T06:41:50Z [TOOL] Palette roles now align with the reference text instead of approximate placement; the site consistently uses dark charcoal background, light-gray text, cyan/pink accents, and lavender CTA.
-- 2026-02-09T06:37:25Z [TOOL] Website palette now follows the reference swatches across both light/dark themes, including background atmospherics, accents, controls, and hero gradient text.
-- 2026-02-09T03:28:23Z [TOOL] Hero heading now reads more professional while keeping the large single-line focus and gradient identity.
-- 2026-02-09T03:25:52Z [TOOL] Homepage hero now uses one dominant line (`Hi, I'm Yu Xuan`) with the secondary line removed, matching the requested cleaner visual focus.
-- 2026-02-09T03:10:46Z [TOOL] Header brand lockup improved: tagline no longer sits below and 閳ユ笩ticks out閳?from the site name on desktop.
-- 2026-02-09T03:02:16Z [TOOL] Browser-level check passed: classier lowercase brand name presentation is visible on the running site.
-- 2026-02-09T03:01:33Z [TOOL] Post-change verification complete: classier lowercase website name remains correctly applied in both header and footer.
-- 2026-02-09T03:00:48Z [TOOL] Requested typography update completed: website name now uses a classier serif face and no forced caps.
-- 2026-02-09T02:43:58Z [TOOL] Requested text removal completed: All Projects no longer displays the 'Showing 8 of 8' line.
-- 2026-02-09T02:41:14Z [TOOL] Footer returned to prior layout and rounded button/chip text now aligns vertically as requested.
-- 2026-02-09T02:38:45Z [TOOL] Requested footer UI fix completed: brand-card button and related elements are now centered.
-- 2026-02-09T02:36:38Z [TOOL] Requested visual simplification completed: hero decorative circle removed.
-- 2026-02-09T02:34:00Z [TOOL] Requested change completed: hero background circle now anchors to the bottom-right.
-- 2026-02-09T02:32:47Z [TOOL] Requested simplification applied: Projects/Featured/Top Tags cards no longer render on the homepage hero.
-- 2026-02-09T02:29:14Z [TOOL] Completed second UI/UX refinement pass using frontend-design skill principles with verified improvements to shared visual cohesion, navigation readability, and About-page content flow.
+- 2026-02-10T08:31:14Z [TOOL] Fluid hero text now resolves to correct light/dark colors after theme transition completes.
+- 2026-02-10T08:27:47Z [TOOL] Light/dark theme switches now animate over 0.3s across app UI properties covered by the scoped global transition rule.
+- 2026-02-10T08:24:30Z [TOOL] Home hero background now responds to theme mode: light theme uses a light hero backdrop in both fluid (WebGL) and fallback (CSS-only/reduced-motion) rendering paths.
+- 2026-02-10T08:12:50Z [TOOL] All Projects titles now render centered with a consistent two-line clamp, including Stop Asian Hate.
+- 2026-02-10T08:09:59Z [TOOL] All Projects titles now share consistent typography behavior; long titles truncate with ellipsis instead of wrapping to a different multi-line layout.
+- 2026-02-10T08:05:39Z [TOOL] Home hero copy constants are now simplified (`HERO_SUBTITLE`), and the refactor remains green on lint/build.
+- 2026-02-10T08:04:37Z [TOOL] Hero ripple implementation is now leaner (single-config path, reduced duplication) with build/lint + Playwright sanity verification passing after refactor.
+- 2026-02-10T07:59:14Z [TOOL] Runtime verification confirms Home hero no longer exposes fluid-quality controls in the browser while CTA row behavior remains intact.
+- 2026-02-10T07:58:22Z [TOOL] Home hero no longer renders fluid quality controls; ripple hero remains active with default configuration and passes lint/build checks.
+- 2026-02-10T07:54:21Z [TOOL] Hero ripple path now uses analytic ripple-point displacement and passed current validation set (Playwright interaction checks + screenshot capture + CTA click-through + `npm run lint` + `npm run build`), with no persistent grid/lattice artifact observed in the hero captures.
+- 2026-02-10T06:49:42Z [TOOL] Hero warp supports runtime quality presets with persistence; Playwright validates mode switching + reload restoration; `npm run lint` passes in `frontend` (build verification is environment-dependent).
+- 2026-02-10T07:24:54Z [TOOL] Compacted `.agent/CONTINUITY.md` (removed duplicates and non-ASCII garbling; kept milestones, key decisions, and constraints).
+
+
+
 

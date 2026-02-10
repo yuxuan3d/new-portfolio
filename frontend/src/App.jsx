@@ -42,6 +42,14 @@ const GlobalStyle = createGlobalStyle`
     --focus-ring: ${({ theme }) => theme.focus || `${theme.accent}66`};
   }
 
+  :root[data-theme-transition='true'] *,
+  :root[data-theme-transition='true'] *::before,
+  :root[data-theme-transition='true'] *::after {
+    transition-property: color, background, background-color, border-color, box-shadow, fill, stroke;
+    transition-duration: 0.3s !important;
+    transition-timing-function: ease !important;
+  }
+
   body {
     font-family: 'Red Hat Display', 'Segoe UI', sans-serif;
     line-height: 1.55;
@@ -52,7 +60,7 @@ const GlobalStyle = createGlobalStyle`
       radial-gradient(40rem 28rem at 50% 110%, var(--accent-soft), transparent 76%),
       linear-gradient(180deg, var(--bg-base) 0%, var(--bg-base) 100%);
     background-attachment: fixed;
-    transition: color 0.35s ease, background 0.35s ease;
+    transition: color 0.3s ease, background 0.3s ease;
     position: relative;
     overflow-x: hidden;
   }

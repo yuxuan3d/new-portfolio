@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ThemeContext } from './themeContext';
 
 export const ThemeProvider = ({ children }) => {
+  const transitionTimeoutRef = useRef(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Respect saved choice first.
     const savedTheme = localStorage.getItem('theme');
@@ -28,8 +29,27 @@ export const ThemeProvider = ({ children }) => {
     document.documentElement.style.color = isDarkMode ? '#D8E3F4' : '#001B1A';
   }, [isDarkMode]);
 
+  useEffect(() => () => {
+    if (transitionTimeoutRef.current) {
+      window.clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+  }, []);
+
   const toggleTheme = () => {
-    setIsDarkMode(prev => !prev);
+    const root = document.documentElement;
+    root.dataset.themeTransition = 'true';
+
+    if (transitionTimeoutRef.current) {
+      window.clearTimeout(transitionTimeoutRef.current);
+    }
+
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      delete root.dataset.themeTransition;
+      transitionTimeoutRef.current = null;
+    }, 300);
+
+    setIsDarkMode((prev) => !prev);
   };
 
   return (

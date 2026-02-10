@@ -1,16 +1,14 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
+import HeroStableFluids from '../components/HeroStableFluids';
 import LazyImage from '../components/LazyImage';
 import { EXTERNAL_LINKS } from '../constants/social';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
 
-const HERO_COPY = {
-  kicker: "Hi, I'm Yu Xuan",
-  subtitle:
-    'I design cinematic digital experiences across Houdini/VFX, motion design, and modern web systems with a focus on clarity, craft, and performance.'
-};
+const HERO_SUBTITLE =
+  'I design cinematic digital experiences across Houdini/VFX, motion design, and modern web systems with a focus on clarity, craft, and performance.';
 
 const PROJECTS_QUERY = `*[_type == "portfolioItem"] | order(orderRank) {
   _id,
@@ -47,6 +45,13 @@ function getTopTags(projects, limit = 8) {
 export default function Home() {
   const [items, error, { isValidating }] = useSanityData(PROJECTS_QUERY);
   const [activeTag, setActiveTag] = useState('All');
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+  });
+  const [fluidReady, setFluidReady] = useState(false);
+  const kickerRef = useRef(null);
+  const subtitleRef = useRef(null);
 
   const projects = useMemo(() => (Array.isArray(items) ? items : []), [items]);
   const featuredCandidates = useMemo(
@@ -85,15 +90,45 @@ export default function Home() {
 
   const featuredList = featuredItems;
   const metricsLoading = isValidating && !items;
+  const fluidEnabled = !prefersReducedMotion;
+  const hideHeroCopy = fluidEnabled && fluidReady;
+
+  useEffect(() => {
+    const media = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!media) return undefined;
+
+    const update = () => setPrefersReducedMotion(media.matches);
+    update();
+
+    if (media.addEventListener) {
+      media.addEventListener('change', update);
+      return () => media.removeEventListener('change', update);
+    }
+
+    media.addListener(update);
+    return () => media.removeListener(update);
+  }, []);
 
   return (
     <Page>
-      <Hero>
+      <Hero $fluid={hideHeroCopy}>
+        {fluidEnabled && (
+          <HeroWarp
+            titlePrefix="Hi, I'm "
+            titleHighlight="Yu Xuan"
+            subtitle={HERO_SUBTITLE}
+            kickerRef={kickerRef}
+            subtitleRef={subtitleRef}
+            onReady={setFluidReady}
+          />
+        )}
         <HeroText>
-          <Kicker>
+          <Kicker ref={kickerRef} $hidden={hideHeroCopy}>
             Hi, I&apos;m <KickerHighlight>Yu Xuan</KickerHighlight>
           </Kicker>
-          <HeroSubtitle>{HERO_COPY.subtitle}</HeroSubtitle>
+          <HeroSubtitle ref={subtitleRef} $hidden={hideHeroCopy}>
+            {HERO_SUBTITLE}
+          </HeroSubtitle>
           <CtaRow>
             <PrimaryCta
               href={EXTERNAL_LINKS.RESUME}
@@ -289,36 +324,69 @@ const Hero = styled.section`
   align-items: center;
   margin-bottom: 0;
   position: relative;
+  overflow: hidden;
   min-height: 100svh;
   min-height: 100dvh;
   padding:
     calc(clamp(1rem, 2.4vw, 1.8rem) + var(--hero-header-offset))
     6vw
     clamp(1rem, 2.4vw, 1.8rem);
-  background:
-    radial-gradient(
-      72rem 34rem at 50% 46%,
-      rgba(126, 89, 212, 0.34) 0%,
-      rgba(80, 55, 164, 0.24) 34%,
-      rgba(30, 28, 65, 0.1) 56%,
-      rgba(6, 12, 26, 0) 74%
-    ),
-    radial-gradient(
-      44rem 24rem at 10% 10%,
-      rgba(46, 99, 183, 0.2) 0%,
-      rgba(46, 99, 183, 0) 74%
-    ),
-    radial-gradient(
-      44rem 24rem at 88% 12%,
-      rgba(84, 164, 224, 0.14) 0%,
-      rgba(84, 164, 224, 0) 74%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(13, 14, 35, 0.98) 0%,
-      rgba(9, 11, 30, 0.98) 62%,
-      rgba(3, 8, 19, 1) 100%
-    );
+  background: ${({ $fluid, theme }) => {
+    if ($fluid) return 'none';
+    if (theme.mode === 'light') {
+      return `
+        radial-gradient(
+          72rem 34rem at 50% 46%,
+          rgba(160, 202, 232, 0.38) 0%,
+          rgba(196, 222, 239, 0.28) 34%,
+          rgba(223, 234, 236, 0.14) 56%,
+          rgba(223, 234, 236, 0) 74%
+        ),
+        radial-gradient(
+          44rem 24rem at 10% 10%,
+          rgba(60, 197, 194, 0.16) 0%,
+          rgba(60, 197, 194, 0) 74%
+        ),
+        radial-gradient(
+          44rem 24rem at 88% 12%,
+          rgba(123, 170, 214, 0.2) 0%,
+          rgba(123, 170, 214, 0) 74%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(233, 240, 241, 0.98) 0%,
+          rgba(224, 233, 235, 0.98) 62%,
+          rgba(215, 226, 228, 1) 100%
+        )
+      `;
+    }
+
+    return `
+      radial-gradient(
+        72rem 34rem at 50% 46%,
+        rgba(126, 89, 212, 0.34) 0%,
+        rgba(80, 55, 164, 0.24) 34%,
+        rgba(30, 28, 65, 0.1) 56%,
+        rgba(6, 12, 26, 0) 74%
+      ),
+      radial-gradient(
+        44rem 24rem at 10% 10%,
+        rgba(46, 99, 183, 0.2) 0%,
+        rgba(46, 99, 183, 0) 74%
+      ),
+      radial-gradient(
+        44rem 24rem at 88% 12%,
+        rgba(84, 164, 224, 0.14) 0%,
+        rgba(84, 164, 224, 0) 74%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(13, 14, 35, 0.98) 0%,
+        rgba(9, 11, 30, 0.98) 62%,
+        rgba(3, 8, 19, 1) 100%
+      )
+    `;
+  }};
 
   @media (max-width: 900px) {
     --hero-header-offset: var(--site-header-height, clamp(68px, 14vw, 92px));
@@ -330,14 +398,30 @@ const Hero = styled.section`
   }
 `;
 
+const HeroWarp = styled(HeroStableFluids)`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  touch-action: pan-y;
+
+  @media (max-width: 720px) {
+    touch-action: pan-y;
+  }
+`;
+
 const HeroText = styled.div`
   max-width: min(980px, 100%);
   padding: 0;
   margin: 0 auto;
   text-align: center;
   display: grid;
-  gap: clamp(0.45rem, 1.5vw, 0.8rem);
+  gap: clamp(0.72rem, 1.9vw, 1.12rem);
   justify-items: center;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
 `;
 
 const Kicker = styled.h1`
@@ -348,9 +432,10 @@ const Kicker = styled.h1`
   letter-spacing: -0.028em;
   color: ${({ theme }) => theme.text.primary};
   font-size: clamp(2.45rem, 6.5vw, 5.4rem);
-  line-height: 0.96;
+  line-height: 1.02;
   text-wrap: balance;
-  max-width: 15ch;
+  max-width: 14ch;
+  opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
 `;
 
 const KickerHighlight = styled.span`
@@ -378,23 +463,10 @@ const KickerHighlight = styled.span`
 const HeroSubtitle = styled.p`
   margin: 0;
   font-size: clamp(1rem, 1.7vw, 1.26rem);
-  line-height: 1.56;
+  line-height: 1.62;
   color: ${({ theme }) => theme.text.secondary};
-  max-width: 52ch;
-`;
-
-const AvailabilityPill = styled.p`
-  display: inline-flex;
-  margin: 0;
-  padding: 0.42rem 0.86rem;
-  border-radius: 999px;
-  border: 1px solid ${({ theme }) => theme.border};
-  background: ${({ theme }) => theme.accentSoft || `${theme.accent}16`};
-  color: ${({ theme }) => theme.text.primary};
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  max-width: 55ch;
+  opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
 `;
 
 const CtaRow = styled.div`
@@ -403,7 +475,8 @@ const CtaRow = styled.div`
   gap: 0.66rem;
   align-items: center;
   justify-content: center;
-  margin-top: 0.15rem;
+  margin-top: 0.32rem;
+  pointer-events: auto;
 `;
 
 const PrimaryCta = styled.a`
@@ -421,6 +494,7 @@ const PrimaryCta = styled.a`
   box-shadow: 0 10px 24px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
   border: 1px solid transparent;
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  pointer-events: auto;
 
   &:hover {
     background: ${({ theme }) => theme.button.hover || theme.accent};
@@ -444,6 +518,7 @@ const SecondaryCta = styled(Link)`
   border: 1px solid ${({ theme }) => theme.border};
   box-shadow: 0 10px 24px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  pointer-events: auto;
 
   &:hover {
     transform: translateY(-1px);
@@ -461,6 +536,7 @@ const TextCta = styled(Link)`
   color: ${({ theme }) => theme.text.secondary};
   border: 1px solid transparent;
   font-size: 0.9rem;
+  pointer-events: auto;
 
   &:hover {
     color: ${({ theme }) => theme.text.primary};
@@ -756,14 +832,22 @@ const TileOverlay = styled.div`
 
 const TileTitle = styled.h3`
   margin: 0;
+  width: 100%;
   font-size: 1.08rem;
   font-weight: 700;
-  text-align: left;
+  text-align: center;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: white;
   text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
 
   @media (hover: none) {
-    text-align: left;
+    text-align: center;
     font-size: 1rem;
   }
 `;
