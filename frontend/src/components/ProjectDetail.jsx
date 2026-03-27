@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
+import { MEDIA } from '../styles/breakpoints';
 import LoadingState from './LoadingState';
 
 const QUERY = `
@@ -140,17 +141,25 @@ export default function ProjectDetail() {
 
 const panelStyles = css`
   border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 32px;
+  border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 100%),
     ${({ theme }) => theme.surface};
   box-shadow: 0 18px 44px ${({ theme }) => theme.shadowStrong};
+
+  ${MEDIA.tabletDown} {
+    border-radius: 18px;
+  }
+
+  ${MEDIA.phone} {
+    border-radius: 14px;
+  }
 `;
 
 const Page = styled.div`
-  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
+  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
-  padding: clamp(1.4rem, 4vw, 3rem) 0 4rem;
+  padding: calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) 0 4rem;
   display: grid;
   gap: 1rem;
 `;
@@ -172,7 +181,7 @@ const BackLink = styled(Link)`
 
 const Hero = styled.header`
   ${panelStyles}
-  padding: clamp(1.2rem, 3vw, 2rem);
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.6rem;
 `;
@@ -186,7 +195,7 @@ const Eyebrow = styled.p`
 `;
 
 const Title = styled.h1`
-  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  font-size: clamp(1.95rem, 6vw, 4.8rem);
   color: ${({ theme }) => theme.text.primary};
 `;
 
@@ -219,7 +228,7 @@ const MainImage = styled.div`
     height: auto;
     max-height: 720px;
     object-fit: cover;
-    border-radius: 24px;
+    border-radius: 20px;
   }
 `;
 
@@ -228,21 +237,23 @@ const ContentGrid = styled.div`
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
   gap: 1rem;
 
-  @media (max-width: 980px) {
+  ${MEDIA.tabletDown} {
     grid-template-columns: 1fr;
   }
 `;
 
 const DescriptionPanel = styled.section`
   ${panelStyles}
-  padding: clamp(1.2rem, 3vw, 1.8rem);
+  min-width: 0;
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.85rem;
 `;
 
 const MediaPanel = styled.aside`
   ${panelStyles}
-  padding: clamp(1rem, 3vw, 1.4rem);
+  min-width: 0;
+  padding: var(--panel-padding);
   display: grid;
   align-content: start;
   gap: 0.85rem;
@@ -264,6 +275,7 @@ const SectionTitle = styled.h2`
 const Description = styled.p`
   color: ${({ theme }) => theme.text.secondary};
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 `;
 
 const ToolList = styled.div`
@@ -295,7 +307,7 @@ const VideoContainer = styled.div`
 const VideoWrapper = styled.div`
   position: relative;
   padding-top: 56.25%;
-  border-radius: 24px;
+  border-radius: 18px;
   border: 1px solid ${({ theme }) => theme.border};
   overflow: hidden;
   background: rgba(0, 0, 0, 0.24);
@@ -311,7 +323,7 @@ const VideoWrapper = styled.div`
 
 const EmptyMedia = styled.div`
   min-height: 200px;
-  border-radius: 24px;
+  border-radius: 18px;
   border: 1px dashed ${({ theme }) => theme.border};
   display: grid;
   place-items: center;
@@ -322,7 +334,7 @@ const EmptyMedia = styled.div`
 
 const GalleryPanel = styled.section`
   ${panelStyles}
-  padding: clamp(1rem, 3vw, 1.4rem);
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.9rem;
 `;
@@ -331,10 +343,14 @@ const GalleryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 0.9rem;
+
+  ${MEDIA.phone} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const GalleryItem = styled.div`
-  border-radius: 24px;
+  border-radius: 18px;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.border};
   background: rgba(255, 255, 255, 0.03);

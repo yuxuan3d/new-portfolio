@@ -3,6 +3,7 @@ import emailjs from '@emailjs/browser';
 import styled, { css } from 'styled-components';
 import { FaEnvelope, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { CONTACT_CONTENT } from '../content/siteContent';
+import { MEDIA } from '../styles/breakpoints';
 
 const ICONS = {
   Email: FaEnvelope,
@@ -168,9 +169,12 @@ export default function ContactSection({ id, standalone = false }) {
 }
 
 const Section = styled.section`
-  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
+  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
-  padding: ${({ $standalone }) => ($standalone ? 'clamp(1.4rem, 4vw, 3rem) 0 4rem' : '0')};
+  padding: ${({ $standalone }) =>
+    $standalone
+      ? 'calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) 0 4rem'
+      : '0'};
   display: grid;
   gap: 0.95rem;
 `;
@@ -178,6 +182,11 @@ const Section = styled.section`
 const SectionHeader = styled.header`
   display: grid;
   gap: 0.35rem;
+  padding-left: var(--panel-padding);
+
+  ${MEDIA.phone} {
+    padding-left: 0;
+  }
 `;
 
 const Title = styled.h2`
@@ -201,7 +210,7 @@ const panelStyles = css`
 
 const FormPanel = styled.div`
   ${panelStyles}
-  padding: 1.4rem;
+  padding: var(--panel-padding);
 `;
 
 const Form = styled.form`
@@ -214,7 +223,7 @@ const FieldRow = styled.div`
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.9rem;
 
-  @media (max-width: 720px) {
+  ${MEDIA.phone} {
     grid-template-columns: 1fr;
   }
 `;
@@ -302,11 +311,15 @@ const SubmitButton = styled.button`
     opacity: 0.7;
     cursor: not-allowed;
   }
+
+  ${MEDIA.phone} {
+    width: 100%;
+  }
 `;
 
 const InfoPanel = styled.aside`
   ${panelStyles}
-  padding: 1.4rem;
+  padding: var(--panel-padding);
   display: grid;
   align-content: start;
 `;
@@ -316,7 +329,11 @@ const MethodList = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.8rem;
 
-  @media (max-width: 960px) {
+  ${MEDIA.tabletOnly} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  ${MEDIA.phone} {
     grid-template-columns: 1fr;
   }
 `;

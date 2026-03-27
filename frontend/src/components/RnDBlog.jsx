@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
+import { MEDIA } from '../styles/breakpoints';
 import LazyImage from './LazyImage';
 import LoadingState from './LoadingState';
 
@@ -28,22 +29,12 @@ function formatPublishedDate(value) {
 export default function RnDBlog() {
   const [blogPosts, error, { isValidating }] = useSanityData(QUERY);
   const totalPosts = Array.isArray(blogPosts) ? blogPosts.length : 0;
-  const latestPublishedAt = totalPosts > 0 ? blogPosts[0].publishedAt : null;
 
   return (
     <Page>
-      <Hero>
-        <Eyebrow>R&amp;D Journal</Eyebrow>
-        <Title>Process notes, technical breakdowns, and experiments in motion.</Title>
-        <Subtitle>
-          The journal keeps the exploratory side of the practice visible: tests, implementation
-          notes, production learnings, and visual studies that feed back into the portfolio work.
-        </Subtitle>
-        <MetaRow>
-          <MetaChip>{totalPosts} posts</MetaChip>
-          <MetaChip>Latest: {formatPublishedDate(latestPublishedAt)}</MetaChip>
-        </MetaRow>
-      </Hero>
+      <SectionHeader>
+        <Title>Blog</Title>
+      </SectionHeader>
 
       {error ? <ErrorCard>{error}</ErrorCard> : null}
 
@@ -89,62 +80,43 @@ export default function RnDBlog() {
 
 const panelStyles = css`
   border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 32px;
+  border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 100%),
     ${({ theme }) => theme.surface};
   box-shadow: 0 18px 44px ${({ theme }) => theme.shadowStrong};
+
+  ${MEDIA.tabletDown} {
+    border-radius: 18px;
+  }
+
+  ${MEDIA.phone} {
+    border-radius: 14px;
+  }
 `;
 
 const Page = styled.div`
-  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
+  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
-  padding: clamp(1.4rem, 4vw, 3rem) 0 4rem;
+  padding: calc(var(--site-header-height, 96px) + clamp(1.4rem, 4vw, 3rem)) 0 4rem;
   display: grid;
   gap: 1.2rem;
 `;
 
-const Hero = styled.header`
-  ${panelStyles}
-  padding: clamp(1.2rem, 3vw, 2rem);
+const SectionHeader = styled.header`
   display: grid;
-  gap: 0.7rem;
-`;
+  gap: 0.35rem;
+  padding-left: var(--panel-padding);
 
-const Eyebrow = styled.p`
-  color: ${({ theme }) => theme.accent};
-  font-size: 0.78rem;
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  ${MEDIA.phone} {
+    padding-left: 0;
+  }
 `;
 
 const Title = styled.h1`
-  max-width: 13ch;
-  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  max-width: 20ch;
+  font-size: clamp(1.55rem, 2.45vw, 2.35rem);
   color: ${({ theme }) => theme.text.primary};
-`;
-
-const Subtitle = styled.p`
-  max-width: 62ch;
-  color: ${({ theme }) => theme.text.secondary};
-`;
-
-const MetaRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-`;
-
-const MetaChip = styled.span`
-  min-height: 34px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid ${({ theme }) => theme.border};
-  color: ${({ theme }) => theme.text.secondary};
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 0.76rem;
-  font-family: 'IBM Plex Mono', monospace;
 `;
 
 const ErrorCard = styled.div`
@@ -160,7 +132,11 @@ const Grid = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 
-  @media (max-width: 980px) {
+  ${MEDIA.tabletOnly} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  ${MEDIA.phone} {
     grid-template-columns: 1fr;
   }
 `;
@@ -192,7 +168,7 @@ const CardImage = styled.div`
 `;
 
 const CardBody = styled.div`
-  padding: 1rem 1rem 1.1rem;
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.55rem;
 `;

@@ -4,6 +4,7 @@ import { PortableText } from '@portabletext/react';
 import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
+import { MEDIA } from '../styles/breakpoints';
 import BlogLazyImage from './BlogLazyImage';
 import LoadingState from './LoadingState';
 
@@ -125,17 +126,25 @@ export default function BlogPost() {
 
 const panelStyles = css`
   border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 32px;
+  border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 100%),
     ${({ theme }) => theme.surface};
   box-shadow: 0 18px 44px ${({ theme }) => theme.shadowStrong};
+
+  ${MEDIA.tabletDown} {
+    border-radius: 18px;
+  }
+
+  ${MEDIA.phone} {
+    border-radius: 14px;
+  }
 `;
 
 const Page = styled.article`
-  width: min(980px, calc(100vw - (var(--site-gutter) * 2)));
+  width: min(980px, calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
-  padding: clamp(1.4rem, 4vw, 3rem) 0 4rem;
+  padding: calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) 0 4rem;
   display: grid;
   gap: 1rem;
 `;
@@ -157,7 +166,7 @@ const BackLink = styled(Link)`
 
 const Hero = styled.header`
   ${panelStyles}
-  padding: clamp(1.2rem, 3vw, 2rem);
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.6rem;
 `;
@@ -171,7 +180,7 @@ const Eyebrow = styled.p`
 `;
 
 const Title = styled.h1`
-  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  font-size: clamp(1.95rem, 6vw, 4.6rem);
   color: ${({ theme }) => theme.text.primary};
 `;
 
@@ -193,13 +202,14 @@ const MainImage = styled.div`
     height: auto;
     max-height: 680px;
     object-fit: cover;
-    border-radius: 24px;
+    border-radius: 20px;
   }
 `;
 
 const ContentPanel = styled.div`
   ${panelStyles}
-  padding: clamp(1.2rem, 3vw, 1.8rem);
+  min-width: 0;
+  padding: var(--panel-padding);
   color: ${({ theme }) => theme.text.primary};
   font-size: 1.05rem;
   line-height: 1.75;
@@ -233,6 +243,12 @@ const ContentPanel = styled.div`
     color: ${({ theme }) => theme.accent};
   }
 
+  img,
+  iframe,
+  video {
+    max-width: 100%;
+  }
+
   blockquote {
     border-left: 3px solid ${({ theme }) => theme.accent};
     padding: 0.85rem 1rem;
@@ -249,6 +265,7 @@ const ContentPanel = styled.div`
   pre {
     padding: 1rem;
     border-radius: 20px;
+    max-width: 100%;
     overflow-x: auto;
     background: rgba(0, 0, 0, 0.24);
     border: 1px solid ${({ theme }) => theme.border};
@@ -265,9 +282,11 @@ const ContentPanel = styled.div`
 const MediaFigure = styled.figure`
   margin: 2rem auto;
   text-align: center;
+  max-width: 100%;
 
   img {
     max-width: 100%;
+    height: auto;
     border-radius: 24px;
     border: 1px solid ${({ theme }) => theme.border};
   }

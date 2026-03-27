@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { BREAKPOINTS, MEDIA } from '../styles/breakpoints';
 
 export default function ParticleEarthFrame() {
+  const [isPhoneViewport, setIsPhoneViewport] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= BREAKPOINTS.phone : false,
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia(`(max-width: ${BREAKPOINTS.phone}px)`);
+    const update = (event) => setIsPhoneViewport(event.matches);
+
+    setIsPhoneViewport(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', update);
+      return () => mediaQuery.removeEventListener('change', update);
+    }
+
+    mediaQuery.addListener(update);
+    return () => mediaQuery.removeListener(update);
+  }, []);
+
+  const frameSrc = useMemo(
+    () => `/particle-earth/index.html?embed=1${isPhoneViewport ? '&mobile=1' : ''}`,
+    [isPhoneViewport],
+  );
+
   return (
     <FrameShell aria-hidden="true">
       <Frame
-        src="/particle-earth/index.html?embed=1"
+        src={frameSrc}
         title="Interactive particle earth"
         loading="eager"
       />
@@ -30,5 +59,15 @@ const Frame = styled.iframe`
   background: transparent;
   transform: scale(1.04);
   transform-origin: center;
-  filter: brightness(0.46) contrast(1.22) saturate(0.84);
+  filter: none;
+
+  ${MEDIA.tabletDown} {
+    transform: scale(1.01);
+    filter: none;
+  }
+
+  ${MEDIA.phone} {
+    transform: scale(0.95);
+    filter: none;
+  }
 `;

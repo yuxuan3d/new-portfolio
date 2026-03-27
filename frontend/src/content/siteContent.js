@@ -9,22 +9,20 @@ export const HOME_NAV_ITEMS = [
 ];
 
 export const HERO_CONTENT = {
-  eyebrow: 'Yu Xuan / Motion + Interactive Direction',
-  displayTitle: 'I build cinematic worlds.',
-  title: 'Motion-first systems and tactile web experiences.',
-  subtitle:
-    'I design and build portfolio films, real-time visuals, and interactive web pieces that merge VFX craft with production-ready frontend execution.',
+  eyebrow: '',
+  name: 'Yu Xuan',
+  displayLead: 'I build',
+  displayAccent: 'cinematic worlds.',
+  supportTitle: '',
+  description:
+    'a 3D motion designer creating cinematic visuals, interactive experiences, and polished post-production.',
   primaryCta: {
-    label: 'View Resume',
-    href: EXTERNAL_LINKS.RESUME,
-  },
-  secondaryCta: {
-    label: 'Open R&D Journal',
-    to: '/rnd',
-  },
-  tertiaryCta: {
     label: 'Jump to Works',
     id: 'works',
+  },
+  secondaryCta: {
+    label: 'View Resume',
+    href: EXTERNAL_LINKS.RESUME,
   },
 };
 

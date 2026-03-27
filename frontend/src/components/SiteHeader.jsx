@@ -4,7 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import { FaBars, FaInstagram, FaLinkedin, FaTimes } from 'react-icons/fa';
 import { HOME_NAV_ITEMS } from '../content/siteContent';
-import { EXTERNAL_LINKS, SOCIAL_LINKS } from '../constants/social';
+import { SOCIAL_LINKS } from '../constants/social';
+import { MEDIA } from '../styles/breakpoints';
 
 const overlayFade = keyframes`
   from { opacity: 0; }
@@ -206,9 +207,6 @@ export default function SiteHeader() {
           </DrawerNav>
 
           <DrawerMeta>
-            <DrawerCta href={EXTERNAL_LINKS.RESUME} target="_blank" rel="noopener noreferrer">
-              Download CV
-            </DrawerCta>
             <DrawerSocials>
               <DrawerSocialLink href={SOCIAL_LINKS.LINKEDIN} target="_blank" rel="noopener noreferrer">
                 <FaLinkedin size={14} />
@@ -231,12 +229,7 @@ export default function SiteHeader() {
       <Header ref={headerRef}>
         <HeaderInner>
           <BrandCluster>
-            <BrandBlock>
-              <Brand to="/">yxperiments</Brand>
-              <BrandMeta href={EXTERNAL_LINKS.RESUME} target="_blank" rel="noopener noreferrer">
-                Download CV
-              </BrandMeta>
-            </BrandBlock>
+            <Brand to="/">yxperiments</Brand>
           </BrandCluster>
 
           <HeaderActions>
@@ -284,7 +277,7 @@ const Header = styled.header`
 const HeaderInner = styled.div`
   width: calc(100vw - (var(--site-gutter) * 2));
   margin: 0 auto;
-  min-height: 122px;
+  min-height: 102px;
   padding-top: clamp(2rem, 2.65vw, 2.75rem);
   display: flex;
   align-items: flex-start;
@@ -292,9 +285,9 @@ const HeaderInner = styled.div`
   gap: 1rem;
   pointer-events: none;
 
-  @media (max-width: 840px) {
-    min-height: 92px;
-    padding-top: 1.6rem;
+  ${MEDIA.tabletDown} {
+    min-height: 76px;
+    padding-top: 1.45rem;
   }
 `;
 
@@ -302,11 +295,6 @@ const BrandCluster = styled.div`
   min-width: 0;
   display: grid;
   pointer-events: auto;
-`;
-
-const BrandBlock = styled.div`
-  display: grid;
-  gap: 0.35rem;
 `;
 
 const Brand = styled(Link)`
@@ -317,18 +305,8 @@ const Brand = styled(Link)`
   color: ${({ theme }) => theme.text.primary};
 `;
 
-const BrandMeta = styled.a`
-  width: fit-content;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text.muted};
-  font-size: 0.72rem;
-  font-family: 'Roboto Mono', monospace;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-`;
-
 const controlStyles = css`
-  min-height: 40px;
+  min-height: 44px;
   padding: 0.65rem 0.95rem;
   display: inline-flex;
   align-items: center;
@@ -348,7 +326,7 @@ const controlStyles = css`
 const HeaderActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.9rem;
   pointer-events: auto;
 `;
 
@@ -356,8 +334,9 @@ const DesktopNav = styled.nav`
   display: none;
   align-items: center;
   gap: clamp(1.4rem, 2vw, 2.6rem);
+  padding-right: clamp(0.9rem, 1vw, 1rem);
 
-  @media (min-width: 1080px) {
+  ${MEDIA.desktopUp} {
     display: flex;
   }
 `;
@@ -396,11 +375,11 @@ const DesktopNavLink = styled(Link)`
 
 const MenuButton = styled.button`
   ${controlStyles}
-  width: 46px;
+  width: 48px;
   padding: 0;
   cursor: pointer;
 
-  @media (min-width: 1080px) {
+  ${MEDIA.desktopUp} {
     display: none;
   }
 `;
@@ -418,13 +397,15 @@ const DrawerBackdrop = styled.div`
 `;
 
 const Drawer = styled.div`
-  width: min(100%, 420px);
+  width: min(420px, calc(100vw - 24px));
   margin-left: auto;
   padding: 1.15rem;
   border: 1px solid ${({ theme }) => theme.borderStrong};
   background: ${({ theme }) => theme.surfaceStrong};
   display: grid;
   gap: 1rem;
+  max-height: calc(100dvh - 2.5rem);
+  overflow-y: auto;
   animation: ${drawerSlide} 180ms ease;
 `;
 
@@ -465,7 +446,7 @@ const DrawerNav = styled.nav`
 `;
 
 const DrawerLink = styled(Link)`
-  min-height: 52px;
+  min-height: 56px;
   padding: 0.9rem 1rem;
   border: 1px solid ${({ theme, $active }) => ($active ? theme.borderStrong : theme.border)};
   background: ${({ theme, $active }) => ($active ? theme.accentSurface : 'rgba(255, 255, 255, 0.02)')};
@@ -491,18 +472,13 @@ const DrawerMeta = styled.div`
   gap: 0.75rem;
 `;
 
-const DrawerCta = styled.a`
-  ${controlStyles}
-  width: fit-content;
-`;
-
 const DrawerSocials = styled.div`
   display: grid;
   gap: 0.55rem;
 `;
 
 const DrawerSocialLink = styled.a`
-  min-height: 48px;
+  min-height: 52px;
   padding: 0.85rem 1rem;
   border: 1px solid ${({ theme }) => theme.border};
   background: rgba(255, 255, 255, 0.03);

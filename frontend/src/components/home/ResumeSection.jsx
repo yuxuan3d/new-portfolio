@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { MEDIA } from '../../styles/breakpoints';
 import {
   CAPABILITY_CARDS,
   RESUME_CONTENT,
   RESUME_STATS,
-  WORKFLOW_PHASES,
 } from '../../content/siteContent';
 
 export default function ResumeSection() {
@@ -37,16 +37,6 @@ export default function ResumeSection() {
         </StatsPanel>
       </IntroGrid>
 
-      <WorkflowGrid aria-label="Creative workflow">
-        {WORKFLOW_PHASES.map((phase) => (
-          <WorkflowCard key={phase.step}>
-            <WorkflowStep>{phase.step}</WorkflowStep>
-            <WorkflowTitle>{phase.title}</WorkflowTitle>
-            <WorkflowDescription>{phase.description}</WorkflowDescription>
-          </WorkflowCard>
-        ))}
-      </WorkflowGrid>
-
       <CapabilityGrid aria-label="Capabilities">
         {CAPABILITY_CARDS.map((card) => (
           <CapabilityCard key={card.title}>
@@ -71,7 +61,7 @@ const sharedPanelStyles = css`
 `;
 
 const Section = styled.section`
-  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
+  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 1.6rem) 0 0;
   display: grid;
@@ -81,6 +71,11 @@ const Section = styled.section`
 const SectionHeader = styled.header`
   display: grid;
   gap: 0.35rem;
+  padding-left: var(--panel-padding);
+
+  ${MEDIA.phone} {
+    padding-left: 0;
+  }
 `;
 
 const Title = styled.h2`
@@ -95,14 +90,14 @@ const IntroGrid = styled.div`
   grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
   gap: 1.2rem;
 
-  @media (max-width: 980px) {
+  ${MEDIA.tabletDown} {
     grid-template-columns: 1fr;
   }
 `;
 
 const IntroPanel = styled.div`
   ${sharedPanelStyles}
-  padding: 1.55rem;
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.75rem;
 `;
@@ -122,6 +117,11 @@ const ActionRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+
+  ${MEDIA.phone} {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 `;
 
 const ActionLink = styled.a`
@@ -146,11 +146,15 @@ const ActionLink = styled.a`
     background: ${({ theme }) => theme.button.background};
     border-color: ${({ theme }) => theme.button.background};
   }
+
+  ${MEDIA.phone} {
+    width: 100%;
+  }
 `;
 
 const StatsPanel = styled.aside`
   ${sharedPanelStyles}
-  padding: 1.25rem;
+  padding: var(--panel-padding);
   display: grid;
   gap: 0;
 `;
@@ -181,57 +185,23 @@ const StatValue = styled.p`
   line-height: 1.45;
 `;
 
-const WorkflowGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-
-  @media (max-width: 980px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const WorkflowCard = styled.article`
-  ${sharedPanelStyles}
-  padding: 1.35rem 1.25rem;
-  display: grid;
-  gap: 0.45rem;
-`;
-
-const WorkflowStep = styled.span`
-  color: ${({ theme }) => theme.accent};
-  font-size: 0.72rem;
-  font-family: 'Roboto Mono', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-`;
-
-const WorkflowTitle = styled.h3`
-  font-size: 1.18rem;
-  color: ${({ theme }) => theme.text.primary};
-`;
-
-const WorkflowDescription = styled.p`
-  color: ${({ theme }) => theme.text.secondary};
-`;
-
 const CapabilityGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 
-  @media (max-width: 1120px) {
+  ${MEDIA.tabletDown} {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @media (max-width: 760px) {
+  ${MEDIA.phone} {
     grid-template-columns: 1fr;
   }
 `;
 
 const CapabilityCard = styled.article`
   ${sharedPanelStyles}
-  padding: 1.35rem 1.25rem;
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.75rem;
 `;

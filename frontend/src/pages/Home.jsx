@@ -33,5 +33,5 @@ export default function Home() {
 const Page = styled.div`
   padding-bottom: clamp(2rem, 5vw, 4rem);
   display: grid;
-  gap: clamp(2.75rem, 5vw, 4.5rem);
+  gap: var(--section-gap);
 `;

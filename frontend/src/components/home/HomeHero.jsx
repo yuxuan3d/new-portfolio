@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { FaChevronDown, FaEnvelope, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
 import { HERO_CONTENT } from '../../content/siteContent';
 import { SOCIAL_LINKS } from '../../constants/social';
+import { MEDIA } from '../../styles/breakpoints';
 import ParticleEarthFrame from '../ParticleEarthFrame';
-
-const DESKTOP_INTRO = {
-  lead: "I'm",
-  name: 'Yu Xuan',
-  description:
-    'a 3D motion designer creating cinematic visuals, interactive experiences, and polished post-production.',
-};
 
 const HERO_CONTACT_LINES = [
   { label: 'E', value: SOCIAL_LINKS.EMAIL, href: `mailto:${SOCIAL_LINKS.EMAIL}` },
@@ -63,7 +56,7 @@ export default function HomeHero() {
   }, []);
 
   const handleContinue = () => {
-    const target = document.getElementById(HERO_CONTENT.tertiaryCta.id);
+    const target = document.getElementById(HERO_CONTENT.primaryCta.id);
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -75,7 +68,7 @@ export default function HomeHero() {
       <Overlay>
         <HeroCenter>
           <DisplayTitle>
-            I build <AccentWord>cinematic worlds</AccentWord>
+            {HERO_CONTENT.displayLead} <AccentWord>{HERO_CONTENT.displayAccent}</AccentWord>
           </DisplayTitle>
         </HeroCenter>
 
@@ -94,8 +87,7 @@ export default function HomeHero() {
 
         <DesktopIntro>
           <DesktopIntroText>
-            {DESKTOP_INTRO.lead} <DesktopIntroName>{DESKTOP_INTRO.name}</DesktopIntroName>,{' '}
-            {DESKTOP_INTRO.description}
+            I&apos;m <DesktopIntroName>{HERO_CONTENT.name}</DesktopIntroName>, {HERO_CONTENT.description}
           </DesktopIntroText>
         </DesktopIntro>
 
@@ -115,37 +107,30 @@ export default function HomeHero() {
           </DesktopFollowLinks>
         </DesktopFollow>
 
-        <MobileFooter>
+        <MobileHeroCard>
           <Content>
             <Eyebrow>{HERO_CONTENT.eyebrow}</Eyebrow>
-            <Title>{HERO_CONTENT.title}</Title>
-            <Subtitle>{HERO_CONTENT.subtitle}</Subtitle>
+            <Title>{HERO_CONTENT.supportTitle}</Title>
+            <Subtitle>
+              I&apos;m <MobileName>{HERO_CONTENT.name}</MobileName>, {HERO_CONTENT.description}
+            </Subtitle>
           </Content>
 
-          <Dock>
+          <ActionStack>
             <ActionRow>
-              <PrimaryButton
-                href={HERO_CONTENT.primaryCta.href}
+              <PrimaryButton type="button" onClick={handleContinue}>
+                {HERO_CONTENT.primaryCta.label}
+              </PrimaryButton>
+              <SecondaryButton
+                href={HERO_CONTENT.secondaryCta.href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {HERO_CONTENT.primaryCta.label}
-              </PrimaryButton>
-              <SecondaryButton to={HERO_CONTENT.secondaryCta.to}>
                 {HERO_CONTENT.secondaryCta.label}
               </SecondaryButton>
             </ActionRow>
-
-            <ScrollDock>
-              <GhostButton type="button" onClick={handleContinue}>
-                {HERO_CONTENT.tertiaryCta.label}
-              </GhostButton>
-              <ScrollButton type="button" onClick={handleContinue}>
-                Continue
-              </ScrollButton>
-            </ScrollDock>
-          </Dock>
-        </MobileFooter>
+          </ActionStack>
+        </MobileHeroCard>
       </Overlay>
     </Hero>
   );
@@ -153,9 +138,8 @@ export default function HomeHero() {
 
 const Hero = styled.section`
   position: relative;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+  width: min(100%, 100vw);
+  max-width: 100vw;
   min-height: 100svh;
   min-height: 100dvh;
   overflow: hidden;
@@ -166,7 +150,7 @@ const HeroShade = styled.div`
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 50% 43%, rgba(73, 136, 196, 0.1), transparent 15%),
+    radial-gradient(circle at 50% 43%, rgba(144, 213, 255, 0.1), transparent 15%),
     linear-gradient(180deg, rgba(5, 6, 8, 0.48), rgba(5, 6, 8, 0.12) 28%, rgba(5, 6, 8, 0.9) 100%);
   pointer-events: none;
 `;
@@ -181,6 +165,13 @@ const Overlay = styled.div`
     var(--site-gutter)
     clamp(1.5rem, 4vw, 2.75rem);
   pointer-events: none;
+
+  ${MEDIA.tabletDown} {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: stretch;
+  }
 `;
 
 const HeroCenter = styled.div`
@@ -191,6 +182,12 @@ const HeroCenter = styled.div`
   justify-items: center;
   padding-bottom: clamp(7rem, 15vh, 10.5rem);
   text-align: center;
+
+  ${MEDIA.tabletDown} {
+    min-height: 0;
+    padding-bottom: 0;
+    align-items: end;
+  }
 `;
 
 const DisplayTitle = styled.h1`
@@ -201,9 +198,9 @@ const DisplayTitle = styled.h1`
   color: ${({ theme }) => theme.text.primary};
   text-shadow: 0 18px 34px rgba(0, 0, 0, 0.42);
 
-  @media (max-width: 900px) {
-    width: min(100%, 700px);
-    font-size: clamp(2.8rem, 10vw, 4.75rem);
+  ${MEDIA.tabletDown} {
+    width: min(100%, 22rem);
+    font-size: clamp(2.65rem, 11vw, 4.5rem);
   }
 `;
 
@@ -226,7 +223,7 @@ const DesktopContact = styled.div`
   transition: opacity 0.22s ease, transform 0.22s ease;
   pointer-events: ${({ $railOpacity }) => ($railOpacity < 0.08 ? 'none' : 'auto')};
 
-  @media (min-width: 1180px) {
+  ${MEDIA.wideUp} {
     display: grid;
   }
 `;
@@ -258,7 +255,7 @@ const DesktopIntro = styled.div`
   transform: translateX(-50%);
   text-align: center;
 
-  @media (min-width: 1180px) {
+  ${MEDIA.wideUp} {
     display: block;
   }
 `;
@@ -286,7 +283,7 @@ const DesktopScrollButton = styled.button`
   cursor: pointer;
   pointer-events: auto;
 
-  @media (min-width: 1180px) {
+  ${MEDIA.wideUp} {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -306,7 +303,7 @@ const DesktopFollow = styled.div`
   transition: opacity 0.22s ease, transform 0.22s ease;
   pointer-events: ${({ $railOpacity }) => ($railOpacity < 0.08 ? 'none' : 'auto')};
 
-  @media (min-width: 1180px) {
+  ${MEDIA.wideUp} {
     display: grid;
   }
 `;
@@ -346,29 +343,23 @@ const DesktopFollowLink = styled.a`
   }
 `;
 
-const MobileFooter = styled.div`
-  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
+const MobileHeroCard = styled.div`
+  width: min(100%, 32rem);
   margin: 0 auto;
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-top: 1rem;
+  display: none;
+  gap: 1rem;
+  align-self: end;
+  pointer-events: auto;
 
-  @media (min-width: 1180px) {
-    display: none;
-  }
-
-  @media (max-width: 900px) {
-    flex-direction: column;
-    align-items: stretch;
+  ${MEDIA.tabletDown} {
+    display: grid;
   }
 `;
 
 const Content = styled.div`
   max-width: 31rem;
   display: grid;
-  gap: 0.55rem;
+  gap: 0.6rem;
   text-align: left;
 `;
 
@@ -383,40 +374,40 @@ const Eyebrow = styled.p`
 const Title = styled.p`
   max-width: 22ch;
   color: ${({ theme }) => theme.text.primary};
-  font-size: clamp(1.3rem, 2.1vw, 1.8rem);
+  font-size: clamp(1.15rem, 4.2vw, 1.55rem);
   line-height: 1.25;
 `;
 
 const Subtitle = styled.p`
-  max-width: 42ch;
+  max-width: 34ch;
   color: ${({ theme }) => theme.text.secondary};
-  font-size: 1rem;
+  font-size: 0.98rem;
 `;
 
-const Dock = styled.div`
-  display: grid;
-  gap: 1rem;
-  justify-items: end;
-  pointer-events: auto;
+const MobileName = styled.span`
+  color: ${({ theme }) => theme.accent};
+  font-weight: 700;
+`;
 
-  @media (max-width: 900px) {
-    justify-items: start;
-  }
+const ActionStack = styled.div`
+  display: grid;
+  gap: 0.85rem;
 `;
 
 const ActionRow = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
   gap: 0.75rem;
 
-  @media (max-width: 900px) {
-    justify-content: flex-start;
+  ${MEDIA.phone} {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 `;
 
 const sharedButtonStyles = css`
-  min-height: 46px;
+  min-height: 48px;
   padding: 0.82rem 1rem;
   border-radius: 0;
   display: inline-flex;
@@ -431,9 +422,13 @@ const sharedButtonStyles = css`
   letter-spacing: 0.12em;
   text-transform: uppercase;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  ${MEDIA.phone} {
+    width: 100%;
+  }
 `;
 
-const PrimaryButton = styled.a`
+const PrimaryButton = styled.button`
   ${sharedButtonStyles}
   color: ${({ theme }) => theme.button.text};
   background: ${({ theme }) => theme.button.background};
@@ -444,28 +439,8 @@ const PrimaryButton = styled.a`
   }
 `;
 
-const SecondaryButton = styled(Link)`
+const SecondaryButton = styled.a`
   ${sharedButtonStyles}
-  color: ${({ theme }) => theme.text.primary};
-  background: rgba(16, 16, 16, 0.82);
-`;
-
-const GhostButton = styled.button`
-  ${sharedButtonStyles}
-  color: ${({ theme }) => theme.text.secondary};
-  background: transparent;
-`;
-
-const ScrollDock = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-`;
-
-const ScrollButton = styled.button`
-  ${sharedButtonStyles}
-  min-height: 40px;
-  padding: 0.65rem 0.9rem;
   color: ${({ theme }) => theme.text.primary};
   background: rgba(16, 16, 16, 0.82);
 `;

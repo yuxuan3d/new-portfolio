@@ -9,6 +9,7 @@ import RnDBlog from './components/RnDBlog';
 import SiteFooter from './components/SiteFooter';
 import SiteHeader from './components/SiteHeader';
 import Home from './pages/Home';
+import { BREAKPOINTS } from './styles/breakpoints';
 import { siteTheme } from './styles/theme';
 
 const GlobalStyle = createGlobalStyle`
@@ -21,7 +22,10 @@ const GlobalStyle = createGlobalStyle`
   :root {
     color-scheme: dark;
     --site-max-width: 1240px;
-    --site-gutter: clamp(1.25rem, 2vw, 2.25rem);
+    --site-header-height: 102px;
+    --site-gutter: clamp(1.5rem, 2vw, 2.25rem);
+    --section-gap: clamp(3rem, 5vw, 4.5rem);
+    --panel-padding: 24px;
     --bg-base: ${({ theme }) => theme.background};
     --bg-accent-a: ${({ theme }) => theme.backgroundAccentA};
     --bg-accent-b: ${({ theme }) => theme.backgroundAccentB};
@@ -156,6 +160,31 @@ const GlobalStyle = createGlobalStyle`
     *::after {
       animation: none !important;
       transition: none !important;
+    }
+  }
+
+  @media (max-width: ${BREAKPOINTS.tablet}px) {
+    :root {
+      --site-header-height: 76px;
+      --site-gutter: 24px;
+      --section-gap: 56px;
+      --panel-padding: 24px;
+    }
+
+    body::before {
+      opacity: 0.2;
+    }
+  }
+
+  @media (max-width: ${BREAKPOINTS.phone}px) {
+    :root {
+      --site-gutter: 16px;
+      --section-gap: 40px;
+      --panel-padding: 20px;
+    }
+
+    body::before {
+      opacity: 0.12;
     }
   }
 `;

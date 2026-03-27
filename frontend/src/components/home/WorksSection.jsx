@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { WORKS_CONTENT } from '../../content/siteContent';
 import { urlFor } from '../../lib/sanityClient';
+import { MEDIA } from '../../styles/breakpoints';
 import LoadingState from '../LoadingState';
 import LazyImage from '../LazyImage';
 
@@ -106,7 +107,7 @@ const panelStyles = css`
 `;
 
 const Section = styled.section`
-  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
+  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 1.6rem) 0 0;
   display: grid;
@@ -116,6 +117,11 @@ const Section = styled.section`
 const SectionHeader = styled.header`
   display: grid;
   gap: 0.35rem;
+  padding-left: var(--panel-padding);
+
+  ${MEDIA.phone} {
+    padding-left: 0;
+  }
 `;
 
 const Title = styled.h2`
@@ -135,7 +141,7 @@ const ErrorCard = styled.div`
 
 const SectionBlock = styled.div`
   ${panelStyles}
-  padding: 1.5rem;
+  padding: var(--panel-padding);
   display: grid;
   gap: 0.9rem;
 `;
@@ -144,6 +150,15 @@ const FilterRail = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
+
+  ${MEDIA.phone} {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: calc(var(--panel-padding) * -1);
+    padding-inline: var(--panel-padding);
+    padding-bottom: 0.15rem;
+    scrollbar-width: thin;
+  }
 `;
 
 const FilterButton = styled.button`
@@ -158,6 +173,7 @@ const FilterButton = styled.button`
   font-family: 'Roboto Mono', monospace;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  flex: 0 0 auto;
 `;
 
 const ArchiveGrid = styled.div`
@@ -165,11 +181,11 @@ const ArchiveGrid = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 
-  @media (max-width: 960px) {
+  ${MEDIA.tabletDown} {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @media (max-width: 640px) {
+  ${MEDIA.phone} {
     grid-template-columns: 1fr;
   }
 `;
@@ -208,7 +224,7 @@ const ArchiveImage = styled.div`
 const ArchiveOverlay = styled.div`
   position: absolute;
   inset: 0;
-  padding: 1rem;
+  padding: clamp(0.85rem, 2.5vw, 1rem);
   display: flex;
   align-items: end;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.78));
