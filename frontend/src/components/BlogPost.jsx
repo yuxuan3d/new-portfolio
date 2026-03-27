@@ -1,215 +1,45 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link, useParams } from 'react-router-dom';
 import { PortableText } from '@portabletext/react';
+import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
 import BlogLazyImage from './BlogLazyImage';
 import LoadingState from './LoadingState';
 
-const BlogContainer = styled.article`
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 2.8rem 0 3.8rem;
-`;
+const QUERY = `*[_type == "blogPost" && slug.current == $slug][0]{
+  title,
+  "slug": slug.current,
+  publishedAt,
+  mainImage,
+  body,
+  tags
+}`;
 
-const BlogHeader = styled.header`
-  margin-bottom: 1rem;
-  text-align: left;
-  border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 20px;
-  padding: 1.4rem 1.2rem;
-  background: ${({ theme }) => theme.surface};
-  box-shadow: 0 14px 34px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
-`;
-
-const Kicker = styled.p`
-  margin: 0 0 0.55rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.accent};
-`;
-
-const Title = styled.h1`
-  font-size: clamp(2rem, 4vw, 3rem);
-  margin-bottom: 0.55rem;
-  color: ${({ theme }) => theme.text.primary};
-  line-height: 1.06;
-`;
-
-const PublishDate = styled.time`
-  color: ${({ theme }) => theme.text.secondary};
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-`;
-
-const MainImage = styled.div`
-  width: 100%;
-  max-height: 500px;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 18px;
-  border: 1px solid ${({ theme }) => theme.border};
-  overflow: hidden;
-  background: ${({ theme }) => theme.surface};
-  box-shadow: 0 14px 34px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
-
-  img {
-    max-width: 100%;
-    max-height: 500px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-  }
-`;
-
-const Content = styled.div`
-  color: ${({ theme }) => theme.text.primary};
-  font-size: 1.05rem;
-  line-height: 1.68;
-  font-weight: 500;
-  border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 20px;
-  padding: 1.45rem 1.25rem;
-  background: ${({ theme }) => theme.surface};
-  box-shadow: 0 14px 34px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
-
-  p {
-    margin-bottom: 1.3rem;
-  }
-
-  h1, h2, h3 {
-    margin: 2rem 0 0.8rem;
-    color: ${({ theme }) => theme.text.primary};
-  }
-
-  blockquote {
-    margin: 1.4rem 0;
-    padding: 0.9rem 1rem;
-    border-left: 4px solid ${({ theme }) => theme.accent};
-    background: ${({ theme }) => theme.accentSoft || `${theme.accent}20`};
-    border-radius: 10px;
-  }
-
-  figure {
-    margin: 2rem auto;
-    text-align: center;
-    max-width: 100%;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    display: inline-block;
-  }
-
-  figcaption {
-    text-align: center;
-    font-size: 0.86rem;
-    color: ${({ theme }) => theme.text.secondary};
-    margin-top: 0.5rem;
-  }
-`;
-
-const TagContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-`;
-
-const Tag = styled.span`
-  background: ${({ theme }) => theme.accentSoft || `${theme.accent}20`};
-  color: ${({ theme }) => theme.accent};
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 700;
-`;
-
-const YouTubeEmbed = styled.div`
-  position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-  margin: 1.8rem 0;
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid ${({ theme }) => theme.border};
-
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-`;
-
-const Notice = styled.div`
-  padding: 1.2rem;
-  border-radius: 14px;
-  text-align: center;
-  color: ${({ theme }) => theme.text.secondary};
-  border: 1px solid ${({ theme }) => theme.border};
-  background: ${({ theme }) => theme.surface};
-`;
-
-const ErrorNotice = styled(Notice)`
-  color: #d44841;
-  border-color: rgba(212, 72, 65, 0.45);
-  background: rgba(212, 72, 65, 0.1);
-`;
-
-const getYouTubeId = (url) => {
+function getYouTubeId(url) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
+  const match = url?.match(regExp);
   return match && match[2].length === 11 ? match[2] : null;
-};
+}
 
-const components = {
+const portableTextComponents = {
   types: {
-    image: ({ value }) => {
-      const imageAssetRef = value?.asset?._ref;
-      const sizePart = imageAssetRef?.split('-')?.[2];
-      const [width, height] = (sizePart?.split('x') || []).map((v) => parseInt(v, 10));
-      const dimensions = Number.isFinite(width)
-        ? { width, height: Number.isFinite(height) ? height : undefined }
-        : null;
-
-      return (
-        <figure>
-          <BlogLazyImage
-            src={urlFor(value)
-              .width(dimensions?.width || 900)
-              .fit('max')
-              .auto('format')
-              .url()}
-            alt={value.alt || ''}
-            style={{
-              maxHeight: '620px',
-              width: 'auto',
-              objectFit: 'contain',
-            }}
-          />
-          {value.caption && <figcaption>{value.caption}</figcaption>}
-        </figure>
-      );
-    },
+    image: ({ value }) => (
+      <MediaFigure>
+        <BlogLazyImage
+          src={urlFor(value).width(1200).fit('max').auto('format').url()}
+          alt={value.alt || ''}
+          style={{ maxHeight: '720px', width: 'auto', objectFit: 'contain' }}
+        />
+        {value.caption ? <figcaption>{value.caption}</figcaption> : null}
+      </MediaFigure>
+    ),
     youtube: ({ value }) => {
       const videoId = getYouTubeId(value.url);
-      if (!videoId) return <ErrorNotice>Invalid YouTube URL</ErrorNotice>;
+      if (!videoId) return null;
 
       return (
-        <figure>
+        <MediaFigure>
           <YouTubeEmbed>
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
@@ -218,54 +48,47 @@ const components = {
               allowFullScreen
             />
           </YouTubeEmbed>
-          {value.caption && <figcaption>{value.caption}</figcaption>}
-        </figure>
+          {value.caption ? <figcaption>{value.caption}</figcaption> : null}
+        </MediaFigure>
       );
     },
   },
 };
 
-const BlogPost = () => {
+export default function BlogPost() {
   const { slug } = useParams();
-  const query = `*[_type == "blogPost" && slug.current == $slug][0]{
-    title,
-    "slug": slug.current,
-    publishedAt,
-    mainImage,
-    body,
-    tags
-  }`;
-
-  const [post, error, { isValidating }] = useSanityData(query, { slug });
+  const [post, error, { isValidating }] = useSanityData(QUERY, { slug });
 
   if (isValidating && !post) {
     return (
-      <BlogContainer>
+      <Page>
         <LoadingState label="Loading post" minHeight="360px" margin="0" />
-      </BlogContainer>
+      </Page>
     );
   }
 
   if (error) {
     return (
-      <BlogContainer>
-        <ErrorNotice>Error loading blog post.</ErrorNotice>
-      </BlogContainer>
+      <Page>
+        <ErrorCard>Error loading blog post.</ErrorCard>
+      </Page>
     );
   }
 
   if (!post) {
     return (
-      <BlogContainer>
-        <Notice>Blog post not found.</Notice>
-      </BlogContainer>
+      <Page>
+        <EmptyCard>Blog post not found.</EmptyCard>
+      </Page>
     );
   }
 
   return (
-    <BlogContainer>
-      <BlogHeader>
-        <Kicker>R&amp;D Post</Kicker>
+    <Page>
+      <BackLink to="/rnd">Back to Journal</BackLink>
+
+      <Hero>
+        <Eyebrow>R&amp;D Post</Eyebrow>
         <Title>{post.title}</Title>
         <PublishDate>
           {new Date(post.publishedAt).toLocaleDateString('en-US', {
@@ -274,33 +97,232 @@ const BlogPost = () => {
             day: 'numeric',
           })}
         </PublishDate>
-      </BlogHeader>
+      </Hero>
 
-      {post.mainImage && (
+      {post.mainImage ? (
         <MainImage>
           <BlogLazyImage
-            src={urlFor(post.mainImage).width(1000).auto('format').fit('max').url()}
+            src={urlFor(post.mainImage).width(1400).auto('format').fit('max').url()}
             alt={post.title}
           />
         </MainImage>
-      )}
+      ) : null}
 
-      <Content>
-        <PortableText
-          value={post.body}
-          components={components}
-        />
-      </Content>
+      <ContentPanel>
+        <PortableText value={post.body} components={portableTextComponents} />
+      </ContentPanel>
 
-      {post.tags && (
-        <TagContainer>
-          {post.tags.map((tag, index) => (
-            <Tag key={index}>{tag}</Tag>
+      {Array.isArray(post.tags) && post.tags.length > 0 ? (
+        <TagRow>
+          {post.tags.map((tag) => (
+            <Tag key={tag}>{tag}</Tag>
           ))}
-        </TagContainer>
-      )}
-    </BlogContainer>
+        </TagRow>
+      ) : null}
+    </Page>
   );
-};
+}
 
-export default BlogPost;
+const panelStyles = css`
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 100%),
+    ${({ theme }) => theme.surface};
+  box-shadow: 0 18px 44px ${({ theme }) => theme.shadowStrong};
+`;
+
+const Page = styled.article`
+  width: min(980px, calc(100vw - (var(--site-gutter) * 2)));
+  margin: 0 auto;
+  padding: clamp(1.4rem, 4vw, 3rem) 0 4rem;
+  display: grid;
+  gap: 1rem;
+`;
+
+const BackLink = styled(Link)`
+  width: fit-content;
+  min-height: 42px;
+  padding: 0.7rem 0.95rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme }) => theme.border};
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.76rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+`;
+
+const Hero = styled.header`
+  ${panelStyles}
+  padding: clamp(1.2rem, 3vw, 2rem);
+  display: grid;
+  gap: 0.6rem;
+`;
+
+const Eyebrow = styled.p`
+  color: ${({ theme }) => theme.accent};
+  font-size: 0.78rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+`;
+
+const Title = styled.h1`
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  color: ${({ theme }) => theme.text.primary};
+`;
+
+const PublishDate = styled.time`
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: 0.8rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+`;
+
+const MainImage = styled.div`
+  ${panelStyles}
+  padding: 0.45rem;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 680px;
+    object-fit: cover;
+    border-radius: 24px;
+  }
+`;
+
+const ContentPanel = styled.div`
+  ${panelStyles}
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  color: ${({ theme }) => theme.text.primary};
+  font-size: 1.05rem;
+  line-height: 1.75;
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  pre {
+    margin-bottom: 1.25rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 2rem 0 0.85rem;
+    color: ${({ theme }) => theme.text.primary};
+    font-size: clamp(1.55rem, 3vw, 2.45rem);
+  }
+
+  ul,
+  ol {
+    padding-left: 1.25rem;
+  }
+
+  li + li {
+    margin-top: 0.45rem;
+  }
+
+  a {
+    color: ${({ theme }) => theme.accent};
+  }
+
+  blockquote {
+    border-left: 3px solid ${({ theme }) => theme.accent};
+    padding: 0.85rem 1rem;
+    border-radius: 0 18px 18px 0;
+    background: ${({ theme }) => theme.accentSoft};
+    color: ${({ theme }) => theme.text.primary};
+  }
+
+  code,
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  pre {
+    padding: 1rem;
+    border-radius: 20px;
+    overflow-x: auto;
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid ${({ theme }) => theme.border};
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    color: ${({ theme }) => theme.text.muted};
+    font-size: 0.82rem;
+    text-align: center;
+  }
+`;
+
+const MediaFigure = styled.figure`
+  margin: 2rem auto;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    border-radius: 24px;
+    border: 1px solid ${({ theme }) => theme.border};
+  }
+`;
+
+const YouTubeEmbed = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: rgba(0, 0, 0, 0.24);
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+`;
+
+const TagRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+`;
+
+const Tag = styled.span`
+  min-height: 30px;
+  padding: 0.42rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid ${({ theme }) => theme.border};
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+`;
+
+const ErrorCard = styled.div`
+  ${panelStyles}
+  padding: 1rem 1.1rem;
+  color: #ffb2a6;
+  border-color: rgba(255, 178, 166, 0.24);
+  background: rgba(140, 44, 32, 0.18);
+`;
+
+const EmptyCard = styled.div`
+  ${panelStyles}
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  color: ${({ theme }) => theme.text.secondary};
+  padding: 1rem;
+`;

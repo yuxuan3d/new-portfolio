@@ -1,338 +1,365 @@
 import React, { memo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { urlFor } from '../lib/sanityClient';
+import { Link, useParams } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
+import { urlFor } from '../lib/sanityClient';
 import LoadingState from './LoadingState';
 
-const VideoEmbed = memo(({ embedCode }) => (
-  <VideoContainer>
-    <VideoWrapper dangerouslySetInnerHTML={{ __html: embedCode }} />
-  </VideoContainer>
-));
-
-const BackButtonWrapper = styled.div`
-  margin-bottom: 1rem;
+const QUERY = `
+  *[_type == "portfolioItem" && slug.current == $slug][0] {
+    _id,
+    title,
+    mainImage,
+    additionalImages,
+    description,
+    videoEmbeds[] {
+      embedCode
+    },
+    "arsenal": arsenal[]{
+      "name": name
+    },
+    tags
+  }
 `;
 
-const ProjectDetail = () => {
+const VideoEmbed = memo(function VideoEmbed({ embedCode }) {
+  return (
+    <VideoContainer>
+      <VideoWrapper dangerouslySetInnerHTML={{ __html: embedCode }} />
+    </VideoContainer>
+  );
+});
+
+export default function ProjectDetail() {
   const { slug } = useParams();
-  const navigate = useNavigate();
-
-  const handleBack = () => {
-    navigate('/');
-  };
-
-  const query = `
-    *[_type == "portfolioItem" && slug.current == $slug][0] {
-      _id,
-      title,
-      mainImage,
-      additionalImages,
-      description,
-      videoEmbeds[] {
-        embedCode
-      },
-      "arsenal": arsenal[]{
-        "name": name
-      },
-      tags
-    }
-  `;
-
-  const [project, error, { isValidating }] = useSanityData(query, { slug });
+  const [project, error, { isValidating }] = useSanityData(QUERY, { slug });
 
   if (error) {
     return (
-      <Container>
-        <BackButtonWrapper>
-          <BackButton onClick={handleBack}>Back to Projects</BackButton>
-        </BackButtonWrapper>
-        <ErrorText>{error}</ErrorText>
-      </Container>
+      <Page>
+        <BackLink to="/#works">Back to Works</BackLink>
+        <ErrorCard>{error}</ErrorCard>
+      </Page>
     );
   }
 
   if (isValidating && !project) {
-    return <LoadingState label="Loading Project" margin="2rem 0" />;
+    return (
+      <Page>
+        <LoadingState label="Loading Project" minHeight="360px" margin="0" />
+      </Page>
+    );
   }
 
   if (!project) {
     return (
-      <Container>
-        <BackButtonWrapper>
-          <BackButton onClick={handleBack}>Back to Projects</BackButton>
-        </BackButtonWrapper>
-        <ErrorText>Project not found.</ErrorText>
-      </Container>
+      <Page>
+        <BackLink to="/#works">Back to Works</BackLink>
+        <EmptyCard>Project not found.</EmptyCard>
+      </Page>
     );
   }
 
-  const allImages = project.additionalImages || [];
-
   return (
-    <Container>
-      <BackButtonWrapper>
-        <BackButton onClick={handleBack}>Back to Projects</BackButton>
-      </BackButtonWrapper>
+    <Page>
+      <BackLink to="/#works">Back to Works</BackLink>
 
-      <MainContent>
-        <ContentGrid>
-          <TextColumn>
-            <Header>
-              <Title>{project.title}</Title>
-            </Header>
+      <Hero>
+        <Eyebrow>Project Detail</Eyebrow>
+        <Title>{project.title}</Title>
+        {Array.isArray(project.tags) && project.tags.length > 0 ? (
+          <TagRow>
+            {project.tags.map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </TagRow>
+        ) : null}
+      </Hero>
 
-            {project.description && (
-              <>
-                <SectionTitle>Project Description</SectionTitle>
-                <Description>{project.description}</Description>
-              </>
-            )}
+      {project.mainImage ? (
+        <MainImage>
+          <img
+            src={urlFor(project.mainImage).auto('format').width(1600).fit('max').quality(90).url()}
+            alt={project.title}
+            loading="eager"
+          />
+        </MainImage>
+      ) : null}
 
-            {project.arsenal && project.arsenal.length > 0 && (
-              <ArsenalSection>
-                <SectionTitle>The Arsenal</SectionTitle>
-                <ToolsList>
-                  {project.arsenal.map((tool, index) => (
-                    <ToolItem key={index}>{tool.name}</ToolItem>
-                  ))}
-                </ToolsList>
-              </ArsenalSection>
-            )}
+      <ContentGrid>
+        <DescriptionPanel>
+          <BlockLabel>Overview</BlockLabel>
+          <SectionTitle>Project Description</SectionTitle>
+          {project.description ? <Description>{project.description}</Description> : null}
 
-            {project.tags && project.tags.length > 0 && (
-              <TagContainer>
-                {project.tags.map((tag, index) => (
-                  <Tag key={index}>{tag}</Tag>
+          {Array.isArray(project.arsenal) && project.arsenal.length > 0 ? (
+            <>
+              <SectionTitle>The Arsenal</SectionTitle>
+              <ToolList>
+                {project.arsenal.map((tool) => (
+                  <Tool key={tool.name}>{tool.name}</Tool>
                 ))}
-              </TagContainer>
-            )}
-          </TextColumn>
+              </ToolList>
+            </>
+          ) : null}
+        </DescriptionPanel>
 
-          <MediaColumn>
-            {project.videoEmbeds && project.videoEmbeds.length > 0 && (
-              <VideosSection>
-                {project.videoEmbeds.map((video, index) => (
-                  <VideoEmbed key={index} embedCode={video.embedCode} />
-                ))}
-              </VideosSection>
-            )}
-          </MediaColumn>
-        </ContentGrid>
-
-        {allImages.length > 0 && (
-          <ImagesSection>
-            <ImagesGrid>
-              {allImages.map((image, index) => (
-                <ImageContainer key={index}>
-                  <ProjectImage
-                    src={urlFor(image)
-                      .auto('format')
-                      .fit('max')
-                      .quality(90)
-                      .url()}
-                    alt={`${project.title} - Image ${index + 1}`}
-                    loading="lazy"
-                  />
-                </ImageContainer>
+        <MediaPanel>
+          <BlockLabel>Embedded Media</BlockLabel>
+          {Array.isArray(project.videoEmbeds) && project.videoEmbeds.length > 0 ? (
+            <VideoStack>
+              {project.videoEmbeds.map((video, index) => (
+                <VideoEmbed key={`${project._id}-video-${index}`} embedCode={video.embedCode} />
               ))}
-            </ImagesGrid>
-          </ImagesSection>
-        )}
-      </MainContent>
-    </Container>
+            </VideoStack>
+          ) : (
+            <EmptyMedia>No embedded videos for this project.</EmptyMedia>
+          )}
+        </MediaPanel>
+      </ContentGrid>
+
+      {Array.isArray(project.additionalImages) && project.additionalImages.length > 0 ? (
+        <GalleryPanel>
+          <BlockLabel>Gallery</BlockLabel>
+          <GalleryGrid>
+            {project.additionalImages.map((image, index) => (
+              <GalleryItem key={`${project._id}-image-${index}`}>
+                <img
+                  src={urlFor(image).auto('format').fit('max').quality(90).url()}
+                  alt={`${project.title} still ${index + 1}`}
+                  loading="lazy"
+                />
+              </GalleryItem>
+            ))}
+          </GalleryGrid>
+        </GalleryPanel>
+      ) : null}
+    </Page>
   );
-};
+}
 
-const Container = styled.div`
-  max-width: 1400px;
+const panelStyles = css`
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 100%),
+    ${({ theme }) => theme.surface};
+  box-shadow: 0 18px 44px ${({ theme }) => theme.shadowStrong};
+`;
+
+const Page = styled.div`
+  width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
   margin: 0 auto;
-  padding: 2.6rem 0 3.5rem;
+  padding: clamp(1.4rem, 4vw, 3rem) 0 4rem;
+  display: grid;
+  gap: 1rem;
 `;
 
-const BackButton = styled.button`
-  background: ${({ theme }) => theme.surface};
-  border: 1px solid ${({ theme }) => theme.border};
+const BackLink = styled(Link)`
+  width: fit-content;
+  min-height: 42px;
+  padding: 0.7rem 0.95rem;
   border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 700;
+  text-decoration: none;
   color: ${({ theme }) => theme.text.primary};
-  cursor: pointer;
-  padding: 0.62rem 1rem;
-  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-
-  &:hover {
-    color: ${({ theme }) => theme.button.text};
-    background: ${({ theme }) => theme.button.background};
-    transform: translateY(-1px);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
+  border: 1px solid ${({ theme }) => theme.border};
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.76rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 `;
 
-const MainContent = styled.div`
-  background: ${({ theme }) => theme.surface};
-  border-radius: 20px;
+const Hero = styled.header`
+  ${panelStyles}
+  padding: clamp(1.2rem, 3vw, 2rem);
+  display: grid;
+  gap: 0.6rem;
+`;
+
+const Eyebrow = styled.p`
+  color: ${({ theme }) => theme.accent};
+  font-size: 0.78rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+`;
+
+const Title = styled.h1`
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  color: ${({ theme }) => theme.text.primary};
+`;
+
+const TagRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+`;
+
+const Tag = styled.span`
+  min-height: 30px;
+  padding: 0.42rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid ${({ theme }) => theme.border};
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+`;
+
+const MainImage = styled.div`
+  ${panelStyles}
+  padding: 0.45rem;
   overflow: hidden;
-  padding: 1.55rem;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 16px 38px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 720px;
+    object-fit: cover;
+    border-radius: 24px;
+  }
 `;
 
 const ContentGrid = styled.div`
   display: grid;
-  grid-template-columns: minmax(300px, 40%) 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2.3rem;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
+  gap: 1rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 980px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const TextColumn = styled.div``;
-
-const MediaColumn = styled.div``;
-
-const Header = styled.div`
-  margin-bottom: 1rem;
+const DescriptionPanel = styled.section`
+  ${panelStyles}
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+  display: grid;
+  gap: 0.85rem;
 `;
 
-const Title = styled.h1`
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  margin: 0 0 1rem 0;
-  color: ${({ theme }) => theme.text.primary};
-  line-height: 1.06;
+const MediaPanel = styled.aside`
+  ${panelStyles}
+  padding: clamp(1rem, 3vw, 1.4rem);
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
 `;
 
-const Description = styled.div`
-  font-size: 1rem;
-  line-height: 1.65;
-  color: ${({ theme }) => theme.text.secondary};
-  white-space: pre-wrap;
-  margin-bottom: 2rem;
-`;
-
-const ArsenalSection = styled.div`
-  margin-bottom: 2rem;
+const BlockLabel = styled.p`
+  color: ${({ theme }) => theme.text.muted};
+  font-size: 0.74rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   color: ${({ theme }) => theme.text.primary};
-  margin: 0 0 1.1rem 0;
 `;
 
-const ToolsList = styled.div`
+const Description = styled.p`
+  color: ${({ theme }) => theme.text.secondary};
+  white-space: pre-wrap;
+`;
+
+const ToolList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.55rem;
 `;
 
-const ToolItem = styled.span`
-  background: ${({ theme }) => theme.accentSoft || `${theme.accent}20`};
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.82rem;
-  color: ${({ theme }) => theme.accent};
-  font-weight: 700;
-  transition: filter 0.2s ease;
-
-  &:hover {
-    filter: brightness(1.05);
-  }
+const Tool = styled.span`
+  min-height: 32px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: rgba(255, 255, 255, 0.03);
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: 0.74rem;
+  font-family: 'IBM Plex Mono', monospace;
 `;
 
-const VideosSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
+const VideoStack = styled.div`
+  display: grid;
+  gap: 0.9rem;
 `;
 
-const VideoContainer = styled.div``;
+const VideoContainer = styled.div`
+  width: 100%;
+`;
 
 const VideoWrapper = styled.div`
   position: relative;
   padding-top: 56.25%;
-  border-radius: 14px;
+  border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.border};
   overflow: hidden;
-  box-shadow: 0 12px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
+  background: rgba(0, 0, 0, 0.24);
 
   iframe {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
   }
 `;
 
-const ImagesSection = styled.div`
-  margin-top: 2rem;
-  padding-top: 2rem;
-`;
-
-const ImagesGrid = styled.div`
+const EmptyMedia = styled.div`
+  min-height: 200px;
+  border-radius: 24px;
+  border: 1px dashed ${({ theme }) => theme.border};
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  place-items: center;
+  color: ${({ theme }) => theme.text.secondary};
+  text-align: center;
+  padding: 1rem;
 `;
 
-const ImageContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const GalleryPanel = styled.section`
+  ${panelStyles}
+  padding: clamp(1rem, 3vw, 1.4rem);
+  display: grid;
+  gap: 0.9rem;
 `;
 
-const ProjectImage = styled.img`
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  border-radius: 14px;
+const GalleryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+`;
+
+const GalleryItem = styled.div`
+  border-radius: 24px;
+  overflow: hidden;
   border: 1px solid ${({ theme }) => theme.border};
-  box-shadow: 0 12px 30px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.14)'};
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.03);
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 38px ${({ theme }) => theme.shadow || 'rgba(0, 0, 0, 0.2)'};
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 `;
 
-const TagContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+const ErrorCard = styled.div`
+  ${panelStyles}
+  padding: 1rem 1.1rem;
+  color: #ffb2a6;
+  border-color: rgba(255, 178, 166, 0.24);
+  background: rgba(140, 44, 32, 0.18);
 `;
 
-const Tag = styled.span`
-  background: ${({ theme }) => theme.surfaceAlt || theme.surface};
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.82rem;
-  font-weight: 700;
+const EmptyCard = styled.div`
+  ${panelStyles}
+  min-height: 180px;
+  display: grid;
+  place-items: center;
   color: ${({ theme }) => theme.text.secondary};
-  border: 1px solid ${({ theme }) => theme.border};
+  padding: 1rem;
 `;
-
-const ErrorText = styled.div`
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-  color: #d44841;
-  border: 1px solid rgba(212, 72, 65, 0.45);
-  border-radius: 14px;
-  background: rgba(212, 72, 65, 0.1);
-`;
-
-export default ProjectDetail;

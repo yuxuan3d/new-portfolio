@@ -1,103 +1,90 @@
 # Portfolio Website
 
-A modern portfolio website built with React and Sanity.io CMS. Features a responsive design, dark/light theme, and dynamic content management.
+This workspace contains the public portfolio frontend, the Sanity Studio content backend, and the standalone `ParticleEarth/` app that is embedded into the first screen of the home page.
 
-## Features
+## Current Experience
 
-- 🎨 Modern and responsive design
-- 🌓 Dark/Light theme
-- 📱 Mobile-friendly
-- 🖼️ Dynamic portfolio grid
-- 📝 Blog functionality
-- 📧 Contact form
-- 🎯 SEO friendly
-- 🚀 Fast loading with image optimization
+- `/` is now the canonical dark-only, CVIO-inspired one-page route.
+- The home page is split into `Home`, `Resume`, `Works`, `Blog`, and `Contact` sections.
+- `/about` redirects to `/#resume`.
+- `/project/:slug`, `/rnd`, `/rnd/:slug`, and `/contact` remain active and share the same design system.
+- The first viewport embeds the separate `ParticleEarth` build so visitors can interact with the earth model immediately.
 
-## Tech Stack
+## Workspace Layout
 
-- Frontend:
-  - React
-  - Vite
-  - Styled Components
-  - React Router
-  - EmailJS
+- `frontend/`: public React/Vite site
+- `sanity/`: Sanity Studio content backend
+- `ParticleEarth/`: standalone interactive earth app used for the home hero embed
 
-- Backend/CMS:
-  - Sanity.io
-  - Sanity Studio v3
+## Stack
 
-## Getting Started
+- React 18
+- Vite
+- styled-components
+- React Router
+- Sanity client
+- EmailJS
 
-### Prerequisites
+## Data Flow
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Git
+- Portfolio and R&D/blog content still come from Sanity.
+- The contact form still uses EmailJS.
+- This redesign does not require backend or CMS schema changes.
 
-### Installation
+## Local Development
 
-1. Clone the repository:
-   ```bash
-   git clone [repository-url]
-   cd portfolio-website
-   ```
+Frontend:
 
-2. Install Frontend dependencies:
-   ```bash
-   cd frontend
-   npm install
-   ```
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-3. Install Sanity Studio dependencies:
-   ```bash
-   cd ../sanity
-   npm install
-   ```
+Sanity Studio:
 
-4. Set up environment variables:
-   Create a `.env` file in the frontend directory with:
-   ```
-   VITE_SANITY_PROJECT_ID=your_project_id
-   VITE_SANITY_DATASET=production
-   VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id
-   VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
-   VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
-   ```
+```bash
+cd sanity
+npm install
+npm run dev
+```
 
-### Development
+Frontend environment variables:
 
-1. Start the frontend development server:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+```bash
+VITE_SANITY_PROJECT_ID=your_project_id
+VITE_SANITY_DATASET=production
+VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
+VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+```
 
-2. Start the Sanity Studio:
-   ```bash
-   cd sanity
-   npm run dev
-   ```
+## Particle Earth Embed Workflow
 
-### Building for Production
+From `frontend/`, rebuild and sync the hero embed with:
 
-1. Build the frontend:
-   ```bash
-   cd frontend
-   npm run build
-   ```
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\syncParticleEarth.ps1
+```
 
-2. Build Sanity Studio:
-   ```bash
-   cd sanity
-   npm run build
-   ```
+That script builds `../ParticleEarth` and copies its output into `frontend/public/particle-earth`.
 
-## License
+## Verification
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Frontend:
 
-## Contact
+```bash
+cd frontend
+npm run lint
+npm run build
+```
 
-Yu Xuan Chong
-- LinkedIn: [Yu Xuan Chong](https://www.linkedin.com/in/yu-xuan-chong)
-- Instagram: [@yxperiments](https://www.instagram.com/yxperiments) 
+Particle Earth:
+
+```bash
+cd ParticleEarth
+npm run lint
+npm run test:unit
+npm run build
+npm run test:e2e
+```

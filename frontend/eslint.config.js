@@ -6,7 +6,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 const reactRefreshRules = reactRefresh.configs?.vite?.rules ?? reactRefresh.configs?.recommended?.rules ?? {};
 
 export default [
-  { ignores: ['dist/**'] },
+  { ignores: ['dist/**', 'public/particle-earth/**'] },
 
   // Base recommended rules for all JS/JSX.
   {

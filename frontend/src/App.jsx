@@ -1,17 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import styled, { createGlobalStyle, ThemeProvider as StyledThemeProvider } from 'styled-components';
-import Home from './pages/Home';
-import ProjectDetail from './components/ProjectDetail';
-import About from './components/About';
-import Contact from './components/Contact';
-import RnDBlog from './components/RnDBlog';
-import BlogPost from './components/BlogPost';
-import SiteHeader from './components/SiteHeader';
-import SiteFooter from './components/SiteFooter';
-import { ThemeProvider } from './context/ThemeContext.jsx';
-import { useTheme } from './context/useTheme';
-import { lightTheme, darkTheme } from './styles/theme';
+import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import styled, { ThemeProvider as StyledThemeProvider, createGlobalStyle } from 'styled-components';
+import BlogPost from './components/BlogPost';
+import Contact from './components/Contact';
+import ProjectDetail from './components/ProjectDetail';
+import RnDBlog from './components/RnDBlog';
+import SiteFooter from './components/SiteFooter';
+import SiteHeader from './components/SiteHeader';
+import Home from './pages/Home';
+import { siteTheme } from './styles/theme';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -19,105 +17,128 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
-  
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh;
-    color-scheme: ${({ theme }) => theme.mode || 'dark'};
-  }
 
   :root {
+    color-scheme: dark;
+    --site-max-width: 1240px;
+    --site-gutter: clamp(1.25rem, 2vw, 2.25rem);
     --bg-base: ${({ theme }) => theme.background};
     --bg-accent-a: ${({ theme }) => theme.backgroundAccentA};
     --bg-accent-b: ${({ theme }) => theme.backgroundAccentB};
+    --bg-accent-c: ${({ theme }) => theme.backgroundAccentC};
     --surface: ${({ theme }) => theme.surface};
-    --surface-alt: ${({ theme }) => theme.surfaceAlt || theme.surface};
+    --surface-alt: ${({ theme }) => theme.surfaceAlt};
     --text-primary: ${({ theme }) => theme.text.primary};
     --text-secondary: ${({ theme }) => theme.text.secondary};
+    --text-muted: ${({ theme }) => theme.text.muted};
     --accent: ${({ theme }) => theme.accent};
-    --accent-soft: ${({ theme }) => theme.accentSoft || `${theme.accent}20`};
+    --accent-alt: ${({ theme }) => theme.accentAlt};
+    --accent-soft: ${({ theme }) => theme.accentSoft};
     --border: ${({ theme }) => theme.border};
-    --focus-ring: ${({ theme }) => theme.focus || `${theme.accent}66`};
+    --border-strong: ${({ theme }) => theme.borderStrong};
+    --focus-ring: ${({ theme }) => theme.focus};
   }
 
-  :root[data-theme-transition='true'] *,
-  :root[data-theme-transition='true'] *::before,
-  :root[data-theme-transition='true'] *::after {
-    transition-property: color, background, background-color, border-color, box-shadow, fill, stroke;
-    transition-duration: 0.3s !important;
-    transition-timing-function: ease !important;
+  html {
+    min-width: 320px;
+    min-height: 100%;
+    scroll-behavior: smooth;
+    background: var(--bg-base);
   }
 
   body {
-    font-family: 'Red Hat Display', 'Segoe UI', sans-serif;
-    line-height: 1.55;
-    color: var(--text-primary);
+    min-height: 100vh;
     background:
-      radial-gradient(58rem 38rem at 10% -10%, var(--bg-accent-a), transparent 70%),
-      radial-gradient(54rem 34rem at 88% 0%, var(--bg-accent-b), transparent 66%),
-      radial-gradient(40rem 28rem at 50% 110%, var(--accent-soft), transparent 76%),
-      linear-gradient(180deg, var(--bg-base) 0%, var(--bg-base) 100%);
-    background-attachment: fixed;
-    transition: color 0.3s ease, background 0.3s ease;
-    position: relative;
+      radial-gradient(56rem 28rem at 50% -10%, var(--bg-accent-a), transparent 60%),
+      radial-gradient(34rem 24rem at 84% 10%, var(--bg-accent-b), transparent 60%),
+      linear-gradient(180deg, #101010 0%, #0f0f0f 100%);
+    color: var(--text-primary);
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    line-height: 1.6;
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body::before {
     content: '';
     position: fixed;
     inset: 0;
+    z-index: -2;
     pointer-events: none;
-    z-index: -1;
     background:
-      linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.08) 45%, transparent 100%),
-      repeating-linear-gradient(
-        45deg,
-        transparent 0px,
-        transparent 12px,
-        rgba(255, 255, 255, 0.03) 12px,
-        rgba(255, 255, 255, 0.03) 13px
+      linear-gradient(
+        90deg,
+        transparent calc(20% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(20% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(20% + 0.5px),
+        transparent calc(20% + 0.5px),
+        transparent calc(40% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(40% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(40% + 0.5px),
+        transparent calc(40% + 0.5px),
+        transparent calc(60% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(60% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(60% + 0.5px),
+        transparent calc(60% + 0.5px),
+        transparent calc(80% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(80% - 0.5px),
+        rgba(255, 255, 255, 0.07) calc(80% + 0.5px),
+        transparent calc(80% + 0.5px)
       );
-    opacity: 0.5;
+    opacity: 0.34;
   }
 
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    pointer-events: none;
     z-index: -1;
+    pointer-events: none;
     background:
-      linear-gradient(
-        90deg,
-        transparent calc(50% - 0.5px),
-        rgba(255, 255, 255, 0.16) calc(50% - 0.5px),
-        rgba(255, 255, 255, 0.16) calc(50% + 0.5px),
-        transparent calc(50% + 0.5px)
-      );
-    opacity: 0.18;
-  }
-
-  h1, h2, h3, h4 {
-    font-family: 'Fraunces', 'Times New Roman', serif;
-    letter-spacing: -0.02em;
-    font-variation-settings: 'SOFT' 40;
-    text-wrap: balance;
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%, transparent 78%, rgba(0, 0, 0, 0.32));
+    opacity: 0.32;
   }
 
   a {
     color: inherit;
   }
 
-  a, button, input, textarea {
-    font-family: inherit;
+  a,
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  section[id] {
+    scroll-margin-top: calc(var(--site-header-height, 84px) + 1.25rem);
+  }
+
+  #root {
+    min-height: 100vh;
   }
 
   :focus-visible {
     outline: 3px solid var(--focus-ring);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 
   ::selection {
@@ -125,90 +146,90 @@ const GlobalStyle = createGlobalStyle`
     background: ${({ theme }) => theme.accent};
   }
 
-  #root {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  @keyframes page-rise {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  main > * {
-    animation: page-rise 0.48s ease both;
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
       animation: none !important;
       transition: none !important;
     }
   }
 `;
 
+function ScrollManager() {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      return undefined;
+    }
+
+    const id = decodeURIComponent(location.hash.slice(1));
+    const timeout = window.setTimeout(() => {
+      const element = document.getElementById(id);
+      if (!element) return;
+
+      const headerHeight = Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--site-header-height'),
+      ) || 0;
+      const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 60);
+
+    return () => window.clearTimeout(timeout);
+  }, [location.pathname, location.hash]);
+
+  return null;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<Navigate replace to="/#resume" />} />
+      <Route path="/project/:slug" element={<ProjectDetail />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/rnd" element={<RnDBlog />} />
+      <Route path="/rnd/:slug" element={<BlogPost />} />
+    </Routes>
+  );
+}
+
 function App() {
   return (
     <>
-      <ThemeProvider>
-        <ThemedApp />
-      </ThemeProvider>
+      <StyledThemeProvider theme={siteTheme}>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <GlobalStyle />
+          <ScrollManager />
+          <PageShell>
+            <SiteHeader />
+            <MainContent>
+              <AppRoutes />
+            </MainContent>
+            <SiteFooter />
+          </PageShell>
+        </Router>
+      </StyledThemeProvider>
       <Analytics />
     </>
   );
 }
 
-function ThemedApp() {
-  const { isDarkMode } = useTheme();
-  const theme = {
-    ...(isDarkMode ? darkTheme : lightTheme),
-    mode: isDarkMode ? 'dark' : 'light',
-  };
-
-  return (
-    <StyledThemeProvider theme={theme}>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <GlobalStyle />
-        <PageWrapper>
-          <SiteHeader />
-
-          <MainContent>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/project/:slug" element={<ProjectDetail />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/rnd" element={<RnDBlog />} />
-              <Route path="/rnd/:slug" element={<BlogPost />} />
-            </Routes>
-          </MainContent>
-
-          <SiteFooter />
-        </PageWrapper>
-      </Router>
-    </StyledThemeProvider>
-  );
-}
-
-const PageWrapper = styled.div`
+const PageShell = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  width: 100%;
 `;
 
 const MainContent = styled.main`
   flex: 1;
   width: 100%;
-  padding: 0 6vw 2.2rem;
 `;
 
 export default App;
