@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { memo, useCallback, useEffect } from 'react';
+import { FaTimes } from 'react-icons/fa';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
@@ -31,111 +32,192 @@ const VideoEmbed = memo(function VideoEmbed({ embedCode }) {
   );
 });
 
-export default function ProjectDetail() {
+export default function ProjectDetail({ overlay = false }) {
   const { slug } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [project, error, { isValidating }] = useSanityData(QUERY, { slug });
+  const hasBackgroundLocation = Boolean(location.state?.backgroundLocation);
+
+  const handleClose = useCallback(() => {
+    if (overlay && hasBackgroundLocation) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/#works');
+  }, [hasBackgroundLocation, navigate, overlay]);
+
+  useEffect(() => {
+    if (!overlay) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+    };
+  }, [overlay]);
+
+  useEffect(() => {
+    if (!overlay) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [handleClose, overlay]);
 
   if (error) {
-    return (
-      <Page>
-        <BackLink to="/#works">Back to Works</BackLink>
-        <ErrorCard>{error}</ErrorCard>
-      </Page>
-    );
+    return renderProjectShell({
+      overlay,
+      onClose: handleClose,
+      children: (
+        <Page $overlay={overlay}>
+          {!overlay ? <BackLink to="/#works">Back to Works</BackLink> : null}
+          <ErrorCard>{error}</ErrorCard>
+        </Page>
+      ),
+    });
   }
 
   if (isValidating && !project) {
-    return (
-      <Page>
-        <LoadingState label="Loading Project" minHeight="360px" margin="0" />
-      </Page>
-    );
+    return renderProjectShell({
+      overlay,
+      onClose: handleClose,
+      children: (
+        <Page $overlay={overlay}>
+          <LoadingState label="Loading Project" minHeight="360px" margin="0" />
+        </Page>
+      ),
+    });
   }
 
   if (!project) {
-    return (
-      <Page>
-        <BackLink to="/#works">Back to Works</BackLink>
-        <EmptyCard>Project not found.</EmptyCard>
-      </Page>
-    );
+    return renderProjectShell({
+      overlay,
+      onClose: handleClose,
+      children: (
+        <Page $overlay={overlay}>
+          {!overlay ? <BackLink to="/#works">Back to Works</BackLink> : null}
+          <EmptyCard>Project not found.</EmptyCard>
+        </Page>
+      ),
+    });
   }
 
-  return (
-    <Page>
-      <BackLink to="/#works">Back to Works</BackLink>
+  return renderProjectShell({
+    overlay,
+    onClose: handleClose,
+    children: (
+      <Page $overlay={overlay}>
+        {!overlay ? <BackLink to="/#works">Back to Works</BackLink> : null}
 
-      <Hero>
-        <Eyebrow>Project Detail</Eyebrow>
-        <Title>{project.title}</Title>
-        {Array.isArray(project.tags) && project.tags.length > 0 ? (
-          <TagRow>
-            {project.tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
-          </TagRow>
-        ) : null}
-      </Hero>
-
-      {project.mainImage ? (
-        <MainImage>
-          <img
-            src={urlFor(project.mainImage).auto('format').width(1600).fit('max').quality(90).url()}
-            alt={project.title}
-            loading="eager"
-          />
-        </MainImage>
-      ) : null}
-
-      <ContentGrid>
-        <DescriptionPanel>
-          <BlockLabel>Overview</BlockLabel>
-          <SectionTitle>Project Description</SectionTitle>
-          {project.description ? <Description>{project.description}</Description> : null}
-
-          {Array.isArray(project.arsenal) && project.arsenal.length > 0 ? (
-            <>
-              <SectionTitle>The Arsenal</SectionTitle>
-              <ToolList>
-                {project.arsenal.map((tool) => (
-                  <Tool key={tool.name}>{tool.name}</Tool>
+        <HeroGrid $hasImage={Boolean(project.mainImage)}>
+          <Hero>
+            <Eyebrow>Project Detail</Eyebrow>
+            <Title>{project.title}</Title>
+            {Array.isArray(project.tags) && project.tags.length > 0 ? (
+              <TagRow>
+                {project.tags.map((tag) => (
+                  <Tag key={tag}>{tag}</Tag>
                 ))}
-              </ToolList>
-            </>
+              </TagRow>
+            ) : null}
+          </Hero>
+
+          {project.mainImage ? (
+            <MainImage>
+              <img
+                src={urlFor(project.mainImage).auto('format').width(1600).fit('max').quality(90).url()}
+                alt={project.title}
+                loading="eager"
+              />
+            </MainImage>
           ) : null}
-        </DescriptionPanel>
+        </HeroGrid>
 
-        <MediaPanel>
-          <BlockLabel>Embedded Media</BlockLabel>
-          {Array.isArray(project.videoEmbeds) && project.videoEmbeds.length > 0 ? (
-            <VideoStack>
-              {project.videoEmbeds.map((video, index) => (
-                <VideoEmbed key={`${project._id}-video-${index}`} embedCode={video.embedCode} />
+        <ContentGrid>
+          <DescriptionPanel>
+            <BlockLabel>Overview</BlockLabel>
+            <SectionTitle>Project Description</SectionTitle>
+            {project.description ? <Description>{project.description}</Description> : null}
+
+            {Array.isArray(project.arsenal) && project.arsenal.length > 0 ? (
+              <>
+                <SectionTitle>The Arsenal</SectionTitle>
+                <ToolList>
+                  {project.arsenal.map((tool) => (
+                    <Tool key={tool.name}>{tool.name}</Tool>
+                  ))}
+                </ToolList>
+              </>
+            ) : null}
+          </DescriptionPanel>
+
+          <MediaPanel>
+            {Array.isArray(project.videoEmbeds) && project.videoEmbeds.length > 0 ? (
+              <VideoStack>
+                {project.videoEmbeds.map((video, index) => (
+                  <VideoEmbed key={`${project._id}-video-${index}`} embedCode={video.embedCode} />
+                ))}
+              </VideoStack>
+            ) : (
+              <EmptyMedia>No embedded videos for this project.</EmptyMedia>
+            )}
+          </MediaPanel>
+        </ContentGrid>
+
+        {Array.isArray(project.additionalImages) && project.additionalImages.length > 0 ? (
+          <GalleryPanel>
+            <BlockLabel>Gallery</BlockLabel>
+            <GalleryGrid>
+              {project.additionalImages.map((image, index) => (
+                <GalleryItem key={`${project._id}-image-${index}`}>
+                  <img
+                    src={urlFor(image).auto('format').fit('max').quality(90).url()}
+                    alt={`${project.title} still ${index + 1}`}
+                    loading="lazy"
+                  />
+                </GalleryItem>
               ))}
-            </VideoStack>
-          ) : (
-            <EmptyMedia>No embedded videos for this project.</EmptyMedia>
-          )}
-        </MediaPanel>
-      </ContentGrid>
+            </GalleryGrid>
+          </GalleryPanel>
+        ) : null}
+      </Page>
+    ),
+  });
+}
 
-      {Array.isArray(project.additionalImages) && project.additionalImages.length > 0 ? (
-        <GalleryPanel>
-          <BlockLabel>Gallery</BlockLabel>
-          <GalleryGrid>
-            {project.additionalImages.map((image, index) => (
-              <GalleryItem key={`${project._id}-image-${index}`}>
-                <img
-                  src={urlFor(image).auto('format').fit('max').quality(90).url()}
-                  alt={`${project.title} still ${index + 1}`}
-                  loading="lazy"
-                />
-              </GalleryItem>
-            ))}
-          </GalleryGrid>
-        </GalleryPanel>
-      ) : null}
-    </Page>
+function renderProjectShell({ overlay, onClose, children }) {
+  if (!overlay) return children;
+
+  return (
+    <OverlayBackdrop onClick={onClose} role="presentation">
+      <OverlayDialog
+        role="dialog"
+        aria-modal="true"
+        aria-label="Project details"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <OverlayClose type="button" onClick={onClose} aria-label="Close project">
+          <FaTimes size={16} />
+        </OverlayClose>
+        <OverlayScroll>{children}</OverlayScroll>
+      </OverlayDialog>
+    </OverlayBackdrop>
   );
 }
 
@@ -157,11 +239,56 @@ const panelStyles = css`
 `;
 
 const Page = styled.div`
-  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
+  width: 100%;
+  max-width: ${({ $overlay }) => ($overlay ? '100%' : 'min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)))')};
   margin: 0 auto;
-  padding: calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) 0 4rem;
+  padding: ${({ $overlay }) =>
+    $overlay ? 'clamp(1rem, 2vw, 1.35rem)' : 'calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) 0 4rem'};
   display: grid;
   gap: 1rem;
+`;
+
+const OverlayBackdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: clamp(0.75rem, 2vw, 1.6rem);
+  background: rgba(5, 6, 8, 0.68);
+  backdrop-filter: blur(10px);
+`;
+
+const OverlayDialog = styled.div`
+  position: relative;
+  width: min(1440px, calc(100vw - (clamp(0.75rem, 2vw, 1.6rem) * 2)));
+  margin: 0 auto;
+
+  ${MEDIA.phone} {
+    width: calc(100vw - 24px);
+  }
+`;
+
+const OverlayScroll = styled.div`
+  width: 100%;
+`;
+
+const OverlayClose = styled.button`
+  position: fixed;
+  top: clamp(0.85rem, 2vw, 1.2rem);
+  right: clamp(0.85rem, 2vw, 1.2rem);
+  z-index: 230;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.borderStrong};
+  background: rgba(8, 10, 14, 0.82);
+  color: ${({ theme }) => theme.text.primary};
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 16px 32px ${({ theme }) => theme.shadowStrong};
 `;
 
 const BackLink = styled(Link)`
@@ -179,11 +306,31 @@ const BackLink = styled(Link)`
   text-transform: uppercase;
 `;
 
+const HeroGrid = styled.div`
+  display: grid;
+  grid-template-columns: ${({ $hasImage }) =>
+    $hasImage ? 'minmax(0, 0.92fr) minmax(0, 1.08fr)' : '1fr'};
+  gap: 1rem;
+  align-items: stretch;
+
+  ${MEDIA.wideUp} {
+    grid-template-columns: ${({ $hasImage }) =>
+      $hasImage ? 'minmax(0, 1fr) minmax(0, 0.9fr)' : '1fr'};
+  }
+
+  ${MEDIA.tabletDown} {
+    grid-template-columns: 1fr;
+  }
+`;
+
 const Hero = styled.header`
   ${panelStyles}
-  padding: var(--panel-padding);
+  padding: clamp(1rem, 1.8vw, 1.25rem);
   display: grid;
   gap: 0.6rem;
+  align-content: center;
+  min-width: 0;
+  height: 100%;
 `;
 
 const Eyebrow = styled.p`
@@ -195,8 +342,13 @@ const Eyebrow = styled.p`
 `;
 
 const Title = styled.h1`
-  font-size: clamp(1.95rem, 6vw, 4.8rem);
+  font-size: clamp(1.8rem, 4vw, 3.7rem);
+  line-height: 0.92;
   color: ${({ theme }) => theme.text.primary};
+
+  ${MEDIA.wideUp} {
+    font-size: clamp(1.7rem, 2.6vw, 2.9rem);
+  }
 `;
 
 const TagRow = styled.div`
@@ -222,13 +374,24 @@ const MainImage = styled.div`
   ${panelStyles}
   padding: 0.45rem;
   overflow: hidden;
+  min-width: 0;
+  height: 100%;
 
   img {
     width: 100%;
-    height: auto;
-    max-height: 720px;
+    height: 100%;
+    min-height: clamp(220px, 15vw, 280px);
+    max-height: 280px;
     object-fit: cover;
     border-radius: 20px;
+  }
+
+  ${MEDIA.tabletDown} {
+    img {
+      height: auto;
+      min-height: 0;
+      max-height: 720px;
+    }
   }
 `;
 
@@ -282,17 +445,23 @@ const ToolList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
+  align-items: center;
 `;
 
 const Tool = styled.span`
-  min-height: 32px;
-  padding: 0.45rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 0.8rem;
   border-radius: 999px;
   border: 1px solid ${({ theme }) => theme.border};
   background: rgba(255, 255, 255, 0.03);
   color: ${({ theme }) => theme.text.secondary};
   font-size: 0.74rem;
+  line-height: 1;
   font-family: 'IBM Plex Mono', monospace;
+  white-space: nowrap;
 `;
 
 const VideoStack = styled.div`

@@ -1,5 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { WORKS_CONTENT } from '../../content/siteContent';
 import { urlFor } from '../../lib/sanityClient';
@@ -24,8 +31,32 @@ function getTopTags(projects, limit = 8) {
     .map(([tag]) => tag);
 }
 
+const FILTER_FADE_MS = 200;
+const FLIP_TRANSITION = 'transform 280ms cubic-bezier(0.22, 1, 0.36, 1)';
+
+function matchesActiveTag(project, activeTag) {
+  if (activeTag === 'All') return true;
+  return Array.isArray(project.tags) && project.tags.includes(activeTag);
+}
+
+function sameRenderedProjects(currentItems, nextItems) {
+  if (currentItems.length !== nextItems.length) return false;
+  return currentItems.every((project, index) => {
+    const nextProject = nextItems[index];
+    return project._id === nextProject?._id && project === nextProject;
+  });
+}
+
 export default function WorksSection({ projects, error, isLoading }) {
+  const location = useLocation();
   const [activeTag, setActiveTag] = useState('All');
+  const [displayedItems, setDisplayedItems] = useState([]);
+  const [exitingIds, setExitingIds] = useState([]);
+  const [enteringIds, setEnteringIds] = useState([]);
+  const itemRefs = useRef(new Map());
+  const previousRectsRef = useRef(new Map());
+  const flipIdsRef = useRef([]);
+  const filterTimeoutRef = useRef(null);
 
   const featuredCandidates = useMemo(
     () => projects.filter((project) => Boolean(project.featured)),
@@ -42,10 +73,153 @@ export default function WorksSection({ projects, error, isLoading }) {
   );
   const orderedItems = useMemo(() => [...featuredItems, ...archiveItems], [featuredItems, archiveItems]);
   const tags = useMemo(() => getTopTags(orderedItems), [orderedItems]);
-  const filteredItems = useMemo(() => {
-    if (activeTag === 'All') return orderedItems;
-    return orderedItems.filter((project) => Array.isArray(project.tags) && project.tags.includes(activeTag));
-  }, [activeTag, orderedItems]);
+  const filteredItems = useMemo(
+    () => orderedItems.filter((project) => matchesActiveTag(project, activeTag)),
+    [activeTag, orderedItems],
+  );
+
+  const setItemRef = useCallback((projectId, node) => {
+    if (!node) {
+      itemRefs.current.delete(projectId);
+      return;
+    }
+
+    itemRefs.current.set(projectId, node);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (filterTimeoutRef.current !== null) {
+        window.clearTimeout(filterTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (displayedItems.length === 0 && filteredItems.length > 0) {
+      setDisplayedItems(filteredItems);
+      return;
+    }
+
+    if (filterTimeoutRef.current !== null) {
+      window.clearTimeout(filterTimeoutRef.current);
+      filterTimeoutRef.current = null;
+    }
+
+    if (sameRenderedProjects(displayedItems, filteredItems)) {
+      setExitingIds([]);
+      setEnteringIds([]);
+      flipIdsRef.current = [];
+      previousRectsRef.current = new Map();
+      return;
+    }
+
+    const nextIds = new Set(filteredItems.map((project) => project._id));
+    const currentIds = new Set(displayedItems.map((project) => project._id));
+    const sharedIds = displayedItems
+      .filter((project) => nextIds.has(project._id))
+      .map((project) => project._id);
+    const exiting = displayedItems
+      .filter((project) => !nextIds.has(project._id))
+      .map((project) => project._id);
+    const entering = filteredItems
+      .filter((project) => !currentIds.has(project._id))
+      .map((project) => project._id);
+    const firstRects = new Map();
+
+    sharedIds.forEach((projectId) => {
+      const node = itemRefs.current.get(projectId);
+      if (node) {
+        firstRects.set(projectId, node.getBoundingClientRect());
+      }
+    });
+
+    previousRectsRef.current = firstRects;
+    flipIdsRef.current = sharedIds;
+
+    if (displayedItems.length === 0) {
+      setDisplayedItems(filteredItems);
+      setExitingIds([]);
+      setEnteringIds([]);
+      return;
+    }
+
+    if (exiting.length === 0) {
+      setDisplayedItems(filteredItems);
+      setExitingIds([]);
+      setEnteringIds(entering);
+      return;
+    }
+
+    setExitingIds(exiting);
+    filterTimeoutRef.current = window.setTimeout(() => {
+      setDisplayedItems(filteredItems);
+      setExitingIds([]);
+      setEnteringIds(entering);
+      filterTimeoutRef.current = null;
+    }, FILTER_FADE_MS);
+  }, [displayedItems, filteredItems]);
+
+  useEffect(() => {
+    if (enteringIds.length === 0) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      setEnteringIds([]);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [enteringIds]);
+
+  useLayoutEffect(() => {
+    const idsToFlip = flipIdsRef.current;
+    if (!idsToFlip.length) {
+      return;
+    }
+
+    const cleanupFns = [];
+    idsToFlip.forEach((projectId) => {
+      const node = itemRefs.current.get(projectId);
+      const firstRect = previousRectsRef.current.get(projectId);
+
+      if (!node || !firstRect) {
+        return;
+      }
+
+      const lastRect = node.getBoundingClientRect();
+      const deltaX = firstRect.left - lastRect.left;
+      const deltaY = firstRect.top - lastRect.top;
+
+      if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) {
+        return;
+      }
+
+      node.style.transition = 'none';
+      node.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+      node.style.willChange = 'transform';
+
+      const frame = window.requestAnimationFrame(() => {
+        node.style.transition = FLIP_TRANSITION;
+        node.style.transform = 'translate(0, 0)';
+      });
+
+      const cleanup = () => {
+        window.cancelAnimationFrame(frame);
+        node.style.transition = '';
+        node.style.transform = '';
+        node.style.willChange = '';
+      };
+
+      node.addEventListener('transitionend', cleanup, { once: true });
+      cleanupFns.push(cleanup);
+    });
+
+    flipIdsRef.current = [];
+    previousRectsRef.current = new Map();
+
+    return () => {
+      cleanupFns.forEach((cleanup) => cleanup());
+    };
+  }, [displayedItems]);
 
   return (
     <Section id="works">
@@ -71,23 +245,35 @@ export default function WorksSection({ projects, error, isLoading }) {
 
         {isLoading ? (
           <LoadingState label="Loading Projects" minHeight="340px" margin="0" />
-        ) : filteredItems.length > 0 ? (
+        ) : displayedItems.length > 0 ? (
           <ArchiveGrid aria-label="Projects">
-            {filteredItems.map((project) => (
-              <ArchiveLink to={`/project/${project.slug}`} key={project._id}>
-                <ArchiveCard>
-                  <ArchiveImage>
-                    <LazyImage
-                      src={urlFor(project.mainImage).auto('format').width(900).height(720).fit('crop').quality(90).url()}
-                      alt={project.title}
-                      sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                    />
-                  </ArchiveImage>
-                  <ArchiveOverlay>
-                    <ArchiveTitle>{project.title}</ArchiveTitle>
-                  </ArchiveOverlay>
-                </ArchiveCard>
-              </ArchiveLink>
+            {displayedItems.map((project) => (
+              <ArchiveItem
+                key={project._id}
+                ref={(node) => setItemRef(project._id, node)}
+                $isExiting={exitingIds.includes(project._id)}
+                $isEntering={enteringIds.includes(project._id)}
+              >
+                <ArchiveLink
+                  to={`/project/${project.slug}`}
+                  state={{ backgroundLocation: location }}
+                  tabIndex={exitingIds.includes(project._id) ? -1 : undefined}
+                  aria-hidden={exitingIds.includes(project._id)}
+                >
+                  <ArchiveCard>
+                    <ArchiveImage>
+                      <LazyImage
+                        src={urlFor(project.mainImage).auto('format').width(900).height(720).fit('crop').quality(90).url()}
+                        alt={project.title}
+                        sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                      />
+                    </ArchiveImage>
+                    <ArchiveOverlay>
+                      <ArchiveTitle>{project.title}</ArchiveTitle>
+                    </ArchiveOverlay>
+                  </ArchiveCard>
+                </ArchiveLink>
+              </ArchiveItem>
             ))}
           </ArchiveGrid>
         ) : (
@@ -140,7 +326,6 @@ const ErrorCard = styled.div`
 `;
 
 const SectionBlock = styled.div`
-  ${panelStyles}
   padding: var(--panel-padding);
   display: grid;
   gap: 0.9rem;
@@ -190,6 +375,16 @@ const ArchiveGrid = styled.div`
   }
 `;
 
+const ArchiveItem = styled.div`
+  min-width: 0;
+  opacity: ${({ $isExiting, $isEntering }) => {
+    if ($isExiting || $isEntering) return 0;
+    return 1;
+  }};
+  transition: opacity ${FILTER_FADE_MS}ms ease;
+  pointer-events: ${({ $isExiting }) => ($isExiting ? 'none' : 'auto')};
+`;
+
 const ArchiveLink = styled(Link)`
   text-decoration: none;
   color: inherit;
@@ -224,10 +419,10 @@ const ArchiveImage = styled.div`
 const ArchiveOverlay = styled.div`
   position: absolute;
   inset: 0;
-  padding: clamp(0.85rem, 2.5vw, 1rem);
+  padding: clamp(1rem, 2.8vw, 1.35rem);
   display: flex;
   align-items: end;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.78));
+  background: transparent;
 `;
 
 const ArchiveTitle = styled.h4`
@@ -236,6 +431,9 @@ const ArchiveTitle = styled.h4`
   text-align: left;
   font-size: 0.98rem;
   line-height: 1.2;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.85),
+    0 1px 3px rgba(0, 0, 0, 0.95);
 `;
 
 const EmptyState = styled.div`

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaChevronDown, FaEnvelope, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
 import { HERO_CONTENT } from '../../content/siteContent';
@@ -17,43 +17,7 @@ const HERO_SOCIALS = [
 ];
 
 export default function HomeHero() {
-  const [railOpacity, setRailOpacity] = useState(1);
-
-  useEffect(() => {
-    let frame = 0;
-
-    const updateRailOpacity = () => {
-      const footer = document.querySelector('footer');
-      if (!footer) {
-        setRailOpacity(1);
-        return;
-      }
-
-      const footerTop = footer.getBoundingClientRect().top;
-      const viewportHeight = window.innerHeight;
-      const fadeStart = viewportHeight + 160;
-      const fadeEnd = viewportHeight - 40;
-      const progress = (fadeStart - footerTop) / (fadeStart - fadeEnd);
-      const nextOpacity = 1 - Math.min(1, Math.max(0, progress));
-
-      setRailOpacity((current) => (Math.abs(current - nextOpacity) < 0.02 ? current : nextOpacity));
-    };
-
-    const scheduleUpdate = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(updateRailOpacity);
-    };
-
-    scheduleUpdate();
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', scheduleUpdate);
-      window.removeEventListener('resize', scheduleUpdate);
-    };
-  }, []);
+  const hasDisplayTitle = Boolean(HERO_CONTENT.displayLead || HERO_CONTENT.displayAccent);
 
   const handleContinue = () => {
     const target = document.getElementById(HERO_CONTENT.primaryCta.id);
@@ -67,12 +31,14 @@ export default function HomeHero() {
 
       <Overlay>
         <HeroCenter>
-          <DisplayTitle>
-            {HERO_CONTENT.displayLead} <AccentWord>{HERO_CONTENT.displayAccent}</AccentWord>
-          </DisplayTitle>
+          {hasDisplayTitle ? (
+            <DisplayTitle>
+              {HERO_CONTENT.displayLead} <AccentWord>{HERO_CONTENT.displayAccent}</AccentWord>
+            </DisplayTitle>
+          ) : null}
         </HeroCenter>
 
-        <DesktopContact $railOpacity={railOpacity}>
+        <DesktopContact>
           {HERO_CONTACT_LINES.map((line) => (
             <DesktopContactLine key={line.label}>
               <DesktopContactLabel>{line.label}:</DesktopContactLabel>
@@ -95,7 +61,7 @@ export default function HomeHero() {
           <FaChevronDown />
         </DesktopScrollButton>
 
-        <DesktopFollow $railOpacity={railOpacity}>
+        <DesktopFollow>
           <DesktopFollowLabel>Follow Me</DesktopFollowLabel>
           <DesktopFollowRule aria-hidden="true" />
           <DesktopFollowLinks>
@@ -218,10 +184,7 @@ const DesktopContact = styled.div`
   font-size: 0.96rem;
   line-height: 1.8;
   z-index: 40;
-  opacity: ${({ $railOpacity }) => $railOpacity};
-  transform: translateY(${({ $railOpacity }) => (1 - $railOpacity) * 24}px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  pointer-events: ${({ $railOpacity }) => ($railOpacity < 0.08 ? 'none' : 'auto')};
+  pointer-events: auto;
 
   ${MEDIA.wideUp} {
     display: grid;
@@ -298,10 +261,7 @@ const DesktopFollow = styled.div`
   justify-items: center;
   gap: 1.1rem;
   z-index: 40;
-  opacity: ${({ $railOpacity }) => $railOpacity};
-  transform: translateY(${({ $railOpacity }) => (1 - $railOpacity) * 24}px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  pointer-events: ${({ $railOpacity }) => ($railOpacity < 0.08 ? 'none' : 'auto')};
+  pointer-events: auto;
 
   ${MEDIA.wideUp} {
     display: grid;

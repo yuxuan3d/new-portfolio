@@ -23,15 +23,74 @@ export default function Home() {
   return (
     <Page>
       <HomeHero />
-      <ResumeSection />
-      <WorksSection projects={projects} error={projectError} isLoading={projectsLoading && !projectItems} />
-      <ContactSection id="contact" />
+      <ContentBand>
+        <ResumeSection />
+        <WorksSection projects={projects} error={projectError} isLoading={projectsLoading && !projectItems} />
+        <ContactSection id="contact" />
+      </ContentBand>
     </Page>
   );
 }
 
 const Page = styled.div`
-  padding-bottom: clamp(2rem, 5vw, 4rem);
+  display: grid;
+  gap: 0;
+`;
+
+const ContentBand = styled.div`
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding:
+    var(--section-gap)
+    0
+    clamp(2rem, 5vw, 4rem);
   display: grid;
   gap: var(--section-gap);
+  background: linear-gradient(
+    180deg,
+    #050608 0%,
+    #0a0b0d 12%,
+    ${({ theme }) => theme.surfaceAlt} 100%
+  );
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1.25px);
+    background-size: 26px 26px;
+    background-position: center top;
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.22) 3%,
+      rgba(0, 0, 0, 0.58) 7%,
+      rgba(0, 0, 0, 0.88) 11%,
+      #000 15%,
+      #000 86%,
+      rgba(0, 0, 0, 0.82) 91%,
+      rgba(0, 0, 0, 0.42) 96%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.22) 3%,
+      rgba(0, 0, 0, 0.58) 7%,
+      rgba(0, 0, 0, 0.88) 11%,
+      #000 15%,
+      #000 86%,
+      rgba(0, 0, 0, 0.82) 91%,
+      rgba(0, 0, 0, 0.42) 96%,
+      transparent 100%
+    );
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 `;

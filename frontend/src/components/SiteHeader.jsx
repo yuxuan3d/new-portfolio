@@ -192,18 +192,19 @@ export default function SiteHeader() {
             Motion, VFX, and interactive portfolio work with a running R&amp;D journal.
           </DrawerIntro>
 
-          <DrawerNav aria-label="Section navigation">
-            {HOME_NAV_ITEMS.map((item, index) => (
-              <DrawerLink
-                key={item.id}
-                ref={index === 0 ? firstLinkRef : null}
-                to={item.to}
-                $active={activeSectionId === item.id}
-              >
-                <span>{item.label}</span>
-                <DrawerSuffix>/</DrawerSuffix>
-              </DrawerLink>
-            ))}
+            <DrawerNav aria-label="Section navigation">
+              {HOME_NAV_ITEMS.map((item, index) => (
+                <DrawerLink
+                  key={item.id}
+                  ref={index === 0 ? firstLinkRef : null}
+                  to={item.to}
+                  $active={activeSectionId === item.id}
+                  $cta={item.id === 'contact'}
+                >
+                  <span>{item.label}</span>
+                  <DrawerSuffix $cta={item.id === 'contact'}>/</DrawerSuffix>
+                </DrawerLink>
+              ))}
           </DrawerNav>
 
           <DrawerMeta>
@@ -239,6 +240,7 @@ export default function SiteHeader() {
                   key={item.id}
                   to={item.to}
                   $active={activeSectionId === item.id}
+                  $cta={item.id === 'contact'}
                 >
                   {item.label}
                 </DesktopNavLink>
@@ -275,19 +277,17 @@ const Header = styled.header`
 `;
 
 const HeaderInner = styled.div`
-  width: calc(100vw - (var(--site-gutter) * 2));
+  width: 100%;
   margin: 0 auto;
   min-height: 102px;
-  padding-top: clamp(2rem, 2.65vw, 2.75rem);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   pointer-events: none;
 
   ${MEDIA.tabletDown} {
     min-height: 76px;
-    padding-top: 1.45rem;
   }
 `;
 
@@ -334,7 +334,7 @@ const DesktopNav = styled.nav`
   display: none;
   align-items: center;
   gap: clamp(1.4rem, 2vw, 2.6rem);
-  padding-right: clamp(0.9rem, 1vw, 1rem);
+  padding-right: 0;
 
   ${MEDIA.desktopUp} {
     display: flex;
@@ -343,12 +343,29 @@ const DesktopNav = styled.nav`
 
 const DesktopNavLink = styled(Link)`
   position: relative;
+  min-height: ${({ $cta }) => ($cta ? '42px' : 'auto')};
+  padding: ${({ $cta }) => ($cta ? '0.72rem 1rem' : '0')};
+  border: ${({ theme, $cta }) => ($cta ? `1px solid ${theme.accent}` : '0')};
+  border-radius: ${({ $cta }) => ($cta ? '999px' : '0')};
+  background: ${({ theme, $cta, $active }) => {
+    if (!$cta) return 'transparent';
+    return $active ? theme.button.hover : theme.button.background;
+  }};
   text-decoration: none;
-  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.secondary)};
+  color: ${({ theme, $active, $cta }) => {
+    if ($cta) return theme.button.text;
+    return $active ? theme.text.primary : theme.text.secondary;
+  }};
   font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  transition: color 0.2s ease;
+  box-shadow: ${({ $cta, theme }) => ($cta ? `0 16px 34px -24px ${theme.earthGlow}` : 'none')};
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 
   &::after {
     content: '';
@@ -362,10 +379,14 @@ const DesktopNavLink = styled(Link)`
     transform-origin: left center;
     transition: transform 0.2s ease;
     opacity: 0.9;
+    display: ${({ $cta }) => ($cta ? 'none' : 'block')};
   }
 
   &:hover {
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme, $cta }) => ($cta ? theme.button.text : theme.text.primary)};
+    background: ${({ theme, $cta }) => ($cta ? theme.button.hover : 'transparent')};
+    transform: ${({ $cta }) => ($cta ? 'translateY(-1px)' : 'none')};
+    box-shadow: ${({ $cta, theme }) => ($cta ? `0 20px 38px -24px ${theme.earthGlow}` : 'none')};
   }
 
   &:hover::after {
@@ -448,9 +469,15 @@ const DrawerNav = styled.nav`
 const DrawerLink = styled(Link)`
   min-height: 56px;
   padding: 0.9rem 1rem;
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.borderStrong : theme.border)};
-  background: ${({ theme, $active }) => ($active ? theme.accentSurface : 'rgba(255, 255, 255, 0.02)')};
-  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme, $active, $cta }) => {
+    if ($cta) return theme.accent;
+    return $active ? theme.borderStrong : theme.border;
+  }};
+  background: ${({ theme, $active, $cta }) => {
+    if ($cta) return $active ? theme.button.hover : theme.button.background;
+    return $active ? theme.accentSurface : 'rgba(255, 255, 255, 0.02)';
+  }};
+  color: ${({ theme, $cta }) => ($cta ? theme.button.text : theme.text.primary)};
   text-decoration: none;
   display: flex;
   justify-content: space-between;
@@ -459,10 +486,11 @@ const DrawerLink = styled(Link)`
   font-family: 'Roboto Mono', monospace;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  box-shadow: ${({ $cta, theme }) => ($cta ? `0 16px 34px -26px ${theme.earthGlow}` : 'none')};
 `;
 
 const DrawerSuffix = styled.span`
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme, $cta }) => ($cta ? 'rgba(7, 18, 29, 0.7)' : theme.text.muted)};
 `;
 
 const DrawerMeta = styled.div`

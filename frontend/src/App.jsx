@@ -51,6 +51,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    position: relative;
     min-height: 100vh;
     background:
       radial-gradient(56rem 28rem at 50% -10%, var(--bg-accent-a), transparent 60%),
@@ -69,36 +70,19 @@ const GlobalStyle = createGlobalStyle`
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -2;
+    z-index: 0;
     pointer-events: none;
-    background:
-      linear-gradient(
-        90deg,
-        transparent calc(20% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(20% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(20% + 0.5px),
-        transparent calc(20% + 0.5px),
-        transparent calc(40% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(40% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(40% + 0.5px),
-        transparent calc(40% + 0.5px),
-        transparent calc(60% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(60% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(60% + 0.5px),
-        transparent calc(60% + 0.5px),
-        transparent calc(80% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(80% - 0.5px),
-        rgba(255, 255, 255, 0.07) calc(80% + 0.5px),
-        transparent calc(80% + 0.5px)
-      );
-    opacity: 0.34;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 1) 0.85px, transparent 1.05px);
+    background-size: 28px 28px;
+    background-position: center top;
+    opacity: 0.15;
   }
 
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%, transparent 78%, rgba(0, 0, 0, 0.32));
@@ -138,6 +122,8 @@ const GlobalStyle = createGlobalStyle`
 
   #root {
     min-height: 100vh;
+    position: relative;
+    z-index: 1;
   }
 
   :focus-visible {
@@ -172,7 +158,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body::before {
-      opacity: 0.2;
+      opacity: 0.09;
     }
   }
 
@@ -184,14 +170,12 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body::before {
-      opacity: 0.12;
+      opacity: 0.05;
     }
   }
 `;
 
-function ScrollManager() {
-  const location = useLocation();
-
+function ScrollManager({ location }) {
   React.useEffect(() => {
     if (!location.hash) {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -216,9 +200,9 @@ function ScrollManager() {
   return null;
 }
 
-function AppRoutes() {
+function AppRoutes({ location }) {
   return (
-    <Routes>
+    <Routes location={location}>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<Navigate replace to="/#resume" />} />
       <Route path="/project/:slug" element={<ProjectDetail />} />
@@ -229,20 +213,38 @@ function AppRoutes() {
   );
 }
 
+function AppFrame() {
+  const location = useLocation();
+  const backgroundLocation = location.state?.backgroundLocation;
+  const routeLocation = backgroundLocation || location;
+
+  return (
+    <>
+      <GlobalStyle />
+      <ScrollManager location={routeLocation} />
+      <PageShell>
+        <SiteHeader />
+        <MainContent>
+          <AppRoutes location={routeLocation} />
+        </MainContent>
+        <SiteFooter />
+      </PageShell>
+
+      {backgroundLocation ? (
+        <Routes>
+          <Route path="/project/:slug" element={<ProjectDetail overlay />} />
+        </Routes>
+      ) : null}
+    </>
+  );
+}
+
 function App() {
   return (
     <>
       <StyledThemeProvider theme={siteTheme}>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <GlobalStyle />
-          <ScrollManager />
-          <PageShell>
-            <SiteHeader />
-            <MainContent>
-              <AppRoutes />
-            </MainContent>
-            <SiteFooter />
-          </PageShell>
+          <AppFrame />
         </Router>
       </StyledThemeProvider>
       <Analytics />

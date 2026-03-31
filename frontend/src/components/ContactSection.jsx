@@ -169,11 +169,14 @@ export default function ContactSection({ id, standalone = false }) {
 }
 
 const Section = styled.section`
-  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
+  width: ${({ $standalone }) =>
+    $standalone
+      ? 'min(var(--site-max-width), 100%)'
+      : 'min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)))'};
   margin: 0 auto;
   padding: ${({ $standalone }) =>
     $standalone
-      ? 'calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) 0 4rem'
+      ? 'calc(var(--site-header-height, 96px) + clamp(1.1rem, 3vw, 2rem)) var(--site-gutter) 4rem'
       : '0'};
   display: grid;
   gap: 0.95rem;
@@ -200,6 +203,7 @@ const BodyGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.2rem;
+  min-width: 0;
 `;
 
 const panelStyles = css`
@@ -211,11 +215,13 @@ const panelStyles = css`
 const FormPanel = styled.div`
   ${panelStyles}
   padding: var(--panel-padding);
+  min-width: 0;
 `;
 
 const Form = styled.form`
   display: grid;
   gap: 1rem;
+  min-width: 0;
 `;
 
 const FieldRow = styled.div`
@@ -231,6 +237,7 @@ const FieldRow = styled.div`
 const FieldGroup = styled.div`
   display: grid;
   gap: 0.45rem;
+  min-width: 0;
 `;
 
 const Label = styled.label`
@@ -318,10 +325,10 @@ const SubmitButton = styled.button`
 `;
 
 const InfoPanel = styled.aside`
-  ${panelStyles}
-  padding: var(--panel-padding);
+  padding: 0;
   display: grid;
   align-content: start;
+  min-width: 0;
 `;
 
 const MethodList = styled.div`
@@ -340,6 +347,7 @@ const MethodList = styled.div`
 
 const MethodLink = styled.a`
   min-height: 72px;
+  min-width: 0;
   padding: 0.9rem 1rem;
   border-radius: 0;
   border: 1px solid ${({ theme }) => theme.border};
@@ -372,6 +380,7 @@ const MethodIcon = styled.span`
 const MethodCopy = styled.span`
   display: grid;
   gap: 0.1rem;
+  min-width: 0;
 `;
 
 const MethodLabel = styled.span`
@@ -386,4 +395,5 @@ const MethodValue = styled.span`
   color: ${({ theme }) => theme.text.primary};
   font-size: 0.98rem;
   font-weight: 500;
+  overflow-wrap: anywhere;
 `;

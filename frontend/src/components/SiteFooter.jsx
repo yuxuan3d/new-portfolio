@@ -13,12 +13,13 @@ export default function SiteFooter() {
 
 const Footer = styled.footer`
   width: 100%;
-  padding: 0 var(--site-gutter) 2rem;
+  padding: 0.75rem var(--site-gutter) 2rem;
+  background: ${({ theme }) => theme.surfaceAlt};
 `;
 
 const FooterBottom = styled.div`
   width: min(var(--site-max-width), calc(100vw - (var(--site-gutter) * 2)));
-  margin: 0.9rem auto 0;
+  margin: 0 auto;
   padding: 0 0.2rem;
   display: flex;
   justify-content: space-between;

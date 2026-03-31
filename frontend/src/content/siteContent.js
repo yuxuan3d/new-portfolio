@@ -11,8 +11,8 @@ export const HOME_NAV_ITEMS = [
 export const HERO_CONTENT = {
   eyebrow: '',
   name: 'Yu Xuan',
-  displayLead: 'I build',
-  displayAccent: 'cinematic worlds.',
+  displayLead: '',
+  displayAccent: '',
   supportTitle: '',
   description:
     'a 3D motion designer creating cinematic visuals, interactive experiences, and polished post-production.',
