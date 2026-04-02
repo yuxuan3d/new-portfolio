@@ -1,5 +1,0 @@
-[     132ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-OY5C42Z6.js?v=57380785:21608
-[     138ms] [LOG] Environment Variables Status: {projectId: 5gu0ubge, dataset: production, apiVersion: 2024-03-19} @ http://localhost:5173/src/lib/sanityClient.js:5
-[     138ms] [LOG] Sanity Config: {projectId: 5gu0ubge, dataset: production, useCdn: true, apiVersion: 2024-03-14, perspective: published} @ http://localhost:5173/src/lib/sanityClient.js:23
-[     784ms] [LOG] %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit @ https://va.vercel-scripts.com/v1/script.debug.js:0
-[     784ms] [LOG] %c[Vercel Web Analytics]%c [view] http://localhost:5173/ color: rgb(120, 120, 120) color: inherit {o: http://localhost:5173/, sv: 0.1.3, sdkn: @vercel/analytics/react, sdkv: 1.5.0, ts: 1775112744957} /_vercel/insights/view @ https://va.vercel-scripts.com/v1/script.debug.js:0
