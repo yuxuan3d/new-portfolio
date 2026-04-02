@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { BREAKPOINTS, MEDIA } from '../styles/breakpoints';
 
-export default function ParticleEarthFrame() {
+export default function ParticleEarthFrame({ onReady }) {
   const [isPhoneViewport, setIsPhoneViewport] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth <= BREAKPOINTS.phone : false,
   );
+  const hasReportedReadyRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -31,12 +32,26 @@ export default function ParticleEarthFrame() {
     [isPhoneViewport],
   );
 
+  useEffect(() => {
+    hasReportedReadyRef.current = false;
+  }, [frameSrc]);
+
+  const handleLoad = useCallback(() => {
+    if (hasReportedReadyRef.current) {
+      return;
+    }
+
+    hasReportedReadyRef.current = true;
+    onReady?.();
+  }, [onReady]);
+
   return (
     <FrameShell aria-hidden="true">
       <Frame
         src={frameSrc}
         title="Interactive particle earth"
         loading="eager"
+        onLoad={handleLoad}
       />
     </FrameShell>
   );

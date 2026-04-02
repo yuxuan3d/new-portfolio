@@ -15,14 +15,14 @@ const PROJECTS_QUERY = `*[_type == "portfolioItem"] | order(orderRank) {
   featured
 }`;
 
-export default function Home() {
+export default function Home({ onHeroReady }) {
   const [projectItems, projectError, { isValidating: projectsLoading }] = useSanityData(PROJECTS_QUERY);
 
   const projects = useMemo(() => (Array.isArray(projectItems) ? projectItems : []), [projectItems]);
 
   return (
     <Page>
-      <HomeHero />
+      <HomeHero onParticleEarthReady={onHeroReady} />
       <ContentBand>
         <ResumeSection />
         <WorksSection projects={projects} error={projectError} isLoading={projectsLoading && !projectItems} />

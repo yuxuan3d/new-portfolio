@@ -200,10 +200,10 @@ function ScrollManager({ location }) {
   return null;
 }
 
-function AppRoutes({ location }) {
+function AppRoutes({ location, onHomeReady }) {
   return (
     <Routes location={location}>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home onHeroReady={onHomeReady} />} />
       <Route path="/about" element={<Navigate replace to="/#resume" />} />
       <Route path="/project/:slug" element={<ProjectDetail />} />
       <Route path="/contact" element={<Contact />} />
@@ -217,18 +217,67 @@ function AppFrame() {
   const location = useLocation();
   const backgroundLocation = location.state?.backgroundLocation;
   const routeLocation = backgroundLocation || location;
+  const needsInitialHeroLoad =
+    !backgroundLocation && (routeLocation.pathname === '/' || routeLocation.pathname === '/about');
+  const [hasHeroLoaded, setHasHeroLoaded] = React.useState(() => !needsInitialHeroLoad);
+  const [loaderDismissed, setLoaderDismissed] = React.useState(() => !needsInitialHeroLoad);
+  const [loaderProgress, setLoaderProgress] = React.useState(() => (needsInitialHeroLoad ? 14 : 100));
+
+  React.useEffect(() => {
+    if (!needsInitialHeroLoad) {
+      setHasHeroLoaded(true);
+      setLoaderDismissed(true);
+      setLoaderProgress(100);
+      return undefined;
+    }
+
+    if (hasHeroLoaded) {
+      const dismissTimeout = window.setTimeout(() => {
+        setLoaderDismissed(true);
+      }, 180);
+
+      return () => window.clearTimeout(dismissTimeout);
+    }
+
+    setLoaderDismissed(false);
+    const progressInterval = window.setInterval(() => {
+      setLoaderProgress((current) => {
+        if (current >= 88) return current;
+        const next = current + Math.max(2, (88 - current) * 0.16);
+        return Math.min(next, 88);
+      });
+    }, 120);
+
+    return () => window.clearInterval(progressInterval);
+  }, [hasHeroLoaded, needsInitialHeroLoad]);
+
+  const handleHeroReady = React.useCallback(() => {
+    setHasHeroLoaded(true);
+    setLoaderProgress(100);
+  }, []);
 
   return (
     <>
       <GlobalStyle />
       <ScrollManager location={routeLocation} />
-      <PageShell>
+      <PageShell $isVisible={loaderDismissed}>
         <SiteHeader />
         <MainContent>
-          <AppRoutes location={routeLocation} />
+          <AppRoutes location={routeLocation} onHomeReady={handleHeroReady} />
         </MainContent>
         <SiteFooter />
       </PageShell>
+
+      {!loaderDismissed ? (
+        <LoadingOverlay role="status" aria-live="polite" aria-label="Loading particle earth">
+          <LoadingWrap>
+            <LoadingLabel>Loading...</LoadingLabel>
+            <LoadingTrack aria-hidden="true">
+              <LoadingBar $progress={loaderProgress} />
+            </LoadingTrack>
+          </LoadingWrap>
+        </LoadingOverlay>
+      ) : null}
 
       {backgroundLocation ? (
         <Routes>
@@ -256,11 +305,55 @@ const PageShell = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
+  transition: opacity 0.28s ease;
 `;
 
 const MainContent = styled.main`
   flex: 1;
   width: 100%;
+`;
+
+const LoadingOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(34rem 22rem at 50% 18%, rgba(13, 59, 139, 0.28), transparent 68%),
+    #050608;
+`;
+
+const LoadingWrap = styled.div`
+  width: min(18rem, 100%);
+  display: grid;
+  gap: 0.9rem;
+`;
+
+const LoadingLabel = styled.p`
+  color: ${({ theme }) => theme.text.primary};
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+`;
+
+const LoadingTrack = styled.div`
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+`;
+
+const LoadingBar = styled.span`
+  display: block;
+  width: ${({ $progress }) => `${$progress}%`};
+  height: 100%;
+  background: ${({ theme }) => theme.accent};
+  transition: width 0.18s ease;
 `;
 
 export default App;

@@ -16,7 +16,7 @@ const HERO_SOCIALS = [
   { label: 'Email', href: `mailto:${SOCIAL_LINKS.EMAIL}`, icon: FaEnvelope },
 ];
 
-export default function HomeHero() {
+export default function HomeHero({ onParticleEarthReady }) {
   const hasDisplayTitle = Boolean(HERO_CONTENT.displayLead || HERO_CONTENT.displayAccent);
 
   const handleContinue = () => {
@@ -26,7 +26,7 @@ export default function HomeHero() {
 
   return (
     <Hero id="home">
-      <ParticleEarthFrame />
+      <ParticleEarthFrame onReady={onParticleEarthReady} />
       <HeroShade />
 
       <Overlay>
