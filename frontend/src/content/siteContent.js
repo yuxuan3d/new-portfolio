@@ -86,7 +86,7 @@ export const CAPABILITY_CARDS = [
     title: 'Interactive Development',
     description:
       'Production-minded frontend work for immersive websites, WebGL scenes, and interactive experiences..',
-    tools: ['React', 'Three.js', 'Node.js', 'Python', 'Creative AI Tools'],
+    tools: ['React', 'Three.js', 'Node.js', 'Python', 'ComfyUI'],
   },
 ];
 
