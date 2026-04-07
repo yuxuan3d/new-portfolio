@@ -2,7 +2,7 @@ import React from 'react';
 import { FaChevronDown, FaEnvelope, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
 import { HERO_CONTENT } from '../../content/siteContent';
-import { SOCIAL_LINKS } from '../../constants/social';
+import { EXTERNAL_LINKS, SOCIAL_LINKS } from '../../constants/social';
 import { MEDIA } from '../../styles/breakpoints';
 import ParticleEarthFrame from '../ParticleEarthFrame';
 
@@ -14,6 +14,11 @@ const HERO_SOCIALS = [
   { label: 'LinkedIn', href: SOCIAL_LINKS.LINKEDIN, icon: FaLinkedin },
   { label: 'Instagram', href: SOCIAL_LINKS.INSTAGRAM, icon: FaInstagram },
   { label: 'Email', href: `mailto:${SOCIAL_LINKS.EMAIL}`, icon: FaEnvelope },
+];
+
+const HERO_RAIL_LINKS = [
+  { label: 'Showreel', href: EXTERNAL_LINKS.DEMO_REEL },
+  { label: 'Resume', href: EXTERNAL_LINKS.RESUME },
 ];
 
 export default function HomeHero({ onParticleEarthReady }) {
@@ -62,6 +67,13 @@ export default function HomeHero({ onParticleEarthReady }) {
         </DesktopScrollButton>
 
         <DesktopFollow>
+          <DesktopRailLinks>
+            {HERO_RAIL_LINKS.map(({ label, href }) => (
+              <DesktopRailTextLink key={label} href={href} target="_blank" rel="noopener noreferrer">
+                {label}
+              </DesktopRailTextLink>
+            ))}
+          </DesktopRailLinks>
           <DesktopFollowLabel>Follow Me</DesktopFollowLabel>
           <DesktopFollowRule aria-hidden="true" />
           <DesktopFollowLinks>
@@ -268,14 +280,37 @@ const DesktopFollow = styled.div`
   }
 `;
 
-const DesktopFollowLabel = styled.span`
-  color: ${({ theme }) => theme.text.secondary};
+const sharedVerticalRailText = css`
   font-family: 'Roboto Mono', monospace;
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   writing-mode: vertical-rl;
   text-orientation: mixed;
+`;
+
+const DesktopRailLinks = styled.div`
+  display: grid;
+  gap: 0.95rem;
+  justify-items: center;
+`;
+
+const DesktopRailTextLink = styled.a`
+  ${sharedVerticalRailText}
+  color: ${({ theme }) => theme.text.primary};
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.accent};
+    transform: translateY(-1px);
+  }
+`;
+
+const DesktopFollowLabel = styled.span`
+  ${sharedVerticalRailText}
+  color: ${({ theme }) => theme.text.secondary};
 `;
 
 const DesktopFollowRule = styled.span`
