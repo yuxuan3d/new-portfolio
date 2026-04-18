@@ -101,6 +101,40 @@ Update `.agent/CONTINUITY.md` only when there is a meaningful delta in:
 - Keep the file bounded, short and high-signal (anti-bloat). 
 - If sections begin to become bloated, compress older items into milestone (`[MILESTONE]`) bullets.
 
+## Repository workflows and commands
+
+### Workspace layout
+
+- `frontend/`: React/Vite public site. `/` is the canonical one-page route; `/about` redirects to `/#resume`; `/project/:slug`, `/rnd`, `/rnd/:slug`, and `/contact` remain active routes.
+- `ParticleEarth/`: standalone React Three Fiber app embedded into the frontend hero after being built and synced into `frontend/public/particle-earth`.
+- `sanity/`: Sanity Studio content backend and schemas.
+
+### Frontend
+
+- From `frontend/`, use `npm run dev` for local work, `npm run lint` and `npm run build` for standard verification, and `npm run generate-sitemap` when sitemap output is needed.
+- `npm run design-audit` exists, but it requires a reachable `BASE_URL` or local dev server and may be blocked by browser-launch permissions in this sandbox; use browser/Playwright verification when feasible.
+
+### ParticleEarth embed
+
+- Prefer the canonical sync command from `frontend/`: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\syncParticleEarth.ps1`. It runs `npm run build` in `../ParticleEarth` and copies the built bundle into `frontend/public/particle-earth`.
+- If the earth bundle is already built and only needs recopying, run `node scripts/syncParticleEarth.mjs` from `frontend/`.
+- Do not hand-edit `frontend/public/particle-earth`; rebuild and sync from `ParticleEarth/` instead.
+- Verify `ParticleEarth/` with `npm run lint`, `npm run test:unit`, `npm run build`, and `npm run test:e2e` when browser support is available.
+
+### Container workflow
+
+- `ParticleEarth/` has a Docker Compose workflow: `docker compose up -d`, then `docker compose exec app npm run build`, `docker compose exec app npm run lint`, `docker compose exec app npm run test:unit`, and `docker compose exec app npm run test:e2e`.
+- TODO: The root `frontend/` and `sanity/` projects do not currently have a committed container workflow; create one before defaulting to host installs if a task requires new dependency/tooling setup.
+
+### Sanity Studio
+
+- From `sanity/`, use `npm run dev` for the local studio and `npm run build` for verification.
+- `npm run deploy` and `npm run deploy-graphql` are remote writes; only run them when explicitly instructed, and dry-run or confirm first when possible.
+
+### Git
+
+- If Git reports dubious ownership in this Windows workspace, use command-scoped `safe.directory`, for example `git -c safe.directory=C:/Users/USER/Documents/Portfolio_website/New_Portfolio status`. Use the nested `ParticleEarth` path when running Git inside that repo.
+
 ## Definition of done
 
 A task is done when:

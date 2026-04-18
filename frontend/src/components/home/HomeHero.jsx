@@ -99,14 +99,14 @@ export default function HomeHero({ onParticleEarthReady }) {
               <PrimaryButton type="button" onClick={handleContinue}>
                 {HERO_CONTENT.primaryCta.label}
               </PrimaryButton>
-              <SecondaryButton
-                href={HERO_CONTENT.secondaryCta.href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {HERO_CONTENT.secondaryCta.label}
-              </SecondaryButton>
             </ActionRow>
+            <MobileQuickLinks aria-label="Hero quick links">
+              {HERO_RAIL_LINKS.map(({ label, href }) => (
+                <MobileQuickLink key={label} href={href} target="_blank" rel="noopener noreferrer">
+                  {label}
+                </MobileQuickLink>
+              ))}
+            </MobileQuickLinks>
           </ActionStack>
         </MobileHeroCard>
       </Overlay>
@@ -434,8 +434,32 @@ const PrimaryButton = styled.button`
   }
 `;
 
-const SecondaryButton = styled.a`
-  ${sharedButtonStyles}
+const MobileQuickLinks = styled.nav`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+
+  ${MEDIA.phone} {
+    justify-content: space-between;
+  }
+`;
+
+const MobileQuickLink = styled.a`
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   color: ${({ theme }) => theme.text.primary};
-  background: rgba(16, 16, 16, 0.82);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.accent};
+    transform: translateY(-1px);
+  }
 `;
