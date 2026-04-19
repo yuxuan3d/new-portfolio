@@ -377,6 +377,13 @@ const Subtitle = styled.p`
   max-width: 34ch;
   color: ${({ theme }) => theme.text.secondary};
   font-size: 0.98rem;
+
+  @media (max-width: 430px) {
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    word-spacing: -0.08em;
+  }
 `;
 
 const MobileName = styled.span`
