@@ -2,15 +2,10 @@ import { createClient } from '@sanity/client';
 import fs from 'fs';
 import path from 'path';
 
-const projectId = process.env.VITE_SANITY_PROJECT_ID;
+const projectId = process.env.VITE_SANITY_PROJECT_ID || '5gu0ubge';
 const dataset = process.env.VITE_SANITY_DATASET || 'production';
 const apiVersion = process.env.VITE_SANITY_API_VERSION || '2024-03-21';
 const siteUrl = process.env.SITE_URL || 'https://www.yxperiments.com';
-
-if (!projectId) {
-  console.error('Missing required env var: VITE_SANITY_PROJECT_ID');
-  process.exit(1);
-}
 
 const sanityClient = createClient({
   projectId,
@@ -18,6 +13,32 @@ const sanityClient = createClient({
   apiVersion,
   useCdn: true,
 });
+
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function getDateOnly(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? new Date().toISOString().split('T')[0]
+    : date.toISOString().split('T')[0];
+}
+
+function renderUrl({ url, lastmod, changefreq, priority }) {
+  return `
+  <url>
+    <loc>${escapeXml(`${siteUrl}${url}`)}</loc>
+    <lastmod>${escapeXml(lastmod)}</lastmod>
+    <changefreq>${escapeXml(changefreq)}</changefreq>
+    <priority>${escapeXml(priority)}</priority>
+  </url>`;
+}
 
 async function generateSitemap() {
   try {
@@ -42,37 +63,33 @@ async function generateSitemap() {
     `);
 
     // Static routes
+    const today = new Date().toISOString().split('T')[0];
     const staticRoutes = [
-      { url: '/', priority: '1.0', changefreq: 'weekly' },
-      { url: '/about', priority: '0.8', changefreq: 'monthly' },
-      { url: '/contact', priority: '0.8', changefreq: 'monthly' },
-      { url: '/rnd', priority: '0.7', changefreq: 'weekly' },
+      { url: '/', lastmod: today, priority: '1.0', changefreq: 'weekly' },
+      { url: '/contact', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+      { url: '/rnd', lastmod: today, priority: '0.7', changefreq: 'weekly' },
     ];
+    const projectRoutes = portfolioItems
+      .filter((item) => item?.slug?.current)
+      .map((item) => ({
+        url: `/project/${encodeURIComponent(item.slug.current)}`,
+        lastmod: getDateOnly(item._updatedAt),
+        changefreq: 'monthly',
+        priority: '0.7',
+      }));
+    const postRoutes = posts
+      .filter((post) => post?.slug?.current)
+      .map((post) => ({
+        url: `/rnd/${encodeURIComponent(post.slug.current)}`,
+        lastmod: getDateOnly(post._updatedAt),
+        changefreq: 'monthly',
+        priority: '0.6',
+      }));
 
     // Generate XML
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticRoutes.map(route => `
-  <url>
-    <loc>${siteUrl}${route.url}</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-    <changefreq>${route.changefreq}</changefreq>
-    <priority>${route.priority}</priority>
-  </url>`).join('')}
-${portfolioItems.map(item => `
-  <url>
-    <loc>${siteUrl}/project/${item.slug.current}</loc>
-    <lastmod>${new Date(item._updatedAt).toISOString().split('T')[0]}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`).join('')}
-${posts.map(post => `
-  <url>
-    <loc>${siteUrl}/rnd/${post.slug.current}</loc>
-    <lastmod>${new Date(post._updatedAt).toISOString().split('T')[0]}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>`).join('')}
+${[...staticRoutes, ...projectRoutes, ...postRoutes].map(renderUrl).join('')}
 </urlset>`;
 
     // Write sitemap to public directory

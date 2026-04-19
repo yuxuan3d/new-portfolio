@@ -16,7 +16,6 @@ const config = {
   useCdn: true,
   apiVersion: '2024-03-14', // Using a fixed date for API version
   perspective: 'published', // Explicitly set the perspective
-  token: import.meta.env.VITE_SANITY_TOKEN, // Add token if you have one
 };
 
 if (import.meta.env.DEV) {

@@ -7,6 +7,7 @@ export default defineConfig(({ command, mode }) => {
   // Load env file based on `mode` in the current working directory.
   const env = loadEnv(mode, process.cwd(), '')
   const isAnalyze = mode === 'analyze' || env.ANALYZE === 'true'
+  const shouldBuildSourceMap = isAnalyze || env.BUILD_SOURCEMAP === 'true'
   
   // Log available environment variables (excluding sensitive data)
   if (command === 'serve') {
@@ -33,7 +34,7 @@ export default defineConfig(({ command, mode }) => {
       'import.meta.env.VITE_SANITY_API_VERSION': JSON.stringify(env.VITE_SANITY_API_VERSION || '2024-03-14')
     },
     build: {
-      sourcemap: true,
+      sourcemap: shouldBuildSourceMap,
       rollupOptions: {
         output: {
           manualChunks: {

@@ -24,10 +24,129 @@ const QUERY = `
   }
 `;
 
+function getIframeSource(value) {
+  if (typeof value !== 'string') return null;
+
+  if (typeof DOMParser !== 'undefined') {
+    const document = new DOMParser().parseFromString(value, 'text/html');
+    const iframe = document.querySelector('iframe[src]');
+    return iframe?.getAttribute('src') || null;
+  }
+
+  const match = value.match(/<iframe\b[^>]*\bsrc=(["']?)([^"'\s>]+)\1/i);
+  return match?.[2] || null;
+}
+
+function getYouTubeVideoId(url) {
+  const host = url.hostname.replace(/^www\./, '').toLowerCase();
+
+  if (host === 'youtu.be') {
+    return url.pathname.split('/').filter(Boolean)[0] || null;
+  }
+
+  if (host === 'youtube.com' || host === 'youtube-nocookie.com' || host === 'm.youtube.com') {
+    if (url.pathname === '/watch') {
+      return url.searchParams.get('v');
+    }
+
+    const [, route, videoId] = url.pathname.split('/');
+    if (route === 'embed' || route === 'shorts') {
+      return videoId || null;
+    }
+  }
+
+  return null;
+}
+
+function getVimeoVideoId(url) {
+  const host = url.hostname.replace(/^www\./, '').toLowerCase();
+  const pathParts = url.pathname.split('/').filter(Boolean);
+
+  if (host === 'player.vimeo.com' && pathParts[0] === 'video') {
+    return /^\d+$/.test(pathParts[1] || '') ? pathParts[1] : null;
+  }
+
+  if (host === 'vimeo.com') {
+    return /^\d+$/.test(pathParts[0] || '') ? pathParts[0] : null;
+  }
+
+  return null;
+}
+
+function buildEmbedUrl(baseUrl, sourceUrl, allowedParams = []) {
+  const embedUrl = new URL(baseUrl);
+
+  allowedParams.forEach((param) => {
+    const value = sourceUrl.searchParams.get(param);
+    if (value) {
+      embedUrl.searchParams.set(param, value);
+    }
+  });
+
+  return embedUrl.toString();
+}
+
+function getSafeVideoEmbed(embedCode) {
+  const rawValue = typeof embedCode === 'string' ? embedCode.trim() : '';
+  if (!rawValue) return null;
+
+  const candidate = getIframeSource(rawValue) || rawValue;
+  const normalizedCandidate = candidate.startsWith('//') ? `https:${candidate}` : candidate;
+  const candidateUrl = /^[a-z][a-z\d+\-.]*:\/\//i.test(normalizedCandidate)
+    ? normalizedCandidate
+    : `https://${normalizedCandidate}`;
+
+  try {
+    const url = new URL(candidateUrl);
+    const youtubeId = getYouTubeVideoId(url);
+    if (youtubeId) {
+      return {
+        src: buildEmbedUrl(
+          `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}`,
+          url,
+          ['start'],
+        ),
+        title: 'YouTube video player',
+      };
+    }
+
+    const vimeoId = getVimeoVideoId(url);
+    if (vimeoId) {
+      return {
+        src: buildEmbedUrl(
+          `https://player.vimeo.com/video/${encodeURIComponent(vimeoId)}`,
+          url,
+          ['h'],
+        ),
+        title: 'Vimeo video player',
+      };
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
 const VideoEmbed = memo(function VideoEmbed({ embedCode }) {
+  const embed = getSafeVideoEmbed(embedCode);
+
+  if (!embed) {
+    return <InvalidVideoEmbed>Unsupported video embed.</InvalidVideoEmbed>;
+  }
+
   return (
     <VideoContainer>
-      <VideoWrapper dangerouslySetInnerHTML={{ __html: embedCode }} />
+      <VideoWrapper>
+        <iframe
+          src={embed.src}
+          title={embed.title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          allowFullScreen
+          referrerPolicy="strict-origin-when-cross-origin"
+        />
+      </VideoWrapper>
     </VideoContainer>
   );
 });
@@ -488,6 +607,17 @@ const VideoWrapper = styled.div`
     height: 100%;
     border: none;
   }
+`;
+
+const InvalidVideoEmbed = styled.div`
+  min-height: 180px;
+  border-radius: 18px;
+  border: 1px dashed ${({ theme }) => theme.border};
+  display: grid;
+  place-items: center;
+  color: ${({ theme }) => theme.text.secondary};
+  text-align: center;
+  padding: 1rem;
 `;
 
 const EmptyMedia = styled.div`

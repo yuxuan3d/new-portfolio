@@ -19,6 +19,17 @@ export function useSanityData(query, params = {}) {
   const [isValidating, setIsValidating] = useState(false);
   const paramsKey = safeStringify(params);
   const paramsRef = useRef(params);
+  const activeRequestRef = useRef(0);
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      activeRequestRef.current += 1;
+    };
+  }, []);
 
   useEffect(() => {
     paramsRef.current = params;
@@ -27,13 +38,22 @@ export function useSanityData(query, params = {}) {
   const fetchData = useCallback(
     async (shouldUpdateState = true, bypassCache = false) => {
       const cacheKey = `${query}::${paramsKey}`;
+      const requestId = shouldUpdateState
+        ? activeRequestRef.current + 1
+        : activeRequestRef.current;
+      const canUpdateState = () =>
+        shouldUpdateState && mountedRef.current && activeRequestRef.current === requestId;
+
+      if (shouldUpdateState) {
+        activeRequestRef.current = requestId;
+      }
 
       try {
         // Check cache first unless explicitly bypassed (revalidation).
         if (!bypassCache) {
           const cachedData = cache.get(cacheKey);
           if (cachedData && Date.now() - cachedData.timestamp < CACHE_TIME) {
-            if (shouldUpdateState) {
+            if (canUpdateState()) {
               setData(cachedData.data);
               setError(null);
             }
@@ -41,7 +61,9 @@ export function useSanityData(query, params = {}) {
           }
         }
 
-        if (shouldUpdateState) {
+        if (canUpdateState()) {
+          setData(null);
+          setError(null);
           setIsValidating(true);
         }
 
@@ -52,7 +74,7 @@ export function useSanityData(query, params = {}) {
           timestamp: Date.now(),
         });
 
-        if (shouldUpdateState) {
+        if (canUpdateState()) {
           setData(result);
           setError(null);
         }
@@ -62,13 +84,13 @@ export function useSanityData(query, params = {}) {
         console.error('Error fetching data:', err);
         const errorMessage = 'Failed to load data. Please try again later.';
 
-        if (shouldUpdateState) {
+        if (canUpdateState()) {
           setError(errorMessage);
         }
 
         throw new Error(errorMessage);
       } finally {
-        if (shouldUpdateState) {
+        if (canUpdateState()) {
           setIsValidating(false);
         }
       }
@@ -84,9 +106,15 @@ export function useSanityData(query, params = {}) {
   // Revalidate data periodically
   useEffect(() => {
     const interval = setInterval(() => {
+      const requestId = activeRequestRef.current;
+
       fetchData(false, true)
         .then((newData) => {
-          if (safeStringify(newData) !== safeStringify(data)) {
+          if (
+            mountedRef.current &&
+            activeRequestRef.current === requestId &&
+            safeStringify(newData) !== safeStringify(data)
+          ) {
             setData(newData);
           }
         })
