@@ -22,7 +22,7 @@ export default function Home({ onHeroReady }) {
 
   return (
     <Page>
-      <HomeHero onParticleEarthReady={onHeroReady} />
+      <HomeHero projects={projects} onParticleEarthReady={onHeroReady} />
       <ContentBand>
         <ResumeSection />
         <WorksSection projects={projects} error={projectError} isLoading={projectsLoading && !projectItems} />

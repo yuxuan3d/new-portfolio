@@ -21,7 +21,7 @@ const HERO_RAIL_LINKS = [
   { label: 'Resume', href: EXTERNAL_LINKS.RESUME },
 ];
 
-export default function HomeHero({ onParticleEarthReady }) {
+export default function HomeHero({ projects = [], onParticleEarthReady }) {
   const hasDisplayTitle = Boolean(HERO_CONTENT.displayLead || HERO_CONTENT.displayAccent);
 
   const handleContinue = () => {
@@ -31,7 +31,7 @@ export default function HomeHero({ onParticleEarthReady }) {
 
   return (
     <Hero id="home">
-      <ParticleEarthFrame onReady={onParticleEarthReady} />
+      <ParticleEarthFrame projects={projects} onReady={onParticleEarthReady} />
       <HeroShade />
 
       <Overlay>
