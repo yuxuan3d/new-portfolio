@@ -13,19 +13,19 @@ const About = () => {
   const skillCategories = [
     {
       icon: <FaHammer size={32} aria-hidden="true" />,
-      title: "3D & Visual Effects",
+      title: "3D & VFX",
       description: "Specializing in high-quality 3D asset creation and physics-based visual effects. From concept to final render, crafting impactful visuals through modeling, texturing, and dynamic simulations. Expert in particle systems, fluids, and procedural effects for enhanced visual storytelling.",
       tools: ["Houdini", "3ds Max", "Maya", "Blender", "Substance Painter"]
     },
     {
       icon: <FaMagic size={32} aria-hidden="true" />,
-      title: "Motion Graphics & Production",
+      title: "Motion Design",
       description: "Creating compelling 2D/3D motion graphics for commercial, broadcast, web, and interactive applications. Skilled in animation, visual effects compositing, and dynamic typography to deliver engaging visual narratives.",
       tools: ["After Effects", "Premiere Pro", "Photoshop"]
     },
     {
       icon: <FaCode size={32} aria-hidden="true" />,
-      title: "Interactive Development & AI",
+      title: "Interactive Development",
       description: "Building engaging web experiences with modern technologies, specializing in 3D web integration. Leveraging AI tools for workflow optimization and content creation, combining technical expertise with creative innovation.",
       tools: ["React", "Three.js", "Node.js", "Python", "AI Tools"]
     }
@@ -36,10 +36,9 @@ const About = () => {
       <Header as="header">
         <HeaderPanel>
           <Kicker>About</Kicker>
-          <Title as="h1">Hi! I&apos;m Yu Xuan</Title>
-          <Subtitle as="p">Crafting digital experiences at the intersection of creativity and technology.</Subtitle>
+          <Title as="h1">I create 3D, motion, and interactive work across film, brand, and web.</Title>
           <IntroText>
-            I combine cinematic aesthetics, practical production pipelines, and interactive tools to build visual stories that feel polished and playful.
+            My work ranges from Houdini simulations and look-dev to motion design, post-production, and React/Three.js builds. The goal is always the same: make the work look sharp, feel considered, and be ready to deliver.
           </IntroText>
           <ButtonContainer>
             <ActionButton
@@ -149,15 +148,6 @@ const Title = styled.h1`
   margin-bottom: 0.7rem;
   transition: color 0.3s ease;
   line-height: 1.04;
-`;
-
-const Subtitle = styled.p`
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.text.secondary};
-  max-width: 680px;
-  margin: 0 0 0.6rem;
-  transition: color 0.3s ease;
 `;
 
 const IntroText = styled.p`
