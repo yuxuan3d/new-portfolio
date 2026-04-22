@@ -30,9 +30,9 @@ export const RESUME_CONTENT = {
   eyebrow: 'Resume',
   title: 'About',
   intro:
-    'I build cinematic 3D, motion, and interactive work with a strong production mindset.',
+    'I create 3D, motion, and interactive work across film, brand, and web.',
   description:
-    'My work covers Houdini simulations, 3D look-dev, motion graphics, post-production, VFX cleanup, and web implementation with React and Three.js. The focus is simple: make ambitious visuals look sharp, clear, and ready to ship.',
+    'My work ranges from Houdini simulations and look-dev to motion design, post-production, and React/Three.js builds. The goal is always the same: make the work look sharp, feel considered, and be ready to deliver.',
   actions: [
     {
       label: 'Watch Demo Reel',
@@ -71,13 +71,13 @@ export const WORKFLOW_PHASES = [
 
 export const CAPABILITY_CARDS = [
   {
-    title: '3D & Visual Effects',
+    title: '3D & VFX',
     description:
       'High-fidelity 3D assets, simulation, and look-dev for visuals that feel cinematic and production-ready.',
     tools: ['Houdini', '3ds Max', 'Maya', 'Blender', 'Substance Painter'],
   },
   {
-    title: 'Motion Graphics & Production',
+    title: 'Motion Design',
     description:
       '2D and 3D motion design for campaigns, reels, title work, and editorial content.',
     tools: ['After Effects', 'Premiere Pro', 'Photoshop'],

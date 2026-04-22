@@ -202,7 +202,8 @@ const CapabilityGrid = styled.div`
 const CapabilityCard = styled.article`
   ${sharedPanelStyles}
   padding: var(--panel-padding);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
 `;
 
