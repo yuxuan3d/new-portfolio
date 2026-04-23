@@ -18,8 +18,48 @@ const INITIAL_FORM_STATE = {
   message: '',
 };
 
+const FIELD_LIMITS = {
+  name: 120,
+  email: 254,
+  subject: 150,
+  message: 4000,
+};
+
+const MINIMUM_SUBMIT_DELAY_MS = 1500;
+const HONEYPOT_FIELD_NAME = 'company';
+
+function normalizeFormData(formData) {
+  return {
+    name: formData.name.trim(),
+    email: formData.email.trim(),
+    subject: formData.subject.trim(),
+    message: formData.message.trim(),
+  };
+}
+
+function validateFormData(formData) {
+  if (!formData.name || formData.name.length > FIELD_LIMITS.name) {
+    return 'Enter a valid name.';
+  }
+
+  if (!formData.email || formData.email.length > FIELD_LIMITS.email) {
+    return 'Enter a valid email address.';
+  }
+
+  if (!formData.subject || formData.subject.length > FIELD_LIMITS.subject) {
+    return 'Enter a valid subject.';
+  }
+
+  if (!formData.message || formData.message.length > FIELD_LIMITS.message) {
+    return 'Enter a valid message.';
+  }
+
+  return null;
+}
+
 export default function ContactSection({ id, standalone = false }) {
   const formRef = useRef(null);
+  const mountedAtRef = useRef(Date.now());
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [status, setStatus] = useState({
     submitting: false,
@@ -30,6 +70,14 @@ export default function ContactSection({ id, standalone = false }) {
   const contactMethods = Array.isArray(CONTACT_CONTENT?.contactMethods)
     ? CONTACT_CONTENT.contactMethods
     : [];
+  const emailJsConfig = {
+    serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
+    templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+    publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+  };
+  const canSubmit = Boolean(
+    emailJsConfig.serviceId && emailJsConfig.templateId && emailJsConfig.publicKey,
+  );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -40,12 +88,49 @@ export default function ContactSection({ id, standalone = false }) {
     event.preventDefault();
     setStatus({ submitting: true, submitted: false, error: null });
 
+    const honeypotValue =
+      formRef.current?.elements?.namedItem(HONEYPOT_FIELD_NAME)?.value?.trim() ?? '';
+    if (honeypotValue) {
+      setStatus({ submitting: false, submitted: true, error: null });
+      return;
+    }
+
+    if (!canSubmit) {
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: 'Messaging is temporarily unavailable. Please use email or social links instead.',
+      });
+      return;
+    }
+
+    if (Date.now() - mountedAtRef.current < MINIMUM_SUBMIT_DELAY_MS) {
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: 'Please take a moment to review your message and try again.',
+      });
+      return;
+    }
+
+    const normalizedFormData = normalizeFormData(formData);
+    const validationError = validateFormData(normalizedFormData);
+    if (validationError) {
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: validationError,
+      });
+      return;
+    }
+
     try {
+      setFormData(normalizedFormData);
       await emailjs.sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        emailJsConfig.serviceId,
+        emailJsConfig.templateId,
         formRef.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        emailJsConfig.publicKey,
       );
 
       setFormData(INITIAL_FORM_STATE);
@@ -73,6 +158,18 @@ export default function ContactSection({ id, standalone = false }) {
       <BodyGrid>
         <FormPanel>
           <Form ref={formRef} onSubmit={handleSubmit}>
+            <HoneypotField aria-hidden="true">
+              <label htmlFor={HONEYPOT_FIELD_NAME}>Company</label>
+              <input
+                id={HONEYPOT_FIELD_NAME}
+                name={HONEYPOT_FIELD_NAME}
+                type="text"
+                tabIndex="-1"
+                autoComplete="off"
+                defaultValue=""
+              />
+            </HoneypotField>
+
             <FieldGroup>
               <Label htmlFor="name">Name</Label>
               <Input
@@ -80,6 +177,7 @@ export default function ContactSection({ id, standalone = false }) {
                 name="name"
                 type="text"
                 autoComplete="name"
+                maxLength={FIELD_LIMITS.name}
                 value={formData.name}
                 onChange={handleChange}
                 disabled={status.submitting}
@@ -95,6 +193,8 @@ export default function ContactSection({ id, standalone = false }) {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  inputMode="email"
+                  maxLength={FIELD_LIMITS.email}
                   value={formData.email}
                   onChange={handleChange}
                   disabled={status.submitting}
@@ -108,6 +208,7 @@ export default function ContactSection({ id, standalone = false }) {
                   id="subject"
                   name="subject"
                   type="text"
+                  maxLength={FIELD_LIMITS.subject}
                   value={formData.subject}
                   onChange={handleChange}
                   disabled={status.submitting}
@@ -122,6 +223,7 @@ export default function ContactSection({ id, standalone = false }) {
                 id="message"
                 name="message"
                 rows="7"
+                maxLength={FIELD_LIMITS.message}
                 value={formData.message}
                 onChange={handleChange}
                 disabled={status.submitting}
@@ -134,7 +236,7 @@ export default function ContactSection({ id, standalone = false }) {
               <StatusMessage $tone="success">Message sent successfully.</StatusMessage>
             )}
 
-            <SubmitButton type="submit" disabled={status.submitting}>
+            <SubmitButton type="submit" disabled={status.submitting || !canSubmit}>
               {status.submitting ? 'Sending...' : 'Send Message'}
             </SubmitButton>
           </Form>
@@ -222,6 +324,18 @@ const Form = styled.form`
   display: grid;
   gap: 1rem;
   min-width: 0;
+`;
+
+const HoneypotField = styled.div`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 `;
 
 const FieldRow = styled.div`

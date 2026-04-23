@@ -43,10 +43,13 @@ const portableTextComponents = {
         <MediaFigure>
           <YouTubeEmbed>
             <iframe
-              src={`https://www.youtube.com/embed/${videoId}`}
+              src={`https://www.youtube-nocookie.com/embed/${videoId}`}
               title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              loading="lazy"
+              allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              sandbox="allow-scripts allow-same-origin allow-presentation"
             />
           </YouTubeEmbed>
           {value.caption ? <figcaption>{value.caption}</figcaption> : null}

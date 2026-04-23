@@ -142,9 +142,10 @@ const VideoEmbed = memo(function VideoEmbed({ embedCode }) {
           src={embed.src}
           title={embed.title}
           loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
         />
       </VideoWrapper>
     </VideoContainer>

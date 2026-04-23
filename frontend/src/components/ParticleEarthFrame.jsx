@@ -135,6 +135,8 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
         src={frameSrc}
         title="Interactive particle earth"
         loading="eager"
+        referrerPolicy="strict-origin-when-cross-origin"
+        sandbox="allow-scripts allow-same-origin"
         onLoad={handleLoad}
       />
     </FrameShell>

@@ -1,9 +1,12 @@
 [PLANS]
+- 2026-04-23T23:14:07.9201206+08:00 [TOOL] Completed a frontend security-hardening pass covering Vercel response headers/CSP, iframe/embed restrictions, contact-form abuse reduction, and dependency audit remediation.
 - 2026-04-19T01:37:41.1789733+08:00 [TOOL] Supersedes the 2026-04-19T01:35:08.8783794+08:00 current-task entry: continuity compaction and ParticleEarth build-warning fix are complete.
 - 2026-04-19T01:35:08.8783794+08:00 [USER] Current task: compact continuity and fix the ParticleEarth production build chunk warning. `ParticleEarth/AGENTS.md` is accepted as fine.
 - 2026-03-28T00:26:05.6192387+08:00 [CODE] [MILESTONE] Keep this file bounded and milestone-based; append only material changes affecting frontend shell, ParticleEarth embed, verification workflow, or known caveats.
 
 [DECISIONS]
+- 2026-04-23T23:14:07.9201206+08:00 [CODE] Frontend hardening now relies on route-specific Vercel CSP: the main app denies framing (`frame-ancestors 'none'`) while `/particle-earth/*` is restricted to same-origin framing so the hero iframe still works.
+- 2026-04-23T23:14:07.9201206+08:00 [CODE] The contact form remains browser-side EmailJS for now; mitigation is limited to client validation, a honeypot, and a minimum submit delay. Stronger anti-abuse controls require a server/API route with secret-backed rate limiting.
 - 2026-04-19T11:52:16.0800532+08:00 [CODE] Supersedes image marker treatment: globe project markers now render text-only project titles in `Roboto Mono`, using slug/title payloads instead of requiring Sanity `mainImage` data.
 - 2026-04-19T10:24:40.1108742+08:00 [CODE] Project image markers now use a radial 3D offset from each pulse point and manual ray-vs-globe occlusion; CSS screen-space offsets and shadows are intentionally absent.
 - 2026-04-19T10:15:44.5024089+08:00 [CODE] Supersedes the earlier side-tray thumbnail placement: project thumbnails now render as small `@react-three/drei` Html markers inside the ParticleEarth scene, following each project arc pulse while staying camera-facing and clickable.
@@ -17,6 +20,8 @@
 - 2026-03-28T00:13:06.9870180+08:00 [CODE] The hero iframe should not use whole-frame dimming; readability comes from the page overlay plus in-iframe gradient/background treatment.
 
 [PROGRESS]
+- 2026-04-23T23:14:07.9201206+08:00 [CODE] Hardened the live frontend: removed the inline HTML boot script, added strict Vercel security headers, sandboxed same-origin and third-party iframes, switched blog embeds to `youtube-nocookie`, and added contact-form field caps plus bot friction.
+- 2026-04-23T23:14:07.9201206+08:00 [TOOL] Upgraded `frontend` dependencies to `@sanity/client` `^7.21.0`, `react-router-dom` `^7.14.2`, and Vite `^7.3.2`, then refreshed the lockfile with `npm install` / `npm audit fix`.
 - 2026-04-19T20:48:40+08:00 [CODE] Mobile hero composition was tuned: narrow portrait ParticleEarth scenes now lift the globe via `sceneMetrics.offsetY`, and the homepage mobile intro subtitle uses scoped narrow-phone justification with slight negative word spacing to avoid oversized gaps.
 - 2026-04-19T20:36:44+08:00 [CODE] Mobile ParticleEarth now uses the full six-project signal set and all three workflow orbits instead of the former phone caps; mobile signal/orbit opacity was raised, mobile text labels were tightened, and the iframe dot field was reduced to `rgba(..., 0.075)` with wider spacing.
 - 2026-04-19T12:47:56.1498737+08:00 [CODE] Expanded desktop globe project signals from 3 to 6 using existing project slugs (`cinder`, `sit-open-house-2026`, `betadine-sore-throat-lozenges`, `betadine-sore-throat-spray`, `what-s-your-energy-score-samsung`, `visafw`) and reduced signal motion by lowering project speeds plus the `Signal Layers` speed default/max.
@@ -37,6 +42,8 @@
 - 2026-03-28T11:31:45+08:00 [CODE] [MILESTONE] Site background/section system uses subtle dot fields and continuous dark-to-surface transitions; hero dots live inside ParticleEarth behind the globe.
 
 [DISCOVERIES]
+- 2026-04-23T23:14:07.9201206+08:00 [TOOL] Current `npm audit` data still flags `react-router-dom` `6.30.2` / `react-router` `6.30.2` as vulnerable; a clean production audit required moving the frontend router to `7.14.2`.
+- 2026-04-23T23:14:07.9201206+08:00 [TOOL] Current Vite `7.0.2` dev-server advisories were cleared by a semver-safe `npm audit fix`, which raised the toolchain to Vite `7.3.2` plus newer Rollup/esbuild transitive packages without source changes.
 - 2026-04-22T21:13:50.2537277+08:00 [TOOL] Supersedes the earlier About copy note: the homepage `#resume` About section in the current shell is rendered by `frontend/src/components/home/ResumeSection.jsx` from `frontend/src/content/siteContent.js`; `frontend/src/components/About.jsx` is not the live source for the screenshot-matched section.
 - 2026-04-19T20:36:44+08:00 [TOOL] Frontend mobile browser verification must use `http://localhost:5173` for Sanity-backed project labels; `http://127.0.0.1:5173` loads the iframe but Sanity CORS blocks project data, leaving `projectThumbnailCount: 0`.
 - 2026-04-19T10:15:44.5024089+08:00 [TOOL] Drei Html markers needed a fixed z-index range above the WebGL canvas for real pointer hit-testing; Playwright locator clicks are unsuitable for constantly moving markers, so smoke coverage uses direct button invocation and browser verification uses coordinate hit checks.
@@ -50,6 +57,7 @@
 - 2026-03-27T08:10:03Z [TOOL] This sandbox has previously failed uncached npm fetches (`ENOTCACHED` / cache-only failures); avoid new dependencies unless already present.
 
 [OUTCOMES]
+- 2026-04-23T23:14:07.9201206+08:00 [TOOL] Frontend security review/hardening completed: Vercel now serves CSP/HSTS/nosniff/referrer/permissions headers with a ParticleEarth-specific framing exception, the main HTML no longer requires inline script execution, iframe embeds are sandboxed and privacy-tightened, contact form abuse friction was added, `frontend` prod/full `npm audit` both returned zero vulnerabilities, and `frontend` `npm run lint` plus `npm run build` passed on Node `v24.13.0`.
 - 2026-04-22T21:15:40.9091469+08:00 [TOOL] Capability-card alignment was tightened in `frontend/src/components/home/ResumeSection.jsx` by switching `CapabilityCard` to a vertical flex layout so shorter descriptions still keep tool chips bottom-aligned with adjacent cards; `frontend` `npm run lint` and `npm run build` passed.
 - 2026-04-22T21:13:50.2537277+08:00 [TOOL] Supersedes the 2026-04-22T20:51:28.5098656+08:00 About note: the live About section copy update is now correctly applied in `frontend/src/content/siteContent.js` only, with intro/description text updated plus lower card titles `3D & VFX`, `Motion Design`, and `Interactive Development`; `frontend` `npm run lint` and `npm run build` passed.
 - 2026-04-22T20:51:28.5098656+08:00 [TOOL] About-section copy refresh completed in `frontend/src/components/About.jsx`: header copy now matches the new 3D/motion/interactive positioning, lower skill card titles are `3D & VFX`, `Motion Design`, and `Interactive Development`, and `frontend` `npm run lint` plus `npm run build` passed without additional layout changes.
