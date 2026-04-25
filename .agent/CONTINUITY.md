@@ -25,6 +25,7 @@
 - 2026-03-28T00:13:06.9870180+08:00 [CODE] The hero iframe should not use whole-frame dimming; readability comes from the page overlay plus in-iframe gradient/background treatment.
 
 [PROGRESS]
+- 2026-04-25T17:42:33.3464615+08:00 [CODE] Fixed the deployed hero iframe CSP configuration in `frontend/vercel.json` by excluding `/particle-earth` from the catch-all main-app headers and SPA rewrite. This prevents `/particle-earth/index.html?embed=1` from inheriting `frame-ancestors 'none'`.
 - 2026-04-25T12:51:03.5549446+08:00 [CODE] Removed the Work-section process row from `frontend/src/components/home/WorksSection.jsx` and deleted the unused `WORKFLOW_PHASES` export from `frontend/src/content/siteContent.js`.
 - 2026-04-25T12:49:02.7205171+08:00 [CODE] Adjusted the Work grid first row in `frontend/src/components/home/WorksSection.jsx`: the second visible project now receives a desktop-only secondary-feature aspect ratio so it fills the height beside the larger selected project instead of leaving a gap.
 - 2026-04-24T22:09:28.8700277+08:00 [CODE] Aligned the homepage About heading with the About intro, actions, and capability grid by removing the extra `SectionHeader` left padding in `frontend/src/components/home/ResumeSection.jsx`.
@@ -53,6 +54,7 @@
 - 2026-03-28T11:31:45+08:00 [CODE] [MILESTONE] Site background/section system uses subtle dot fields and continuous dark-to-surface transitions; hero dots live inside ParticleEarth behind the globe.
 
 [DISCOVERIES]
+- 2026-04-25T17:42:33.3464615+08:00 [TOOL] Hero console error root cause: Vercel `headers` rules are cumulative for matching paths, so the previous catch-all `/(.*)` applied the main CSP (`frame-ancestors 'none'`) to `/particle-earth/*` in addition to the iframe-specific CSP. The blocked iframe then caused the `postMessage` target-origin mismatch.
 - 2026-04-24T17:09:22.1297789+08:00 [TOOL] Local browser verification still could not load Sanity data from alternate local port `:5178`; Playwright verification used mocked Sanity responses for Work/project-detail UI. Verified desktop/mobile no horizontal overflow, workflow bridge visible, selected-project tile visible, R&D nav text visible, project pager links present, and `og-yxperiments.png` generated at 454879 bytes.
 - 2026-04-24T16:09:27.5808712+08:00 [TOOL] Read-only portfolio review used `http://localhost:5178` because `:5173` was occupied by a different local app. `http://127.0.0.1:5178` left the homepage loader up; `http://localhost:5178` loaded the portfolio shell. Local checks found no horizontal overflow at 1440x900, 768x1024, or 390x844, but homepage `/` and `/rnd` remained in Sanity loading states during review.
 - 2026-04-24T12:03:31.6452789+08:00 [TOOL] Repo-backed workflow details now confirmed for docs: `frontend/scripts/designAudit.mjs` probes `http://localhost:5173` through `:5180` before falling back to `:5173`, `frontend/scripts/generateSitemap.js` writes `frontend/public/sitemap.xml` and honors optional `SITE_URL` / `VITE_SANITY_API_VERSION`, and `ParticleEarth/compose.yaml` auto-installs dependencies into `/app/node_modules` on first container start.
@@ -71,6 +73,7 @@
 - 2026-03-27T08:10:03Z [TOOL] This sandbox has previously failed uncached npm fetches (`ENOTCACHED` / cache-only failures); avoid new dependencies unless already present.
 
 [OUTCOMES]
+- 2026-04-25T17:42:33.3464615+08:00 [TOOL] Hero CSP fix verified locally: `frontend/vercel.json` parses as JSON; `frontend` `npm run lint` passed; `frontend` `npm run build` passed. Live header verification still requires deploying the changed `vercel.json`.
 - 2026-04-25T12:51:03.5549446+08:00 [TOOL] Work process-row removal verified: `frontend` `npm run lint` passed; `frontend` `npm run build` passed; `rg` found no `WORKFLOW_PHASES` / process-row copy/components in `frontend/src`; Browser/IAB DOM check at `http://localhost:5178/#works` confirmed the Work heading remains and process copy is absent. Known local Sanity error on `:5178` remains.
 - 2026-04-25T12:49:02.7205171+08:00 [TOOL] Work grid scale fix verified: `frontend` `npm run lint` passed; `frontend` `npm run build` passed; Browser/IAB reached `http://localhost:5178/#works` after restarting Vite outside the sandbox, but local Sanity data still failed on `:5178`. Elevated mocked-data Playwright check at 1365x768 measured first-row card heights as 424px and 425px (`heightDelta: 1`).
 - 2026-04-24T22:09:28.8700277+08:00 [TOOL] About heading alignment verified: `frontend` `npm run lint` passed; `frontend` `npm run build` passed; Browser/IAB DOM check at `http://localhost:5178/#resume` confirmed the About heading, intro copy, and capability headings render after the alignment change.

@@ -42,7 +42,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!particle-earth).*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
@@ -85,8 +85,8 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!particle-earth).*)",
       "destination": "/index.html"
     }
   ]
-} 
+}
