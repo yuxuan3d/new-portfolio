@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import ContactSection from '../components/ContactSection';
+import ScrollReveal from '../components/ScrollReveal';
 import HomeHero from '../components/home/HomeHero';
 import ResumeSection from '../components/home/ResumeSection';
 import WorksSection from '../components/home/WorksSection';
@@ -24,9 +25,15 @@ export default function Home({ onHeroReady }) {
     <Page>
       <HomeHero projects={projects} onParticleEarthReady={onHeroReady} />
       <ContentBand>
-        <ResumeSection />
-        <WorksSection projects={projects} error={projectError} isLoading={projectsLoading && !projectItems} />
-        <ContactSection id="contact" />
+        <ScrollReveal delay={40}>
+          <ResumeSection />
+        </ScrollReveal>
+        <ScrollReveal delay={70}>
+          <WorksSection projects={projects} error={projectError} isLoading={projectsLoading && !projectItems} />
+        </ScrollReveal>
+        <ScrollReveal delay={70}>
+          <ContactSection id="contact" />
+        </ScrollReveal>
       </ContentBand>
     </Page>
   );

@@ -4,7 +4,7 @@ export const HOME_NAV_ITEMS = [
   { label: 'Home', id: 'home', kind: 'section', to: '/' },
   { label: 'Resume', id: 'resume', kind: 'section', to: '/#resume' },
   { label: 'Works', id: 'works', kind: 'section', to: '/#works' },
-  { label: 'Blog', id: 'blog', kind: 'route', to: '/rnd' },
+  { label: 'R&D', id: 'blog', kind: 'route', to: '/rnd' },
   { label: 'Contact', id: 'contact', kind: 'section', to: '/#contact' },
 ];
 
@@ -51,24 +51,6 @@ export const RESUME_STATS = [
   { label: 'React + Three.js', value: 'Interactive websites and WebGL work' },
 ];
 
-export const WORKFLOW_PHASES = [
-  {
-    step: '01',
-    title: 'Discover',
-    description: 'Clarify the goal, references, and production scope.',
-  },
-  {
-    step: '02',
-    title: 'Prototype',
-    description: 'Develop the visual system, motion, and technical foundation.',
-  },
-  {
-    step: '03',
-    title: 'Polish',
-    description: 'Polish the work, solve delivery details, and prep for launch.',
-  },
-];
-
 export const CAPABILITY_CARDS = [
   {
     title: '3D & VFX',
@@ -85,7 +67,7 @@ export const CAPABILITY_CARDS = [
   {
     title: 'Interactive Development',
     description:
-      'Production-minded frontend work for immersive websites, WebGL scenes, and interactive experiences..',
+      'Production-minded frontend work for immersive websites, WebGL scenes, and interactive experiences.',
     tools: ['React', 'Three.js', 'Node.js', 'Python', 'ComfyUI'],
   },
 ];
@@ -95,7 +77,7 @@ export const WORKS_CONTENT = {
 };
 
 export const BLOG_CONTENT = {
-  title: 'Blog',
+  title: 'R&D',
 };
 
 export const CONTACT_CONTENT = {

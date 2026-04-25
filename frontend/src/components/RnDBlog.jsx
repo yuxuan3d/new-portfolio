@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import { BLOG_CONTENT } from '../content/siteContent';
 import { useSanityData } from '../hooks/useSanityData';
 import { urlFor } from '../lib/sanityClient';
 import { MEDIA } from '../styles/breakpoints';
@@ -33,7 +34,7 @@ export default function RnDBlog() {
   return (
     <Page>
       <SectionHeader>
-        <Title>Blog</Title>
+        <Title>{BLOG_CONTENT.title}</Title>
       </SectionHeader>
 
       {error ? <ErrorCard>{error}</ErrorCard> : null}

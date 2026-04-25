@@ -111,24 +111,26 @@ Update `.agent/CONTINUITY.md` only when there is a meaningful delta in:
 
 ### Frontend
 
-- From `frontend/`, use `npm run dev` for local work, `npm run lint` and `npm run build` for standard verification, and `npm run generate-sitemap` when sitemap output is needed.
-- `npm run design-audit` exists, but it requires a reachable `BASE_URL` or local dev server and may be blocked by browser-launch permissions in this sandbox; use browser/Playwright verification when feasible.
+- From `frontend/`, use `npm run dev` for local work, `npm run preview` to serve a built bundle locally, `npm run lint` and `npm run build` for standard verification, and `npm run generate-sitemap` when sitemap output is needed.
+- `npm run generate-sitemap` writes `frontend/public/sitemap.xml` and uses the Sanity env vars plus optional `SITE_URL` / `VITE_SANITY_API_VERSION` overrides when those are relevant.
+- `npm run design-audit` can auto-detect a local dev server on `http://localhost:5173` through `:5180`, or use an explicit `BASE_URL`, but browser launch may be blocked in this sandbox; use browser/Playwright verification when feasible.
 
 ### ParticleEarth embed
 
 - Prefer the canonical sync command from `frontend/`: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\syncParticleEarth.ps1`. It runs `npm run build` in `../ParticleEarth` and copies the built bundle into `frontend/public/particle-earth`.
 - If the earth bundle is already built and only needs recopying, run `node scripts/syncParticleEarth.mjs` from `frontend/`.
+- When working inside `ParticleEarth/` directly, use `npm run dev` for the standalone app, `npm run preview` for a built preview, and `npm run test` to run both unit and e2e suites together.
 - Do not hand-edit `frontend/public/particle-earth`; rebuild and sync from `ParticleEarth/` instead.
 - Verify `ParticleEarth/` with `npm run lint`, `npm run test:unit`, `npm run build`, and `npm run test:e2e` when browser support is available.
 
 ### Container workflow
 
-- `ParticleEarth/` has a Docker Compose workflow: `docker compose up -d`, then `docker compose exec app npm run build`, `docker compose exec app npm run lint`, `docker compose exec app npm run test:unit`, and `docker compose exec app npm run test:e2e`.
+- `ParticleEarth/` has a Docker Compose workflow in `ParticleEarth/compose.yaml`: `docker compose up -d` starts the dev server on `http://localhost:5173` and auto-installs dependencies into the named `/app/node_modules` volume when needed; use `docker compose exec app npm run build`, `docker compose exec app npm run lint`, `docker compose exec app npm run test:unit`, and `docker compose exec app npm run test:e2e` for verification.
 - TODO: The root `frontend/` and `sanity/` projects do not currently have a committed container workflow; create one before defaulting to host installs if a task requires new dependency/tooling setup.
 
 ### Sanity Studio
 
-- From `sanity/`, use `npm run dev` for the local studio and `npm run build` for verification.
+- From `sanity/`, use `npm run dev` for the local studio, `npm run start` for Sanity's start server, and `npm run build` for verification.
 - `npm run deploy` and `npm run deploy-graphql` are remote writes; only run them when explicitly instructed, and dry-run or confirm first when possible.
 
 ### Git

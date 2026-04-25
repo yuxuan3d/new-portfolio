@@ -247,34 +247,49 @@ export default function WorksSection({ projects, error, isLoading }) {
           <LoadingState label="Loading Projects" minHeight="340px" margin="0" />
         ) : displayedItems.length > 0 ? (
           <ArchiveGrid aria-label="Projects">
-            {displayedItems.map((project) => (
-              <ArchiveItem
-                key={project._id}
-                ref={(node) => setItemRef(project._id, node)}
-                $isExiting={exitingIds.includes(project._id)}
-                $isEntering={enteringIds.includes(project._id)}
-              >
-                <ArchiveLink
-                  to={`/project/${project.slug}`}
-                  state={{ backgroundLocation: location }}
-                  tabIndex={exitingIds.includes(project._id) ? -1 : undefined}
-                  aria-hidden={exitingIds.includes(project._id)}
+            {displayedItems.map((project, index) => {
+              const isFeature = index === 0;
+              const isSideFeature = index === 1;
+
+              return (
+                <ArchiveItem
+                  key={project._id}
+                  ref={(node) => setItemRef(project._id, node)}
+                  $isExiting={exitingIds.includes(project._id)}
+                  $isEntering={enteringIds.includes(project._id)}
+                  $feature={isFeature}
+                  $sideFeature={isSideFeature}
                 >
-                  <ArchiveCard>
-                    <ArchiveImage>
-                      <LazyImage
-                        src={urlFor(project.mainImage).auto('format').width(900).height(720).fit('crop').quality(90).url()}
-                        alt={project.title}
-                        sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                      />
-                    </ArchiveImage>
-                    <ArchiveOverlay>
-                      <ArchiveTitle>{project.title}</ArchiveTitle>
-                    </ArchiveOverlay>
-                  </ArchiveCard>
-                </ArchiveLink>
-              </ArchiveItem>
-            ))}
+                  <ArchiveLink
+                    to={`/project/${project.slug}`}
+                    state={{ backgroundLocation: location }}
+                    tabIndex={exitingIds.includes(project._id) ? -1 : undefined}
+                    aria-hidden={exitingIds.includes(project._id)}
+                  >
+                    <ArchiveCard $feature={isFeature} $sideFeature={isSideFeature}>
+                      <ArchiveImage>
+                        <LazyImage
+                          src={urlFor(project.mainImage).auto('format').width(900).height(720).fit('crop').quality(90).url()}
+                          alt={project.title}
+                          sizes={isFeature ? '(max-width: 720px) 100vw, (max-width: 1100px) 100vw, 66vw' : '(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw'}
+                        />
+                      </ArchiveImage>
+                      <ArchiveOverlay $feature={isFeature} $sideFeature={isSideFeature}>
+                        {isFeature ? <ArchiveEyebrow>Selected project</ArchiveEyebrow> : null}
+                        <ArchiveTitle $feature={isFeature} $sideFeature={isSideFeature}>{project.title}</ArchiveTitle>
+                        {isFeature && Array.isArray(project.tags) && project.tags.length > 0 ? (
+                          <ArchiveTagRow>
+                            {project.tags.slice(0, 4).map((tag) => (
+                              <ArchiveTag key={tag}>{tag}</ArchiveTag>
+                            ))}
+                          </ArchiveTagRow>
+                        ) : null}
+                      </ArchiveOverlay>
+                    </ArchiveCard>
+                  </ArchiveLink>
+                </ArchiveItem>
+              );
+            })}
           </ArchiveGrid>
         ) : (
           <EmptyState>
@@ -328,7 +343,7 @@ const ErrorCard = styled.div`
 const SectionBlock = styled.div`
   padding: var(--panel-padding);
   display: grid;
-  gap: 0.9rem;
+  gap: clamp(1rem, 2vw, 1.35rem);
 `;
 
 const FilterRail = styled.div`
@@ -363,7 +378,7 @@ const FilterButton = styled.button`
 
 const ArchiveGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 1rem;
 
   ${MEDIA.tabletDown} {
@@ -377,12 +392,21 @@ const ArchiveGrid = styled.div`
 
 const ArchiveItem = styled.div`
   min-width: 0;
+  grid-column: ${({ $feature }) => ($feature ? 'span 8' : 'span 4')};
   opacity: ${({ $isExiting, $isEntering }) => {
     if ($isExiting || $isEntering) return 0;
     return 1;
   }};
   transition: opacity ${FILTER_FADE_MS}ms ease;
   pointer-events: ${({ $isExiting }) => ($isExiting ? 'none' : 'auto')};
+
+  ${MEDIA.tabletDown} {
+    grid-column: ${({ $feature }) => ($feature ? '1 / -1' : 'span 1')};
+  }
+
+  ${MEDIA.phone} {
+    grid-column: 1;
+  }
 `;
 
 const ArchiveLink = styled(Link)`
@@ -392,11 +416,23 @@ const ArchiveLink = styled(Link)`
 
 const ArchiveCard = styled.article`
   position: relative;
-  aspect-ratio: 1 / 0.78;
+  aspect-ratio: ${({ $feature, $sideFeature }) => {
+    if ($feature) return '16 / 8.6';
+    if ($sideFeature) return '1 / 1.1';
+    return '1 / 0.78';
+  }};
   overflow: hidden;
   border-radius: 0;
   border: 1px solid ${({ theme }) => theme.border};
   background: rgba(255, 255, 255, 0.03);
+
+  ${MEDIA.tabletDown} {
+    aspect-ratio: ${({ $feature }) => ($feature ? '16 / 8.6' : '1 / 0.78')};
+  }
+
+  ${MEDIA.phone} {
+    aspect-ratio: 1 / 0.86;
+  }
 `;
 
 const ArchiveImage = styled.div`
@@ -419,21 +455,54 @@ const ArchiveImage = styled.div`
 const ArchiveOverlay = styled.div`
   position: absolute;
   inset: 0;
-  padding: clamp(1rem, 2.8vw, 1.35rem);
+  padding: ${({ $feature, $sideFeature }) => ($feature || $sideFeature ? 'clamp(1.1rem, 3.3vw, 2rem)' : 'clamp(1rem, 2.8vw, 1.35rem)')};
   display: flex;
-  align-items: end;
-  background: transparent;
+  flex-direction: column;
+  justify-content: end;
+  gap: 0.55rem;
+  background: linear-gradient(180deg, transparent 28%, rgba(0, 0, 0, 0.78) 100%);
 `;
 
 const ArchiveTitle = styled.h4`
   width: 100%;
   color: white;
   text-align: left;
-  font-size: 0.98rem;
-  line-height: 1.2;
+  font-size: ${({ $feature, $sideFeature }) => {
+    if ($feature) return 'clamp(1.35rem, 3vw, 2.35rem)';
+    if ($sideFeature) return 'clamp(1.1rem, 1.6vw, 1.35rem)';
+    return '0.98rem';
+  }};
+  line-height: ${({ $feature }) => ($feature ? 1.02 : 1.2)};
   text-shadow:
     0 2px 10px rgba(0, 0, 0, 0.85),
     0 1px 3px rgba(0, 0, 0, 0.95);
+`;
+
+const ArchiveEyebrow = styled.p`
+  color: ${({ theme }) => theme.accent};
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+`;
+
+const ArchiveTagRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+`;
+
+const ArchiveTag = styled.span`
+  min-height: 28px;
+  padding: 0.38rem 0.58rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(5, 6, 8, 0.44);
+  color: ${({ theme }) => theme.text.primary};
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 `;
 
 const EmptyState = styled.div`

@@ -303,9 +303,14 @@ const Title = styled.h2`
 
 const BodyGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: start;
   min-width: 0;
+
+  ${MEDIA.tabletDown} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const panelStyles = css`
@@ -318,6 +323,9 @@ const FormPanel = styled.div`
   ${panelStyles}
   padding: var(--panel-padding);
   min-width: 0;
+  background:
+    linear-gradient(135deg, rgba(144, 213, 255, 0.06), transparent 34%),
+    ${({ theme }) => theme.surfaceAlt};
 `;
 
 const Form = styled.form`
@@ -443,15 +451,20 @@ const InfoPanel = styled.aside`
   display: grid;
   align-content: start;
   min-width: 0;
+
+  ${MEDIA.tabletDown} {
+    border-top: 1px solid ${({ theme }) => theme.border};
+    padding-top: 1rem;
+  }
 `;
 
 const MethodList = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.8rem;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
 
   ${MEDIA.tabletOnly} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   ${MEDIA.phone} {
@@ -460,12 +473,13 @@ const MethodList = styled.div`
 `;
 
 const MethodLink = styled.a`
-  min-height: 72px;
+  min-height: 76px;
   min-width: 0;
-  padding: 0.9rem 1rem;
+  padding: 0.75rem 0 0.75rem 1rem;
   border-radius: 0;
-  border: 1px solid ${({ theme }) => theme.border};
-  background: rgba(255, 255, 255, 0.03);
+  border: 0;
+  border-left: 1px solid ${({ theme }) => theme.borderStrong};
+  background: transparent;
   text-decoration: none;
   display: flex;
   align-items: center;

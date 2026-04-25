@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -20,6 +20,16 @@ const QUERY = `
     "arsenal": arsenal[]{
       "name": name
     },
+    tags
+  }
+`;
+
+const PROJECT_NAV_QUERY = `
+  *[_type == "portfolioItem" && defined(slug.current)] | order(orderRank) {
+    _id,
+    title,
+    "slug": slug.current,
+    mainImage,
     tags
   }
 `;
@@ -157,7 +167,37 @@ export default function ProjectDetail({ overlay = false }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [project, error, { isValidating }] = useSanityData(QUERY, { slug });
+  const [projectNavItems] = useSanityData(PROJECT_NAV_QUERY);
   const hasBackgroundLocation = Boolean(location.state?.backgroundLocation);
+  const projectLinkState = overlay && hasBackgroundLocation
+    ? { backgroundLocation: location.state.backgroundLocation }
+    : undefined;
+
+  const adjacentProjects = useMemo(() => {
+    if (!project || !Array.isArray(projectNavItems) || projectNavItems.length < 2) {
+      return [];
+    }
+
+    const currentIndex = projectNavItems.findIndex((item) => item.slug === project.slug);
+    if (currentIndex === -1) return [];
+
+    if (projectNavItems.length === 2) {
+      return [
+        {
+          label: 'Next project',
+          project: projectNavItems.find((item) => item.slug !== project.slug),
+        },
+      ].filter((item) => item.project?.slug);
+    }
+
+    const previousIndex = (currentIndex - 1 + projectNavItems.length) % projectNavItems.length;
+    const nextIndex = (currentIndex + 1) % projectNavItems.length;
+
+    return [
+      { label: 'Previous project', project: projectNavItems[previousIndex] },
+      { label: 'Next project', project: projectNavItems[nextIndex] },
+    ].filter((item) => item.project?.slug && item.project.slug !== project.slug);
+  }, [project, projectNavItems]);
 
   const handleClose = useCallback(() => {
     if (overlay && hasBackgroundLocation) {
@@ -315,6 +355,32 @@ export default function ProjectDetail({ overlay = false }) {
               ))}
             </GalleryGrid>
           </GalleryPanel>
+        ) : null}
+
+        {adjacentProjects.length > 0 ? (
+          <ProjectPager aria-label="Project navigation">
+            {adjacentProjects.map(({ label, project: adjacentProject }) => (
+              <ProjectPagerLink
+                key={`${label}-${adjacentProject.slug}`}
+                to={`/project/${adjacentProject.slug}`}
+                state={projectLinkState}
+              >
+                {adjacentProject.mainImage ? (
+                  <ProjectPagerImage>
+                    <img
+                      src={urlFor(adjacentProject.mainImage).auto('format').width(520).height(320).fit('crop').quality(82).url()}
+                      alt=""
+                      loading="lazy"
+                    />
+                  </ProjectPagerImage>
+                ) : null}
+                <ProjectPagerCopy>
+                  <ProjectPagerLabel>{label}</ProjectPagerLabel>
+                  <ProjectPagerTitle>{adjacentProject.title}</ProjectPagerTitle>
+                </ProjectPagerCopy>
+              </ProjectPagerLink>
+            ))}
+          </ProjectPager>
         ) : null}
       </Page>
     ),
@@ -661,6 +727,83 @@ const GalleryItem = styled.div`
     object-fit: cover;
     display: block;
   }
+`;
+
+const ProjectPager = styled.nav`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+
+  ${MEDIA.phone} {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ProjectPagerLink = styled(Link)`
+  min-width: 0;
+  min-height: 132px;
+  border-top: 1px solid ${({ theme }) => theme.borderStrong};
+  border-bottom: 1px solid ${({ theme }) => theme.border};
+  color: inherit;
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: minmax(94px, 0.34fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.accent};
+    transform: translateY(-1px);
+  }
+
+  ${MEDIA.phone} {
+    grid-template-columns: minmax(86px, 0.32fr) minmax(0, 1fr);
+  }
+`;
+
+const ProjectPagerImage = styled.span`
+  display: block;
+  aspect-ratio: 1 / 0.72;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    filter: saturate(0.9);
+    transition: transform 0.25s ease, filter 0.25s ease;
+  }
+
+  ${ProjectPagerLink}:hover & img {
+    transform: scale(1.04);
+    filter: saturate(1);
+  }
+`;
+
+const ProjectPagerCopy = styled.span`
+  min-width: 0;
+  display: grid;
+  gap: 0.35rem;
+`;
+
+const ProjectPagerLabel = styled.span`
+  color: ${({ theme }) => theme.accent};
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+`;
+
+const ProjectPagerTitle = styled.span`
+  color: ${({ theme }) => theme.text.primary};
+  font-size: clamp(1rem, 2.1vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
 `;
 
 const ErrorCard = styled.div`

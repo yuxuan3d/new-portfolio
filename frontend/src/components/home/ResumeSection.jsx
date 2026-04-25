@@ -1,10 +1,9 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { MEDIA } from '../../styles/breakpoints';
 import {
   CAPABILITY_CARDS,
   RESUME_CONTENT,
-  RESUME_STATS,
 } from '../../content/siteContent';
 
 export default function ResumeSection() {
@@ -14,28 +13,17 @@ export default function ResumeSection() {
         <Title>{RESUME_CONTENT.title}</Title>
       </SectionHeader>
 
-      <IntroGrid>
-        <IntroPanel>
-          <Lead>{RESUME_CONTENT.intro}</Lead>
-          <Body>{RESUME_CONTENT.description}</Body>
-          <ActionRow>
-            {RESUME_CONTENT.actions.map((action) => (
-              <ActionLink key={action.label} href={action.href} target="_blank" rel="noopener noreferrer">
-                {action.label}
-              </ActionLink>
-            ))}
-          </ActionRow>
-        </IntroPanel>
-
-        <StatsPanel>
-          {RESUME_STATS.map((item) => (
-            <StatCard key={item.label}>
-              <StatLabel>{item.label}</StatLabel>
-              <StatValue>{item.value}</StatValue>
-            </StatCard>
+      <IntroPanel>
+        <Lead>{RESUME_CONTENT.intro}</Lead>
+        <Body>{RESUME_CONTENT.description}</Body>
+        <ActionRow>
+          {RESUME_CONTENT.actions.map((action) => (
+            <ActionLink key={action.label} href={action.href} target="_blank" rel="noopener noreferrer">
+              {action.label}
+            </ActionLink>
           ))}
-        </StatsPanel>
-      </IntroGrid>
+        </ActionRow>
+      </IntroPanel>
 
       <CapabilityGrid aria-label="Capabilities">
         {CAPABILITY_CARDS.map((card) => (
@@ -54,12 +42,6 @@ export default function ResumeSection() {
   );
 }
 
-const sharedPanelStyles = css`
-  border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 0;
-  background: ${({ theme }) => theme.surface};
-`;
-
 const Section = styled.section`
   width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
   margin: 0 auto;
@@ -71,11 +53,6 @@ const Section = styled.section`
 const SectionHeader = styled.header`
   display: grid;
   gap: 0.35rem;
-  padding-left: var(--panel-padding);
-
-  ${MEDIA.phone} {
-    padding-left: 0;
-  }
 `;
 
 const Title = styled.h2`
@@ -85,21 +62,16 @@ const Title = styled.h2`
   text-wrap: pretty;
 `;
 
-const IntroGrid = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
-  gap: 1.2rem;
-
-  ${MEDIA.tabletDown} {
-    grid-template-columns: 1fr;
-  }
-`;
-
 const IntroPanel = styled.div`
-  ${sharedPanelStyles}
-  padding: var(--panel-padding);
+  max-width: 66ch;
+  padding: var(--panel-padding) 0;
   display: grid;
   gap: 0.75rem;
+  align-content: start;
+
+  ${MEDIA.phone} {
+    padding-top: 0.4rem;
+  }
 `;
 
 const Lead = styled.p`
@@ -152,39 +124,6 @@ const ActionLink = styled.a`
   }
 `;
 
-const StatsPanel = styled.aside`
-  ${sharedPanelStyles}
-  padding: var(--panel-padding);
-  display: grid;
-  gap: 0;
-`;
-
-const StatCard = styled.div`
-  padding: 1rem 0;
-  border-top: 1px solid ${({ theme }) => theme.border};
-  display: grid;
-  gap: 0.25rem;
-
-  &:first-child {
-    padding-top: 0;
-    border-top: none;
-  }
-`;
-
-const StatLabel = styled.p`
-  color: ${({ theme }) => theme.accent};
-  font-size: 0.7rem;
-  font-family: 'Roboto Mono', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-`;
-
-const StatValue = styled.p`
-  color: ${({ theme }) => theme.text.primary};
-  font-size: 1rem;
-  line-height: 1.45;
-`;
-
 const CapabilityGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -200,8 +139,9 @@ const CapabilityGrid = styled.div`
 `;
 
 const CapabilityCard = styled.article`
-  ${sharedPanelStyles}
-  padding: var(--panel-padding);
+  padding: var(--panel-padding) 0 0;
+  border-top: 1px solid ${({ theme }) => theme.borderStrong};
+  background: transparent;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
