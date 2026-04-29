@@ -16,9 +16,9 @@ const HERO_SOCIALS = [
   { label: 'Email', href: `mailto:${SOCIAL_LINKS.EMAIL}`, icon: FaEnvelope },
 ];
 
-const HERO_RAIL_LINKS = [
-  { label: 'Showreel', href: EXTERNAL_LINKS.DEMO_REEL },
-  { label: 'Resume', href: EXTERNAL_LINKS.RESUME },
+const HERO_ASSET_LINKS = [
+  { label: 'Resume', href: EXTERNAL_LINKS.RESUME, side: 'left' },
+  { label: 'Showreel', href: EXTERNAL_LINKS.DEMO_REEL, side: 'right' },
 ];
 
 export default function HomeHero({ projects = [], onParticleEarthReady }) {
@@ -42,6 +42,20 @@ export default function HomeHero({ projects = [], onParticleEarthReady }) {
             </DisplayTitle>
           ) : null}
         </HeroCenter>
+
+        <HeroAssetLinks aria-label="Hero asset links">
+          {HERO_ASSET_LINKS.map(({ label, href, side }) => (
+            <HeroAssetLink
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              $side={side}
+            >
+              {label}
+            </HeroAssetLink>
+          ))}
+        </HeroAssetLinks>
 
         <DesktopContact>
           {HERO_CONTACT_LINES.map((line) => (
@@ -67,13 +81,6 @@ export default function HomeHero({ projects = [], onParticleEarthReady }) {
         </DesktopScrollButton>
 
         <DesktopFollow>
-          <DesktopRailLinks>
-            {HERO_RAIL_LINKS.map(({ label, href }) => (
-              <DesktopRailTextLink key={label} href={href} target="_blank" rel="noopener noreferrer">
-                {label}
-              </DesktopRailTextLink>
-            ))}
-          </DesktopRailLinks>
           <DesktopFollowLabel>Follow Me</DesktopFollowLabel>
           <DesktopFollowRule aria-hidden="true" />
           <DesktopFollowLinks>
@@ -87,8 +94,8 @@ export default function HomeHero({ projects = [], onParticleEarthReady }) {
 
         <MobileHeroCard>
           <Content>
-            <Eyebrow>{HERO_CONTENT.eyebrow}</Eyebrow>
-            <Title>{HERO_CONTENT.supportTitle}</Title>
+            {HERO_CONTENT.eyebrow ? <Eyebrow>{HERO_CONTENT.eyebrow}</Eyebrow> : null}
+            {HERO_CONTENT.supportTitle ? <Title>{HERO_CONTENT.supportTitle}</Title> : null}
             <Subtitle>
               I&apos;m <MobileName>{HERO_CONTENT.name}</MobileName>, {HERO_CONTENT.description}
             </Subtitle>
@@ -100,13 +107,6 @@ export default function HomeHero({ projects = [], onParticleEarthReady }) {
                 {HERO_CONTENT.primaryCta.label}
               </PrimaryButton>
             </ActionRow>
-            <MobileQuickLinks aria-label="Hero quick links">
-              {HERO_RAIL_LINKS.map(({ label, href }) => (
-                <MobileQuickLink key={label} href={href} target="_blank" rel="noopener noreferrer">
-                  {label}
-                </MobileQuickLink>
-              ))}
-            </MobileQuickLinks>
           </ActionStack>
         </MobileHeroCard>
       </Overlay>
@@ -150,6 +150,10 @@ const Overlay = styled.div`
     gap: 1rem;
     align-items: stretch;
   }
+
+  ${MEDIA.phone} {
+    padding-bottom: clamp(0.5rem, 2vw, 1rem);
+  }
 `;
 
 const HeroCenter = styled.div`
@@ -184,6 +188,127 @@ const DisplayTitle = styled.h1`
 
 const AccentWord = styled.span`
   color: ${({ theme }) => theme.accent};
+`;
+
+const HeroAssetLinks = styled.nav`
+  position: absolute;
+  left: 50%;
+  top: calc(var(--site-header-height, 96px) + 39svh);
+  width: min(calc(100vw - (var(--site-gutter) * 2)), 86rem);
+  display: none;
+  grid-template-columns: minmax(8rem, 1fr) minmax(24rem, 50vw) minmax(8rem, 1fr);
+  align-items: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  ${MEDIA.desktopUp} {
+    display: grid;
+  }
+
+  ${MEDIA.wideUp} {
+    top: calc(var(--site-header-height, 96px) + 38svh);
+    grid-template-columns: minmax(12rem, 1fr) minmax(34rem, 46vw) minmax(12rem, 1fr);
+  }
+
+  ${MEDIA.tabletDown} {
+    inset: 0 auto 0 50%;
+    width: min(calc(100vw - (var(--site-gutter) * 2)), 34rem);
+    height: auto;
+    display: block;
+    transform: translateX(-50%);
+  }
+
+  @media (min-width: 641px) and (max-width: 1023px) and (orientation: landscape) {
+    top: calc(var(--site-header-height, 96px) + 39svh);
+    bottom: auto;
+    width: min(calc(100vw - (var(--site-gutter) * 2)), 64rem);
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) minmax(24rem, 50vw) minmax(8rem, 1fr);
+    align-items: center;
+    transform: translate(-50%, -50%);
+  }
+`;
+
+const HeroAssetLink = styled.a`
+  min-height: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-self: ${({ $side }) => ($side === 'left' ? 'end' : 'start')};
+  grid-column: ${({ $side }) => ($side === 'left' ? '1' : '3')};
+  color: ${({ theme }) => theme.text.primary};
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(1.75rem, 3.2vw, 3.45rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-shadow: 0 18px 34px rgba(0, 0, 0, 0.52);
+  transition: color 0.2s ease, transform 0.2s ease;
+  pointer-events: auto;
+
+  &:hover {
+    color: ${({ theme }) => theme.accent};
+    transform: translateY(-1px);
+  }
+
+  ${MEDIA.tabletDown} {
+    position: absolute;
+    left: 50%;
+    top: ${({ $side }) => ($side === 'left' ? 'clamp(5.5rem, 18svh, 12rem)' : '73svh')};
+    min-height: clamp(3rem, 8svh, 4.5rem);
+    justify-self: center;
+    grid-column: 1;
+    grid-row: auto;
+    font-size: clamp(1.45rem, 8vw, 2.5rem);
+    letter-spacing: 0.05em;
+    transform: translateX(-50%);
+
+    &:hover {
+      transform: translateX(-50%) translateY(-1px);
+    }
+  }
+
+  ${MEDIA.phone} {
+    top: ${({ $side }) => ($side === 'left' ? 'clamp(5rem, 16svh, 7rem)' : '62.5svh')};
+  }
+
+  @media (min-width: 431px) and (max-width: 640px) {
+    top: ${({ $side }) => ($side === 'left' ? 'clamp(5rem, 16svh, 7rem)' : '74svh')};
+    min-height: 28px;
+    font-size: clamp(1.05rem, 4vw, 1.38rem);
+  }
+
+  @media (max-width: 1023px) and (orientation: landscape) {
+    top: ${({ $side }) => ($side === 'left' ? 'clamp(4.75rem, 15svh, 8rem)' : '82svh')};
+  }
+
+  @media (min-width: 641px) and (max-width: 1023px) and (orientation: landscape) {
+    position: static;
+    left: auto;
+    top: auto;
+    min-height: 72px;
+    justify-self: ${({ $side }) => ($side === 'left' ? 'end' : 'start')};
+    grid-column: ${({ $side }) => ($side === 'left' ? '1' : '3')};
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    transform: none;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (max-width: 640px) and (max-height: 640px) {
+    top: ${({ $side }) => ($side === 'left' ? 'clamp(5rem, 16svh, 7rem)' : '62.5svh')};
+    min-height: 32px;
+    font-size: clamp(1.15rem, 7vw, 1.65rem);
+  }
+
+  @media (max-width: 640px) and (max-height: 640px) and (orientation: landscape) {
+    top: ${({ $side }) => ($side === 'left' ? 'clamp(3rem, 12svh, 4rem)' : '76svh')};
+    min-height: 28px;
+    font-size: clamp(0.95rem, 4vw, 1.25rem);
+  }
 `;
 
 const DesktopContact = styled.div`
@@ -287,25 +412,6 @@ const sharedVerticalRailText = css`
   text-transform: uppercase;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-`;
-
-const DesktopRailLinks = styled.div`
-  display: grid;
-  gap: 0.95rem;
-  justify-items: center;
-`;
-
-const DesktopRailTextLink = styled.a`
-  ${sharedVerticalRailText}
-  color: ${({ theme }) => theme.text.primary};
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.accent};
-    transform: translateY(-1px);
-  }
 `;
 
 const DesktopFollowLabel = styled.span`
@@ -441,32 +547,3 @@ const PrimaryButton = styled.button`
   }
 `;
 
-const MobileQuickLinks = styled.nav`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 1rem;
-
-  ${MEDIA.phone} {
-    justify-content: space-between;
-  }
-`;
-
-const MobileQuickLink = styled.a`
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  color: ${({ theme }) => theme.text.primary};
-  font-size: 0.72rem;
-  font-weight: 700;
-  font-family: 'Roboto Mono', monospace;
-  letter-spacing: 0.12em;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 0.2s ease, transform 0.2s ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.accent};
-    transform: translateY(-1px);
-  }
-`;

@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-ancestors 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-ancestors 'self' https://www.yxperiments.com https://yxperiments.com; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
         },
         {
           "key": "Referrer-Policy",
@@ -26,10 +26,6 @@
         {
           "key": "X-DNS-Prefetch-Control",
           "value": "off"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
         },
         {
           "key": "X-Permitted-Cross-Domain-Policies",
