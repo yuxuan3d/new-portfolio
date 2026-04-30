@@ -172,6 +172,11 @@ const GlobalStyle = createGlobalStyle`
     body::before {
       opacity: 0.05;
     }
+
+    body::before,
+    body::after {
+      display: none;
+    }
   }
 `;
 

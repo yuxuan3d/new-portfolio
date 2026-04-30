@@ -1,4 +1,5 @@
 [PLANS]
+- 2026-04-30T10:10:30.8678644+08:00 [USER] Current task: improve mobile scroll smoothness on the portfolio homepage, especially stalls while scrolling down from the ParticleEarth hero.
 - 2026-04-24T17:09:22.1297789+08:00 [USER] Current task: implement the accepted design/functionality improvements from the portfolio review: post-hero scroll choreography, less uniform panel language, copy/nav naming fixes, Open Graph metadata, and project next/previous navigation.
 - 2026-04-23T23:14:07.9201206+08:00 [TOOL] Completed a frontend security-hardening pass covering Vercel response headers/CSP, iframe/embed restrictions, contact-form abuse reduction, and dependency audit remediation.
 - 2026-04-19T01:37:41.1789733+08:00 [TOOL] Supersedes the 2026-04-19T01:35:08.8783794+08:00 current-task entry: continuity compaction and ParticleEarth build-warning fix are complete.
@@ -6,6 +7,8 @@
 - 2026-03-28T00:26:05.6192387+08:00 [CODE] [MILESTONE] Keep this file bounded and milestone-based; append only material changes affecting frontend shell, ParticleEarth embed, verification workflow, or known caveats.
 
 [DECISIONS]
+- 2026-04-30T10:10:30.8678644+08:00 [CODE] Mobile vertical scroll now takes priority over immediate ParticleEarth drag: iframe touch handling uses `touch-action: pan-y`, pointer drags activate only after a horizontal threshold, and vertical gestures are released to page scroll.
+- 2026-04-30T10:10:30.8678644+08:00 [CODE] The parent frontend now sends `particle-earth:visibility` messages so the iframe pauses auto-rotation/R3F frameloop when the hero is away from the viewport or the document is hidden.
 - 2026-04-29T15:13:22.8460661+08:00 [USER] Desktop/computer hero asset links mean viewport width `>=1024px`; mobile/tablet quick links stay unchanged.
 - 2026-04-25T12:51:03.5549446+08:00 [USER] Supersedes the Work-section process-row decision: the user rejected the “How I usually work” process row, so it should stay removed unless explicitly re-requested.
 - 2026-04-24T18:20:53.7850043+08:00 [CODE] Supersedes the standalone workflow bridge: workflow/process now lives inside the Work section as a compact, solid-background-free process row with centered desktop rhythm and a vertical mobile timeline.
@@ -26,6 +29,7 @@
 - 2026-03-28T00:13:06.9870180+08:00 [CODE] The hero iframe should not use whole-frame dimming; readability comes from the page overlay plus in-iframe gradient/background treatment.
 
 [PROGRESS]
+- 2026-04-30T10:10:30.8678644+08:00 [CODE] Implemented mobile scroll performance pass: offscreen ParticleEarth pause/resume, lower mobile WebGL DPR/no antialias, fewer mobile globe particles, horizontal-threshold touch drag, removed reveal/image CSS blur filters, earlier lazy-image preloading, and disabled subtle fixed/masked dot overlays on phones.
 - 2026-04-29T18:55:43.1965481+08:00 [CODE] Moved the mobile phone `Showreel` hero asset label slightly lower by changing the phone and short-phone portrait rules to `62.5svh`; tablet portrait and landscape placements were kept at the previous safer positions to avoid card overlap.
 - 2026-04-29T16:46:02.0463803+08:00 [CODE] Increased the homepage hero asset-link overlay's reserved globe column for desktop/laptop and landscape-tablet layouts, and added a short phone-landscape override so `Resume`/`Showreel` stay farther from the projected globe without leaving the viewport.
 - 2026-04-29T16:23:56.9464608+08:00 [CODE] Adjusted the mobile/tablet hero asset-link overlay so `Showreel` sits below the ParticleEarth projected globe instead of intersecting it; short/wide phone rules use compact lower-label sizing, and landscape tablet uses side labels.
@@ -62,6 +66,7 @@
 - 2026-03-28T11:31:45+08:00 [CODE] [MILESTONE] Site background/section system uses subtle dot fields and continuous dark-to-surface transitions; hero dots live inside ParticleEarth behind the globe.
 
 [DISCOVERIES]
+- 2026-04-30T10:10:30.8678644+08:00 [TOOL] Mobile scroll stall root cause was likely interaction plus paint pressure: ParticleEarth used `touch-action: none` and prevented default on touch immediately; `ScrollReveal` and lazy placeholders also used blur filters over large surfaces. Container e2e now asserts paused visibility and `touch-action: pan-y`.
 - 2026-04-25T17:55:19.7471691+08:00 [TOOL] Vercel project `new-portfolio` currently has `www.yxperiments.com` attached but not the apex `yxperiments.com`; direct header checks show the apex redirects to `https://yxperiments-com.l.ink/`, which can still cause origin and framing confusion outside the canonical `www` URL.
 - 2026-04-25T17:55:19.7471691+08:00 [TOOL] Elevated Chromium verification against live `https://www.yxperiments.com/` loaded `/particle-earth/index.html?embed=1`, found one canvas in the iframe, and found no visible refused/blocked text; only sandbox/WebGL performance warnings appeared.
 - 2026-04-25T17:42:33.3464615+08:00 [TOOL] Hero console error root cause: Vercel `headers` rules are cumulative for matching paths, so the previous catch-all `/(.*)` applied the main CSP (`frame-ancestors 'none'`) to `/particle-earth/*` in addition to the iframe-specific CSP. The blocked iframe then caused the `postMessage` target-origin mismatch.
@@ -83,6 +88,7 @@
 - 2026-03-27T08:10:03Z [TOOL] This sandbox has previously failed uncached npm fetches (`ENOTCACHED` / cache-only failures); avoid new dependencies unless already present.
 
 [OUTCOMES]
+- 2026-04-30T10:10:30.8678644+08:00 [TOOL] Mobile scroll performance pass verified: ParticleEarth container lint, unit tests, build, and e2e passed; synced ParticleEarth build into `frontend/public/particle-earth`; frontend `npm run lint` and `npm run build` passed; elevated mobile Chromium preview check at `390x844` confirmed no horizontal overflow, reveal filters `none`, iframe `touch-action: pan-y`, and `sceneActiveAfterScroll: false`.
 - 2026-04-29T18:55:43.1965481+08:00 [TOOL] Mobile `Showreel` lower-position tweak verified: `frontend` `npm run lint` passed, `npm run build` passed, and elevated headless Chromium geometry checks passed at `768x1024`, `640x800`, `640x360`, `430x932`, `414x896`, `390x844`, `375x667`, `360x640`, and `320x568`; portrait checks confirmed `Showreel` clears both the projected globe and mobile intro card.
 - 2026-04-29T16:46:02.0463803+08:00 [TOOL] Desktop hero asset-link spacing verified: `frontend` `npm run lint` passed, `npm run build` passed, and elevated headless Chromium geometry checks passed at `1024x768`, `1180x820`, `1366x768`, `1440x900`, `1920x1080`, `1023x768`, `896x414`, `844x390`, `768x1024`, `640x800`, `640x360`, `430x932`, `414x896`, `390x844`, `375x667`, `360x640`, and `320x568`; desktop side clearance starts at about `23.4px`, and the tightest mobile vertical clearance was `4.7px` at `640x360`.
 - 2026-04-29T16:23:56.9464608+08:00 [TOOL] Showreel/globe overlap fix verified: `frontend` `npm run lint` passed, `npm run build` passed, and headless Chromium geometry checks passed at `320x568`, `360x640`, `375x667`, `390x844`, `414x896`, `430x932`, `640x800`, `768x1024`, `1023x768`, and `1440x900`; phone/tablet portrait checks confirmed `Showreel` clears the projected globe bottom and mobile card with no horizontal overflow.

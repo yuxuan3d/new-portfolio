@@ -6,6 +6,7 @@ import HomeHero from '../components/home/HomeHero';
 import ResumeSection from '../components/home/ResumeSection';
 import WorksSection from '../components/home/WorksSection';
 import { useSanityData } from '../hooks/useSanityData';
+import { MEDIA } from '../styles/breakpoints';
 
 const PROJECTS_QUERY = `*[_type == "portfolioItem"] | order(orderRank) {
   _id,
@@ -99,5 +100,11 @@ const ContentBand = styled.div`
   > * {
     position: relative;
     z-index: 1;
+  }
+
+  ${MEDIA.phone} {
+    &::before {
+      display: none;
+    }
   }
 `;

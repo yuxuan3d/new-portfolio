@@ -6,6 +6,7 @@ import { BREAKPOINTS, MEDIA } from '../styles/breakpoints';
 const MESSAGE_TYPES = {
   thumbnails: 'particle-earth:project-thumbnails',
   openProject: 'particle-earth:open-project',
+  visibility: 'particle-earth:visibility',
 };
 
 export default function ParticleEarthFrame({ projects = [], onReady }) {
@@ -14,8 +15,11 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
   const [isPhoneViewport, setIsPhoneViewport] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth <= BREAKPOINTS.phone : false,
   );
+  const shellRef = useRef(null);
   const frameRef = useRef(null);
   const hasReportedReadyRef = useRef(false);
+  const isFrameNearViewportRef = useRef(true);
+  const isFrameActiveRef = useRef(true);
 
   const projectThumbnails = useMemo(
     () =>
@@ -66,6 +70,72 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
   useEffect(() => {
     hasReportedReadyRef.current = false;
   }, [frameSrc]);
+
+  const postFrameVisibility = useCallback((active) => {
+    const targetWindow = frameRef.current?.contentWindow;
+    if (!targetWindow || typeof window === 'undefined') {
+      return;
+    }
+
+    targetWindow.postMessage(
+      {
+        type: MESSAGE_TYPES.visibility,
+        active,
+      },
+      window.location.origin,
+    );
+  }, []);
+
+  const syncFrameVisibility = useCallback(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const nextActive = isFrameNearViewportRef.current && document.visibilityState === 'visible';
+    if (nextActive === isFrameActiveRef.current) {
+      return;
+    }
+
+    isFrameActiveRef.current = nextActive;
+    postFrameVisibility(nextActive);
+  }, [postFrameVisibility]);
+
+  useEffect(() => {
+    const node = shellRef.current;
+    if (!node || typeof window === 'undefined') {
+      return undefined;
+    }
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          isFrameNearViewportRef.current = entry.isIntersecting;
+          syncFrameVisibility();
+        },
+        {
+          rootMargin: '180px 0px 320px 0px',
+          threshold: 0,
+        },
+      );
+
+      observer.observe(node);
+
+      const handleVisibilityChange = () => syncFrameVisibility();
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        observer.disconnect();
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+
+    const handleVisibilityChange = () => syncFrameVisibility();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [syncFrameVisibility]);
 
   const postProjectThumbnails = useCallback(() => {
     const targetWindow = frameRef.current?.contentWindow;
@@ -125,11 +195,12 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
 
     hasReportedReadyRef.current = true;
     postProjectThumbnails();
+    postFrameVisibility(isFrameActiveRef.current);
     onReady?.();
-  }, [onReady, postProjectThumbnails]);
+  }, [onReady, postFrameVisibility, postProjectThumbnails]);
 
   return (
-    <FrameShell>
+    <FrameShell ref={shellRef}>
       <Frame
         ref={frameRef}
         src={frameSrc}
@@ -149,6 +220,7 @@ const FrameShell = styled.div`
   overflow: hidden;
   border-radius: inherit;
   background: #090a0c;
+  contain: layout paint;
 `;
 
 const Frame = styled.iframe`
@@ -158,6 +230,7 @@ const Frame = styled.iframe`
   height: 100%;
   border: none;
   background: transparent;
+  touch-action: pan-y;
   transform: scale(1.04);
   transform-origin: center;
   filter: none;

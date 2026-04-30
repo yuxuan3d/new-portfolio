@@ -57,23 +57,29 @@ export default function ScrollReveal({
 const RevealElement = styled.div`
   opacity: 0;
   transform: translate3d(0, var(--reveal-distance, 28px), 0);
-  filter: blur(10px);
+  will-change: opacity, transform;
   transition:
     opacity 560ms ease,
-    transform 680ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 680ms ease;
+    transform 680ms cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--reveal-delay, 0ms);
 
   &[data-visible='true'] {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    filter: blur(0);
+    will-change: auto;
+  }
+
+  @media (max-width: 640px) {
+    transform: translate3d(0, min(var(--reveal-distance, 28px), 16px), 0);
+    transition:
+      opacity 260ms ease,
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {
     opacity: 1;
     transform: none;
-    filter: none;
+    will-change: auto;
     transition: none;
   }
 `;

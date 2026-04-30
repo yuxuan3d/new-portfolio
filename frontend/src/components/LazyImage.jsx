@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const ImageWrapper = styled.div`
@@ -13,7 +13,7 @@ const StyledImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.3s ease, filter 0.3s ease;
+  transition: opacity 0.3s ease;
   opacity: ${({ $isLoaded }) => ($isLoaded ? 1 : 0)};
 `;
 
@@ -26,7 +26,6 @@ const Placeholder = styled.div`
   background: ${({ theme, $blurDataURL }) => ($blurDataURL ? `url(${$blurDataURL})` : theme.card.background)};
   background-size: cover;
   background-position: center;
-  filter: ${({ $blurDataURL }) => ($blurDataURL ? 'blur(20px)' : 'none')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,6 +35,7 @@ const Placeholder = styled.div`
 
 const createUrl = (source) => {
   if (!source) return null;
+  if (typeof window === 'undefined') return null;
 
   try {
     return new URL(source, window.location.origin);
@@ -44,61 +44,66 @@ const createUrl = (source) => {
   }
 };
 
+const createBlurDataURL = (source) => {
+  const url = createUrl(source);
+
+  if (!url) {
+    return '';
+  }
+
+  const baseWidth = parseInt(url.searchParams.get('w') || '', 10);
+  const baseHeight = parseInt(url.searchParams.get('h') || '', 10);
+  const hasBaseSize = Number.isFinite(baseWidth) && baseWidth > 0 && Number.isFinite(baseHeight) && baseHeight > 0;
+  const ratio = hasBaseSize ? baseHeight / baseWidth : null;
+
+  url.searchParams.set('w', '50');
+  if (ratio) {
+    url.searchParams.set('h', Math.round(50 * ratio).toString());
+  }
+  url.searchParams.set('blur', '50');
+  url.searchParams.set('q', '20');
+  return url.toString();
+};
+
+const generateSrcSet = (source) => {
+  const originalUrl = createUrl(source);
+
+  if (!originalUrl) {
+    return undefined;
+  }
+
+  const widths = [400, 800, 1200, 1600];
+  return widths
+    .map((width) => {
+      const url = new URL(originalUrl.toString());
+      const baseWidth = parseInt(url.searchParams.get('w') || '', 10);
+      const baseHeight = parseInt(url.searchParams.get('h') || '', 10);
+      const hasBaseSize = Number.isFinite(baseWidth) && baseWidth > 0 && Number.isFinite(baseHeight) && baseHeight > 0;
+      const ratio = hasBaseSize ? baseHeight / baseWidth : null;
+
+      url.searchParams.set('w', width.toString());
+      if (ratio) {
+        url.searchParams.set('h', Math.round(width * ratio).toString());
+      }
+      return `${url.toString()} ${width}w`;
+    })
+    .join(', ');
+};
+
 const LazyImage = ({ src, alt, onLoad: parentOnLoad, sizes = "100vw" }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [blurDataURL, setBlurDataURL] = useState('');
   const imageRef = useRef();
   const observerRef = useRef();
+  const blurDataURL = useMemo(() => createBlurDataURL(src), [src]);
+  const srcSet = useMemo(() => generateSrcSet(src), [src]);
 
-  const generateSrcSet = (source) => {
-    const originalUrl = createUrl(source);
-
-    if (!originalUrl) {
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true);
       return undefined;
     }
 
-    const widths = [400, 800, 1200, 1600];
-    return widths
-      .map((width) => {
-        const url = new URL(originalUrl.toString());
-        const baseWidth = parseInt(url.searchParams.get('w') || '', 10);
-        const baseHeight = parseInt(url.searchParams.get('h') || '', 10);
-        const hasBaseSize = Number.isFinite(baseWidth) && baseWidth > 0 && Number.isFinite(baseHeight) && baseHeight > 0;
-        const ratio = hasBaseSize ? baseHeight / baseWidth : null;
-
-        url.searchParams.set('w', width.toString());
-        if (ratio) {
-          url.searchParams.set('h', Math.round(width * ratio).toString());
-        }
-        return `${url.toString()} ${width}w`;
-      })
-      .join(', ');
-  };
-
-  useEffect(() => {
-    const url = createUrl(src);
-
-    if (!url) {
-      setBlurDataURL('');
-      return;
-    }
-
-    const baseWidth = parseInt(url.searchParams.get('w') || '', 10);
-    const baseHeight = parseInt(url.searchParams.get('h') || '', 10);
-    const hasBaseSize = Number.isFinite(baseWidth) && baseWidth > 0 && Number.isFinite(baseHeight) && baseHeight > 0;
-    const ratio = hasBaseSize ? baseHeight / baseWidth : null;
-
-    url.searchParams.set('w', '50');
-    if (ratio) {
-      url.searchParams.set('h', Math.round(50 * ratio).toString());
-    }
-    url.searchParams.set('blur', '50');
-    url.searchParams.set('q', '20');
-    setBlurDataURL(url.toString());
-  }, [src]);
-
-  useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -107,7 +112,7 @@ const LazyImage = ({ src, alt, onLoad: parentOnLoad, sizes = "100vw" }) => {
         }
       },
       {
-        rootMargin: '50px 0px',
+        rootMargin: '280px 0px',
         threshold: 0.1
       }
     );
@@ -135,7 +140,7 @@ const LazyImage = ({ src, alt, onLoad: parentOnLoad, sizes = "100vw" }) => {
       {isVisible && (
         <StyledImage
           src={src}
-          srcSet={generateSrcSet(src)}
+          srcSet={srcSet}
           sizes={sizes}
           alt={alt}
           onLoad={handleImageLoad}
