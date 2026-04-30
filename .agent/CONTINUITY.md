@@ -1,4 +1,5 @@
 [PLANS]
+- 2026-04-30T10:55:48.4330062+08:00 [USER] Current task: fix the dirty `ParticleEarth` submodule.
 - 2026-04-30T10:49:06.4260477+08:00 [USER] Current task: compact `.agent/CONTINUITY.md` into a bounded milestone brief.
 - 2026-04-30T10:47:12.8440028+08:00 [USER] Most recent product task: rebalance the homepage About awards panel so desktop awards do not push the capability row too far down.
 - 2026-03-28T00:26:05.6192387+08:00 [CODE] [MILESTONE] Keep this file short and high-signal; append only material changes affecting frontend shell, ParticleEarth embed, verification workflow, or known caveats.
@@ -17,6 +18,7 @@
 - 2026-04-30T10:10:30.8678644+08:00 [CODE] Mobile vertical scroll takes priority over ParticleEarth drag: iframe touch handling uses `touch-action: pan-y`, pointer drags activate after a horizontal threshold, and offscreen/hidden hero scenes pause through `particle-earth:visibility`.
 
 [PROGRESS]
+- 2026-04-30T10:55:48.4330062+08:00 [CODE] Committed the intentional ParticleEarth mobile scroll/touch/visibility changes inside the `ParticleEarth` submodule as `4edc06f`; the parent repo records that submodule pointer in its latest commit.
 - 2026-04-30T10:49:06.4260477+08:00 [CODE] Compacted `.agent/CONTINUITY.md` from the long event log into this milestone brief.
 - 2026-04-30T10:47:12.8440028+08:00 [CODE] Homepage About awards now live in `frontend/src/content/siteContent.js` as `AWARD_HIGHLIGHTS` and render in `frontend/src/components/home/ResumeSection.jsx`; desktop uses a compact two-column award grid, tablet/mobile use a single-column stack.
 - 2026-04-30T10:10:30.8678644+08:00 [CODE] Implemented mobile scroll performance pass: offscreen ParticleEarth pause/resume, lower mobile WebGL cost, horizontal-threshold touch drag, removed large blur filters, earlier lazy-image preloading, and disabled subtle fixed/masked dot overlays on phones.
@@ -29,7 +31,8 @@
 - 2026-04-19T01:28:28.9342121+08:00 [CODE] ParticleEarth globe milestone: Singapore home-base pulse, project constellation arcs, R&D transmissions, workflow orbit rings, text project markers, and iframe parent/child project-open messaging.
 
 [DISCOVERIES]
-- 2026-04-30T10:49:06.4260477+08:00 [TOOL] Current top-level `git status --short` before compaction showed only dirty nested `ParticleEarth`; leave it untouched unless the task explicitly involves that submodule.
+- 2026-04-30T10:55:48.4330062+08:00 [TOOL] The dirty `ParticleEarth` state was tracked source/test changes from the mobile scroll-performance pass, not generated junk; preserving via a submodule commit was safer than reverting.
+- 2026-04-30T10:49:06.4260477+08:00 [TOOL] Superseded by the 2026-04-30T10:55:48.4330062+08:00 fix: top-level `git status --short` before compaction showed only dirty nested `ParticleEarth`.
 - 2026-04-30T10:10:30.8678644+08:00 [TOOL] Mobile scroll stall root cause was likely touch interception plus paint pressure: ParticleEarth used immediate touch capture and page surfaces used blur filters over large areas.
 - 2026-04-25T17:55:19.7471691+08:00 [TOOL] Vercel project `new-portfolio` has `www.yxperiments.com` attached but not apex `yxperiments.com`; apex currently redirects elsewhere, which can cause origin/framing confusion outside canonical `www`.
 - 2026-04-25T17:42:33.3464615+08:00 [TOOL] Vercel `headers` rules are cumulative; avoid catch-all main-app CSP accidentally applying `frame-ancestors 'none'` to `/particle-earth/*`.
@@ -42,6 +45,7 @@
 - 2026-03-27T08:10:03Z [TOOL] This sandbox has previously failed uncached npm fetches (`ENOTCACHED` / cache-only failures); avoid new dependencies unless already present.
 
 [OUTCOMES]
+- 2026-04-30T10:55:48.4330062+08:00 [TOOL] ParticleEarth submodule cleanup verified: container `npm run lint`, `npm run test:unit`, and `npm run build` passed; container `npm run test:e2e` could not run because Playwright browsers are not installed in the slim Compose image; generated e2e traces and the leftover Compose container were removed.
 - 2026-04-30T10:49:06.4260477+08:00 [TOOL] Continuity compaction completed as a docs-only update; no build/lint needed.
 - 2026-04-30T10:47:12.8440028+08:00 [TOOL] About awards rebalance verified: `frontend` `npm run lint` passed; `frontend` `npm run build` passed; elevated Chromium geometry check measured desktop awards at 230px tall, two columns, five awards rendered, no desktop/mobile horizontal overflow.
 - 2026-04-30T10:10:30.8678644+08:00 [TOOL] Mobile scroll performance pass verified: ParticleEarth lint/unit/build/e2e passed; canonical sync completed; frontend lint/build passed; elevated mobile Chromium check confirmed no overflow, reveal filters `none`, iframe `touch-action: pan-y`, and offscreen scene inactive.
