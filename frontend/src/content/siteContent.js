@@ -51,6 +51,19 @@ export const RESUME_STATS = [
   { label: 'React + Three.js', value: 'Interactive websites and WebGL work' },
 ];
 
+export const AWARD_HIGHLIGHTS = [
+  {
+    project: 'SIT Open House 2026',
+    awards: [
+      { organization: 'CSSDA', label: 'Website of the Day' },
+      { organization: 'CSSDA', label: 'Best Innovation' },
+      { organization: 'CSSDA', label: 'Best UI Design' },
+      { organization: 'CSSDA', label: 'Best UX Design' },
+      { organization: 'The FWA', label: 'FWA of the Day' },
+    ],
+  },
+];
+
 export const CAPABILITY_CARDS = [
   {
     title: '3D & VFX',
