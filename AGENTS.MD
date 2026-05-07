@@ -120,12 +120,14 @@ Update `.agent/CONTINUITY.md` only when there is a meaningful delta in:
 - Prefer the canonical sync command from `frontend/`: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\syncParticleEarth.ps1`. It runs `npm run build` in `../ParticleEarth` and copies the built bundle into `frontend/public/particle-earth`.
 - If the earth bundle is already built and only needs recopying, run `node scripts/syncParticleEarth.mjs` from `frontend/`.
 - When working inside `ParticleEarth/` directly, use `npm run dev` for the standalone app, `npm run preview` for a built preview, and `npm run test` to run both unit and e2e suites together.
+- If the elevation texture needs regeneration, run `python scripts/generate_etopo_heightmap.py` from `ParticleEarth/`; it reads `output/etopo1-bedrock-2048x1024.tif` and rewrites `public/earth-elevation.png`.
 - Do not hand-edit `frontend/public/particle-earth`; rebuild and sync from `ParticleEarth/` instead.
 - Verify `ParticleEarth/` with `npm run lint`, `npm run test:unit`, `npm run build`, and `npm run test:e2e` when browser support is available.
 
 ### Container workflow
 
 - `ParticleEarth/` has a Docker Compose workflow in `ParticleEarth/compose.yaml`: `docker compose up -d` starts the dev server on `http://localhost:5173` and auto-installs dependencies into the named `/app/node_modules` volume when needed; use `docker compose exec app npm run build`, `docker compose exec app npm run lint`, `docker compose exec app npm run test:unit`, and `docker compose exec app npm run test:e2e` for verification.
+- If the `ParticleEarth/` container is already running and dependencies change, refresh the named `/app/node_modules` volume with `docker compose exec app npm install`.
 - TODO: The root `frontend/` and `sanity/` projects do not currently have a committed container workflow; create one before defaulting to host installs if a task requires new dependency/tooling setup.
 
 ### Sanity Studio

@@ -5,6 +5,6 @@ export const SOCIAL_LINKS = {
 };
 
 export const EXTERNAL_LINKS = {
-  DEMO_REEL: 'https://vimeo.com/673431850',
+  DEMO_REEL: 'https://www.youtube.com/watch?v=_GOhrZU76OM',
   RESUME: 'https://res.cloudinary.com/dkivbhexf/image/upload/v1770191034/YX_Resume_2026_pbgk0t.pdf'
-}; 
+};
