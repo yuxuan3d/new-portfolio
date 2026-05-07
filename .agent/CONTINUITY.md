@@ -5,6 +5,7 @@
 - 2026-03-28T00:26:05.6192387+08:00 [CODE] [MILESTONE] Keep this file short and high-signal; append only material changes affecting frontend shell, ParticleEarth embed, verification workflow, or known caveats.
 
 [DECISIONS]
+- 2026-05-07T15:57:56.3490108+08:00 [USER] Supersedes 2026-05-07T15:23:30.2035276+08:00: hero Showreel and About/Resume demo reel button should point to `https://youtu.be/WEM10POvpXY`.
 - 2026-05-07T15:23:30.2035276+08:00 [USER] Supersedes 2026-05-07T15:11:02.5169531+08:00: only the hero Showreel link and About/Resume demo reel button should point to `https://www.youtube.com/watch?v=_GOhrZU76OM`; project/work links should keep internal navigation.
 - 2026-05-07T15:11:02.5169531+08:00 [USER] Portfolio/work links should point to `https://www.youtube.com/watch?v=_GOhrZU76OM` instead of internal project overlays/navigation.
 - 2026-03-27T08:10:03Z [CODE] `/` is the canonical one-page route; `/about` redirects to `/#resume`; active standalone routes are `/project/:slug`, `/rnd`, `/rnd/:slug`, and `/contact`.
@@ -50,6 +51,7 @@
 - 2026-03-27T08:10:03Z [TOOL] This sandbox has previously failed uncached npm fetches (`ENOTCACHED` / cache-only failures); avoid new dependencies unless already present.
 
 [OUTCOMES]
+- 2026-05-07T15:57:56.3490108+08:00 [TOOL] `EXTERNAL_LINKS.DEMO_REEL` changed to `https://youtu.be/WEM10POvpXY`; `frontend` `npm run lint` and `npm run build` passed.
 - 2026-05-07T15:23:30.2035276+08:00 [TOOL] Broad portfolio-link update was rolled back; only `EXTERNAL_LINKS.DEMO_REEL` now points to the YouTube URL used by hero Showreel and demo reel buttons. `frontend` `npm run lint` and `npm run build` passed.
 - 2026-05-07T15:11:02.5169531+08:00 [TOOL] Frontend portfolio link update completed in Work cards, ParticleEarth marker handling, and project pager links; `frontend` `npm run lint` and `npm run build` passed.
 - 2026-05-02T22:41:21.6906858+08:00 [TOOL] Vercel thumbnail issue was diagnosed without code changes: the live site is reachable on public production domains, and the dashboard thumbnail is likely capturing the protected generated deployment URL. No build/lint was needed.
