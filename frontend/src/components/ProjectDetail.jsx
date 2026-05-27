@@ -3,6 +3,7 @@ import { FaTimes } from 'react-icons/fa';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
+import { trackProjectOpen } from '../lib/analytics';
 import { urlFor } from '../lib/sanityClient';
 import { MEDIA } from '../styles/breakpoints';
 import LoadingState from './LoadingState';
@@ -364,6 +365,9 @@ export default function ProjectDetail({ overlay = false }) {
                 key={`${label}-${adjacentProject.slug}`}
                 to={`/project/${adjacentProject.slug}`}
                 state={projectLinkState}
+                onClick={() => trackProjectOpen(adjacentProject, 'project_nav', {
+                  direction: label.startsWith('Previous') ? 'previous' : 'next',
+                })}
               >
                 {adjacentProject.mainImage ? (
                   <ProjectPagerImage>

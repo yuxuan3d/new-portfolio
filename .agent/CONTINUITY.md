@@ -1,10 +1,12 @@
 [PLANS]
+- 2026-05-27T19:16:24.7803391+08:00 [USER] Current analytics task: add PostHog to the Vite frontend to track individual project opens/clicks without Vercel Pro.
 - 2026-04-30T10:55:48.4330062+08:00 [USER] Current task: fix the dirty `ParticleEarth` submodule.
 - 2026-04-30T10:49:06.4260477+08:00 [USER] Current task: compact `.agent/CONTINUITY.md` into a bounded milestone brief.
 - 2026-04-30T10:47:12.8440028+08:00 [USER] Most recent product task: rebalance the homepage About awards panel so desktop awards do not push the capability row too far down.
 - 2026-03-28T00:26:05.6192387+08:00 [CODE] [MILESTONE] Keep this file short and high-signal; append only material changes affecting frontend shell, ParticleEarth embed, verification workflow, or known caveats.
 
 [DECISIONS]
+- 2026-05-27T19:16:24.7803391+08:00 [ASSUMPTION] Proposed PostHog approach: use public Vite env vars (`VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`), initialize `posthog-js` with manual capture only, and emit a single `project_opened` event with `slug`, `title`, and `source`.
 - 2026-05-07T15:57:56.3490108+08:00 [USER] Supersedes 2026-05-07T15:23:30.2035276+08:00: hero Showreel and About/Resume demo reel button should point to `https://youtu.be/WEM10POvpXY`.
 - 2026-05-07T15:23:30.2035276+08:00 [USER] Supersedes 2026-05-07T15:11:02.5169531+08:00: only the hero Showreel link and About/Resume demo reel button should point to `https://www.youtube.com/watch?v=_GOhrZU76OM`; project/work links should keep internal navigation.
 - 2026-05-07T15:11:02.5169531+08:00 [USER] Portfolio/work links should point to `https://www.youtube.com/watch?v=_GOhrZU76OM` instead of internal project overlays/navigation.
@@ -21,6 +23,7 @@
 - 2026-04-30T10:10:30.8678644+08:00 [CODE] Mobile vertical scroll takes priority over ParticleEarth drag: iframe touch handling uses `touch-action: pan-y`, pointer drags activate after a horizontal threshold, and offscreen/hidden hero scenes pause through `particle-earth:visibility`.
 
 [PROGRESS]
+- 2026-05-27T19:29:24.5422845+08:00 [CODE] PostHog manual project-open tracking was added to `frontend`: `posthog-js` dependency, `src/lib/analytics.js` lazy initializer, Works grid click tracking, ParticleEarth marker tracking, project pager tracking, Vite env passthrough, and Vercel CSP `connect-src` allowlist for PostHog ingestion hosts.
 - 2026-05-01T17:15:36.8270213+08:00 [CODE] Root `AGENTS.md` was refreshed with two repo-backed ParticleEarth workflow notes: the heightmap regeneration command (`python scripts/generate_etopo_heightmap.py`) and the running-container dependency refresh command (`docker compose exec app npm install`).
 - 2026-04-30T10:55:48.4330062+08:00 [CODE] Committed the intentional ParticleEarth mobile scroll/touch/visibility changes inside the `ParticleEarth` submodule as `4edc06f`; the parent repo records that submodule pointer in its latest commit.
 - 2026-04-30T10:49:06.4260477+08:00 [CODE] Compacted `.agent/CONTINUITY.md` from the long event log into this milestone brief.
@@ -35,6 +38,7 @@
 - 2026-04-19T01:28:28.9342121+08:00 [CODE] ParticleEarth globe milestone: Singapore home-base pulse, project constellation arcs, R&D transmissions, workflow orbit rings, text project markers, and iframe parent/child project-open messaging.
 
 [DISCOVERIES]
+- 2026-05-27T19:02:20.4287673+08:00 [TOOL] Vercel analytics review: `frontend` already uses `@vercel/analytics` `^1.5.0`; Works cards and ParticleEarth markers navigate to real `/project/:slug` URLs, while one-page section nav uses hash URLs like `/#works`. Project click intent should be captured with explicit Web Analytics custom events if pageview breakdown is not granular enough.
 - 2026-05-02T22:41:21.6906858+08:00 [TOOL] Vercel dashboard thumbnail 403 diagnosis: public production URLs `https://www.yxperiments.com/` and `https://new-portfolio-ten-flame.vercel.app/` returned `200`, while unauthenticated fetch of latest generated deployment URL `new-portfolio-svhyq8n1g-yuxuan3dartgmailcoms-projects.vercel.app` returned `401 Authentication Required`; Vercel docs say Standard Deployment Protection protects generated deployment URLs while leaving production domains public.
 - 2026-05-01T17:15:36.8270213+08:00 [TOOL] `ParticleEarth/scripts/generate_etopo_heightmap.py` is a committed repo workflow that reads `output/etopo1-bedrock-2048x1024.tif` and rewrites `public/earth-elevation.png`; `ParticleEarth/compose.yaml` also supports `docker compose exec app npm install` to refresh the named `/app/node_modules` volume after dependency changes.
 - 2026-04-30T10:55:48.4330062+08:00 [TOOL] The dirty `ParticleEarth` state was tracked source/test changes from the mobile scroll-performance pass, not generated junk; preserving via a submodule commit was safer than reverting.
@@ -51,6 +55,7 @@
 - 2026-03-27T08:10:03Z [TOOL] This sandbox has previously failed uncached npm fetches (`ENOTCACHED` / cache-only failures); avoid new dependencies unless already present.
 
 [OUTCOMES]
+- 2026-05-27T19:29:24.5422845+08:00 [TOOL] PostHog integration verified: `frontend` `npm run lint` passed; production `npm run build` passed after sandbox-escalated Vite config access; a dummy-key build also passed and emitted the `module.no-external` PostHog chunk; final build was rerun without dummy env. `npm audit --audit-level=moderate` reports PostCSS advisories through Vite/styled-components paths with no direct fix available.
 - 2026-05-07T15:57:56.3490108+08:00 [TOOL] `EXTERNAL_LINKS.DEMO_REEL` changed to `https://youtu.be/WEM10POvpXY`; `frontend` `npm run lint` and `npm run build` passed.
 - 2026-05-07T15:23:30.2035276+08:00 [TOOL] Broad portfolio-link update was rolled back; only `EXTERNAL_LINKS.DEMO_REEL` now points to the YouTube URL used by hero Showreel and demo reel buttons. `frontend` `npm run lint` and `npm run build` passed.
 - 2026-05-07T15:11:02.5169531+08:00 [TOOL] Frontend portfolio link update completed in Work cards, ParticleEarth marker handling, and project pager links; `frontend` `npm run lint` and `npm run build` passed.

@@ -9,6 +9,7 @@ import React, {
 import { Link, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { WORKS_CONTENT } from '../../content/siteContent';
+import { trackProjectOpen } from '../../lib/analytics';
 import { urlFor } from '../../lib/sanityClient';
 import { MEDIA } from '../../styles/breakpoints';
 import LoadingState from '../LoadingState';
@@ -263,6 +264,11 @@ export default function WorksSection({ projects, error, isLoading }) {
                   <ArchiveLink
                     to={`/project/${project.slug}`}
                     state={{ backgroundLocation: location }}
+                    onClick={() => trackProjectOpen(project, 'works_grid', {
+                      position: index + 1,
+                      featured: isFeature || isSideFeature,
+                      active_tag: activeTag,
+                    })}
                     tabIndex={exitingIds.includes(project._id) ? -1 : undefined}
                     aria-hidden={exitingIds.includes(project._id)}
                   >

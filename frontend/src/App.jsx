@@ -8,6 +8,7 @@ import ProjectDetail from './components/ProjectDetail';
 import RnDBlog from './components/RnDBlog';
 import SiteFooter from './components/SiteFooter';
 import SiteHeader from './components/SiteHeader';
+import { initAnalytics } from './lib/analytics';
 import Home from './pages/Home';
 import { BREAKPOINTS } from './styles/breakpoints';
 import { siteTheme } from './styles/theme';
@@ -294,6 +295,10 @@ function AppFrame() {
 }
 
 function App() {
+  React.useEffect(() => {
+    initAnalytics();
+  }, []);
+
   return (
     <>
       <StyledThemeProvider theme={siteTheme}>

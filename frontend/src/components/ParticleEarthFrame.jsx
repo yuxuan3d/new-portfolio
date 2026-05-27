@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { trackProjectOpen } from '../lib/analytics';
 import { BREAKPOINTS, MEDIA } from '../styles/breakpoints';
 
 const MESSAGE_TYPES = {
@@ -40,6 +41,10 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
 
   const knownProjectSlugs = useMemo(
     () => new Set(projectThumbnails.map((project) => project.slug)),
+    [projectThumbnails],
+  );
+  const projectBySlug = useMemo(
+    () => new Map(projectThumbnails.map((project) => [project.slug, project])),
     [projectThumbnails],
   );
 
@@ -179,6 +184,7 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
         return;
       }
 
+      trackProjectOpen(projectBySlug.get(data.slug) || { slug: data.slug }, 'particle_earth');
       navigate(`/project/${data.slug}`, {
         state: { backgroundLocation: location },
       });
@@ -186,7 +192,7 @@ export default function ParticleEarthFrame({ projects = [], onReady }) {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [knownProjectSlugs, location, navigate]);
+  }, [knownProjectSlugs, location, navigate, projectBySlug]);
 
   const handleLoad = useCallback(() => {
     if (hasReportedReadyRef.current) {

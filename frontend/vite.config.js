@@ -31,7 +31,9 @@ export default defineConfig(({ command, mode }) => {
       // Ensure environment variables are properly stringified
       'import.meta.env.VITE_SANITY_PROJECT_ID': JSON.stringify(env.VITE_SANITY_PROJECT_ID || '5gu0ubge'),
       'import.meta.env.VITE_SANITY_DATASET': JSON.stringify(env.VITE_SANITY_DATASET || 'production'),
-      'import.meta.env.VITE_SANITY_API_VERSION': JSON.stringify(env.VITE_SANITY_API_VERSION || '2024-03-14')
+      'import.meta.env.VITE_SANITY_API_VERSION': JSON.stringify(env.VITE_SANITY_API_VERSION || '2024-03-14'),
+      'import.meta.env.VITE_POSTHOG_KEY': JSON.stringify(env.VITE_POSTHOG_KEY || ''),
+      'import.meta.env.VITE_POSTHOG_HOST': JSON.stringify(env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com')
     },
     build: {
       sourcemap: shouldBuildSourceMap,
