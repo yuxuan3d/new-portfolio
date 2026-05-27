@@ -1,30 +1,34 @@
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY || '';
 const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
+const DISTINCT_ID_STORAGE_KEY = 'yxperiments_posthog_distinct_id';
 
-let posthogPromise;
+function getCaptureEndpoint() {
+  return `${POSTHOG_HOST.replace(/\/$/, '')}/e/`;
+}
 
-function getPostHog() {
-  if (typeof window === 'undefined' || !POSTHOG_KEY) {
-    return Promise.resolve(null);
+function createDistinctId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
   }
 
-  if (!posthogPromise) {
-    posthogPromise = import('posthog-js/dist/module.no-external')
-      .then(({ default: posthog }) => {
-        posthog.init(POSTHOG_KEY, {
-          api_host: POSTHOG_HOST,
-          autocapture: false,
-          capture_pageview: false,
-          disable_session_recording: true,
-          person_profiles: 'identified_only',
-        });
+  return `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
-        return posthog;
-      })
-      .catch(() => null);
+function getDistinctId() {
+  if (typeof window === 'undefined') {
+    return createDistinctId();
   }
 
-  return posthogPromise;
+  try {
+    const existingId = window.localStorage.getItem(DISTINCT_ID_STORAGE_KEY);
+    if (existingId) return existingId;
+
+    const nextId = createDistinctId();
+    window.localStorage.setItem(DISTINCT_ID_STORAGE_KEY, nextId);
+    return nextId;
+  } catch {
+    return createDistinctId();
+  }
 }
 
 function cleanProperties(properties) {
@@ -38,17 +42,38 @@ function cleanProperties(properties) {
 }
 
 export function initAnalytics() {
-  void getPostHog();
+  if (!POSTHOG_KEY || typeof window === 'undefined') return;
+
+  getDistinctId();
 }
 
 export function trackEvent(eventName, properties = {}) {
-  if (!eventName) return;
+  if (!POSTHOG_KEY || !eventName || typeof window === 'undefined') return;
 
-  void getPostHog().then((posthog) => {
-    if (!posthog) return;
+  const currentUrl = new URL(window.location.href);
+  const payload = {
+    api_key: POSTHOG_KEY,
+    event: eventName,
+    properties: {
+      distinct_id: getDistinctId(),
+      token: POSTHOG_KEY,
+      $current_url: currentUrl.href,
+      $host: currentUrl.host,
+      $pathname: currentUrl.pathname,
+      ...cleanProperties(properties),
+    },
+    timestamp: new Date().toISOString(),
+  };
 
-    posthog.capture(eventName, cleanProperties(properties));
-  });
+  window.fetch(getCaptureEndpoint(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    keepalive: true,
+    credentials: 'omit',
+  }).catch(() => {});
 }
 
 export function trackProjectOpen(project, source, properties = {}) {
