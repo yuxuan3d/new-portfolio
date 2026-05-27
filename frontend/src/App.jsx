@@ -8,7 +8,7 @@ import ProjectDetail from './components/ProjectDetail';
 import RnDBlog from './components/RnDBlog';
 import SiteFooter from './components/SiteFooter';
 import SiteHeader from './components/SiteHeader';
-import { initAnalytics } from './lib/analytics';
+import { initAnalytics, trackPageView } from './lib/analytics';
 import Home from './pages/Home';
 import { BREAKPOINTS } from './styles/breakpoints';
 import { siteTheme } from './styles/theme';
@@ -228,6 +228,10 @@ function AppFrame() {
   const [hasHeroLoaded, setHasHeroLoaded] = React.useState(() => !needsInitialHeroLoad);
   const [loaderDismissed, setLoaderDismissed] = React.useState(() => !needsInitialHeroLoad);
   const [loaderProgress, setLoaderProgress] = React.useState(() => (needsInitialHeroLoad ? 14 : 100));
+
+  React.useEffect(() => {
+    trackPageView();
+  }, [location.pathname, location.search, location.hash]);
 
   React.useEffect(() => {
     if (!needsInitialHeroLoad) {

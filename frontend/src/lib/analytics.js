@@ -2,6 +2,8 @@ const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY || '';
 const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
 const DISTINCT_ID_STORAGE_KEY = 'yxperiments_posthog_distinct_id';
 
+let lastTrackedPageviewUrl = '';
+
 function getCaptureEndpoint() {
   return `${POSTHOG_HOST.replace(/\/$/, '')}/e/`;
 }
@@ -74,6 +76,16 @@ export function trackEvent(eventName, properties = {}) {
     keepalive: true,
     credentials: 'omit',
   }).catch(() => {});
+}
+
+export function trackPageView() {
+  if (typeof window === 'undefined') return;
+
+  const currentUrl = window.location.href;
+  if (currentUrl === lastTrackedPageviewUrl) return;
+
+  lastTrackedPageviewUrl = currentUrl;
+  trackEvent('$pageview');
 }
 
 export function trackProjectOpen(project, source, properties = {}) {
