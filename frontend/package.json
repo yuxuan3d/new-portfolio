@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/generateStaticArtifacts.js",
+    "build:client": "vite build",
+    "generate:route-html": "node scripts/generateRouteHtml.js",
+    "generate:static-artifacts": "node scripts/generateStaticArtifacts.js",
+    "test:unit": "node --test \"tests/unit/*.test.js\"",
+    "test:e2e": "playwright test",
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-sitemap": "node scripts/generateSitemap.js",
@@ -20,7 +25,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
-    "react-is": "^19.1.0",
     "react-router-dom": "^7.14.2",
     "styled-components": "^6.1.19"
   },

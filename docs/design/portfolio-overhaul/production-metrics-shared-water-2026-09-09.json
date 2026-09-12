@@ -1,0 +1,85 @@
+{
+  "measuredAt": "2026-09-09T10:25:55.697Z",
+  "environment": "Container Chromium, production bundle, unthrottled local CPU/network; lab observations, not field Core Web Vitals or INP.",
+  "profiles": [
+    {
+      "name": "laptop",
+      "width": 1280,
+      "height": 800,
+      "deviceScaleFactor": 1,
+      "lcp": 244,
+      "cls": 0.005489149105548859,
+      "cueBottom": 747,
+      "awardsTop": 779,
+      "stage": {
+        "x": 304,
+        "y": 193,
+        "width": 672,
+        "height": 378,
+        "top": 193,
+        "right": 976,
+        "bottom": 571,
+        "left": 304
+      },
+      "poster": "https://cdn.sanity.io/images/5gu0ubge/production/51afde07df8421194186f86a7b061e19b37441eb-1920x1080.png?w=700&q=78&auto=format",
+      "running": "true",
+      "overflow": false,
+      "posterBytes": 22226,
+      "posterContentType": "image/avif",
+      "effectsOn": {
+        "medianMs": 16.700000000000045,
+        "p95Ms": 16.799999999999955
+      },
+      "effectsReducedMotion": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000273
+      },
+      "projectSwitch": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.799999999999272
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 2,
+      "lcp": 216,
+      "cls": 0,
+      "cueBottom": 693.875,
+      "awardsTop": 733.875,
+      "stage": {
+        "x": 20,
+        "y": 185,
+        "width": 350,
+        "height": 196.875,
+        "top": 185,
+        "right": 370,
+        "bottom": 381.875,
+        "left": 20
+      },
+      "poster": "https://cdn.sanity.io/images/5gu0ubge/production/51afde07df8421194186f86a7b061e19b37441eb-1920x1080.png?w=700&q=78&auto=format",
+      "running": "false",
+      "overflow": false,
+      "posterBytes": 22226,
+      "posterContentType": "image/avif",
+      "effectsOn": {
+        "medianMs": 16.699999999999932,
+        "p95Ms": 16.799999999999955
+      },
+      "effectsReducedMotion": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.799999999999727
+      },
+      "projectSwitch": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.800000000000182
+      },
+      "errors": []
+    }
+  ],
+  "isolatedHeroGzipEstimateBytes": 9257,
+  "bundleNote": "Isolated minified gallery plus local helpers, excluding shared packages; estimate, not a before/after production chunk delta.",
+  "originNote": "Local production preview served through localhost:5173 in the test browser to retain the existing Sanity CORS allowlist. Telemetry endpoints are intercepted."
+}

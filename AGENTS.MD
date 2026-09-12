@@ -106,7 +106,7 @@ Update `.agent/CONTINUITY.md` only when there is a meaningful delta in:
 ### Workspace layout
 
 - `frontend/`: React/Vite public site. `/` is the canonical one-page route; `/about` redirects to `/#resume`; `/project/:slug`, `/rnd`, `/rnd/:slug`, and `/contact` remain active routes.
-- `ParticleEarth/`: standalone React Three Fiber app embedded into the frontend hero after being built and synced into `frontend/public/particle-earth`.
+- `ParticleEarth/`: standalone React Three Fiber app with a preserved synced build in `frontend/public/particle-earth`. The dark kinetic homepage uses original Sanity imagery and does not mount the earth iframe.
 - `sanity/`: Sanity Studio content backend and schemas.
 
 ### Frontend
@@ -114,6 +114,9 @@ Update `.agent/CONTINUITY.md` only when there is a meaningful delta in:
 - From `frontend/`, use `npm run dev` for local work, `npm run preview` to serve a built bundle locally, `npm run lint` and `npm run build` for standard verification, and `npm run generate-sitemap` when sitemap output is needed.
 - `npm run generate-sitemap` writes `frontend/public/sitemap.xml` and uses the Sanity env vars plus optional `SITE_URL` / `VITE_SANITY_API_VERSION` overrides when those are relevant.
 - `npm run design-audit` can auto-detect a local dev server on `http://localhost:5173` through `:5180`, or use an explicit `BASE_URL`, but browser launch may be blocked in this sandbox; use browser/Playwright verification when feasible.
+- The active homepage is `src/pages/Home.jsx` with `src/components/home/KineticLanding.jsx` and `kinetic.css`. It is one continuous page: Particle Sea opening, selected work and attributed SIT awards, inline project index, experiments, About/capabilities and contact. Keep original Sanity titles, imagery and encoded destinations; the old carousel/contour components are inactive.
+- After a frontend build, `docker compose exec app node scripts/verifyKinetic.mjs` temporarily serves the production bundle, verifies laptop/phone images and overflow, and records screenshots, lab LCP/CLS and motion frame samples in ignored `frontend/artifacts/kinetic/`. It retains Sanity's authorized localhost:5173 origin inside the browser and intercepts telemetry/contact requests. This is not a field Web Vitals or INP measurement. `verifyOverhaul.mjs` is historical and targets the retired carousel.
+- The Particle Sea opening uses `frontend/public/media/particle-sea-loop.mp4`, converted from the user's supplied video, with the Sanity image as fallback; a downloadable GIF sits alongside it. `frontend/scripts/createParticleSeaLoop.sh` reproduces both with FFmpeg in the container. See `docs/design/kinetic/particle-sea-loop.md` for source and conversion details. The production audit also verifies muted inline video playback and the loop boundary.
 
 ### ParticleEarth embed
 
@@ -128,7 +131,7 @@ Update `.agent/CONTINUITY.md` only when there is a meaningful delta in:
 
 - `ParticleEarth/` has a Docker Compose workflow in `ParticleEarth/compose.yaml`: `docker compose up -d` starts the dev server on `http://localhost:5173` and auto-installs dependencies into the named `/app/node_modules` volume when needed; use `docker compose exec app npm run build`, `docker compose exec app npm run lint`, `docker compose exec app npm run test:unit`, and `docker compose exec app npm run test:e2e` for verification.
 - If the `ParticleEarth/` container is already running and dependencies change, refresh the named `/app/node_modules` volume with `docker compose exec app npm install`.
-- TODO: The root `frontend/` and `sanity/` projects do not currently have a committed container workflow; create one before defaulting to host installs if a task requires new dependency/tooling setup.
+- `frontend/compose.yaml` uses the Playwright 1.58.1 Noble image (matching the existing browser-test dependency) for Node and Chromium tooling. From frontend, `docker compose up -d` installs the locked dependencies into a named volume and serves localhost:5173. Run `docker compose exec app npm run lint`, `npm run test:unit`, `npm run test:e2e`, `npm run build`, and `npm run design-audit` through the same exec prefix. Restart the service after lockfile changes to rerun npm ci. Host system installs are unnecessary. Sanity has no container workflow yet; create one if Studio work requires setup.
 
 ### Sanity Studio
 

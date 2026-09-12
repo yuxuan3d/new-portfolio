@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { BLOG_CONTENT } from '../content/siteContent';
 import { useSanityData } from '../hooks/useSanityData';
+import useDocumentMetadata, { toCanonicalUrl } from '../hooks/useDocumentMetadata';
 import { urlFor } from '../lib/sanityClient';
+import { formatWorkLabel } from '../lib/workDisciplines';
 import { MEDIA } from '../styles/breakpoints';
 import LazyImage from './LazyImage';
 import LoadingState from './LoadingState';
@@ -29,6 +31,11 @@ function formatPublishedDate(value) {
 
 export default function RnDBlog() {
   const [blogPosts, error, { isValidating }] = useSanityData(QUERY);
+  useDocumentMetadata({
+    title: 'R&D — Yu Xuan | yxperiments',
+    description: 'Experiments, notes, and technical explorations by Yu Xuan.',
+    canonical: toCanonicalUrl('/rnd'),
+  });
   const totalPosts = Array.isArray(blogPosts) ? blogPosts.length : 0;
 
   return (
@@ -44,7 +51,7 @@ export default function RnDBlog() {
       ) : totalPosts > 0 ? (
         <Grid>
           {blogPosts.map((post) => (
-            <Card key={post.slug} to={`/rnd/${post.slug}`}>
+            <Card key={post.slug} to={`/rnd/${encodeURIComponent(post.slug)}`}>
               {post.mainImage ? (
                 <CardImage>
                   <LazyImage
@@ -61,7 +68,7 @@ export default function RnDBlog() {
                 {Array.isArray(post.tags) && post.tags.length > 0 ? (
                   <TagRow>
                     {post.tags.map((tag) => (
-                      <Tag key={tag}>{tag}</Tag>
+                      <Tag key={tag}>{formatWorkLabel(tag)}</Tag>
                     ))}
                   </TagRow>
                 ) : null}

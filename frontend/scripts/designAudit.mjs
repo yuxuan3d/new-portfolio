@@ -121,6 +121,8 @@ async function warmUpLazyImages(page) {
   // This scroll pass warms the cache so the stitched screenshot is more likely to include real images.
   try {
     await page.evaluate(async () => {
+      const previousBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       const maxScroll = Math.max(0, document.body.scrollHeight - window.innerHeight);
       const step = Math.max(1, Math.floor(window.innerHeight * 0.9));
@@ -133,6 +135,7 @@ async function warmUpLazyImages(page) {
       }
 
       window.scrollTo(0, 0);
+      document.documentElement.style.scrollBehavior = previousBehavior;
     });
 
     await page.waitForTimeout(250);
@@ -244,6 +247,9 @@ try {
       hasTouch: viewport.hasTouch,
     });
 
+    await context.route('https://*.i.posthog.com/**', (route) => route.fulfill({ status: 204 }));
+    await context.route('https://va.vercel-scripts.com/**', (route) => route.abort());
+    await context.route('https://api.emailjs.com/**', (route) => route.abort());
     const page = await context.newPage();
     page.setDefaultTimeout(30_000);
 

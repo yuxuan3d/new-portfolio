@@ -1,11 +1,10 @@
 import { EXTERNAL_LINKS, SOCIAL_LINKS } from '../constants/social';
 
 export const HOME_NAV_ITEMS = [
-  { label: 'Home', id: 'home', kind: 'section', to: '/' },
-  { label: 'Resume', id: 'resume', kind: 'section', to: '/#resume' },
-  { label: 'Works', id: 'works', kind: 'section', to: '/#works' },
-  { label: 'R&D', id: 'blog', kind: 'route', to: '/rnd' },
-  { label: 'Contact', id: 'contact', kind: 'section', to: '/#contact' },
+  { label: 'Work', id: 'works', kind: 'section', to: '/#works' },
+  { label: 'Experiments', id: 'field-notes', kind: 'section', to: '/#field-notes' },
+  { label: 'About', id: 'resume', kind: 'section', to: '/#resume' },
+  { label: 'Let’s talk', id: 'contact', kind: 'section', to: '/#contact' },
 ];
 
 export const HERO_CONTENT = {

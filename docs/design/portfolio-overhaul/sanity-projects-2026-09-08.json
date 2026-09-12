@@ -1,0 +1,510 @@
+{
+  "fetchedAt": "2026-09-08T04:35:47.647Z",
+  "source": "https://5gu0ubge.api.sanity.io/v2024-03-14/data/query/production?perspective=published&query=*%5B_type%20%3D%3D%20%22portfolioItem%22%20%26%26%20!(_id%20in%20path(%22drafts.**%22))%5D%20%7C%20order(orderRank)%20%7B_id%2C_updatedAt%2Ctitle%2C%22slug%22%3Aslug.current%2Cfeatured%2CorderRank%2Cdescription%2Ctags%2Cdisciplines%2Carsenal%2CprojectLink%2CvideoEmbeds%2C%22imageUrl%22%3AmainImage.asset-%3Eurl%7D",
+  "projects": [
+    {
+      "_id": "76792a18-7e92-45e9-b4a7-854304deee3f",
+      "_updatedAt": "2026-04-04T14:06:54Z",
+      "arsenal": [
+        {
+          "_key": "2c47b4f27d1b",
+          "_type": "tool",
+          "name": "Blender"
+        },
+        {
+          "_key": "8b8cc51fad2f",
+          "_type": "tool",
+          "name": "DaVinci"
+        },
+        {
+          "_key": "918d7aeca537",
+          "_type": "tool",
+          "name": "Premiere"
+        },
+        {
+          "_key": "01b189579ed4",
+          "_type": "tool",
+          "name": "AfterEffects"
+        }
+      ],
+      "description": "A promotional piece for the JPMorgan Singapore & Asia Equity Income Fund, featuring a pineapple rolling through a house as a visual device to guide viewers through the fund’s core features.\n\nI was responsible for the early storyboard development, the complete 3D execution in Blender, and all post-production, including editing and final color grading.\n\nIn the end it was very well received and even got onto places that wasn't planned for at first, like their website for the fund https://am.jpmorgan.com/sg/en/asset-management/per/funds/saei/.\n\nIt was also shown in OneRafflePlace's screens and a derivative version in the 10k screen on the Downtown line.",
+      "disciplines": null,
+      "featured": false,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/ea495433d01714c174f7f534bcb617b7c69ac3e9-1920x1080.jpg",
+      "orderRank": "0|04i001:",
+      "projectLink": "https://youtu.be/FvYGMrBt3bE",
+      "slug": "jpmorgan-saei",
+      "tags": [
+        "Editing",
+        "Blender",
+        "3D"
+      ],
+      "title": "JPMorgan SAEI",
+      "videoEmbeds": [
+        {
+          "_key": "5804bbeb6671",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/FvYGMrBt3bE?si=ytvyvo8okOd7907t\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+          "title": "JPMorgan Singapore & Asia Equity Income Fund"
+        }
+      ]
+    },
+    {
+      "_id": "7cbc83f8-b6dd-4ba0-8345-4d74de7530fe",
+      "_updatedAt": "2026-04-30T01:49:30Z",
+      "arsenal": [
+        {
+          "_key": "779d3a5c63f0",
+          "_type": "tool",
+          "name": "Three.js"
+        },
+        {
+          "_key": "c8c89525cc11",
+          "_type": "tool",
+          "name": "Blender"
+        }
+      ],
+      "description": "An immersive, exploratory web experience for prospective students, created for SIT Open House 2026. The goal was to build a functional, navigable “world” that felt lively, approachable, and engaging, while staying within real-time performance constraints on the web.\n\nI led art direction and, together with one other 3D artist, modeled and textured the characters, environment, and props. I also rigged and animated the characters.\n\nBuilt with Three.js, the project required extensive optimization to run smoothly on mobile. Leveraging low-poly assets, instancing, and strategic mesh merging, alongside ongoing troubleshooting throughout production.\n\nThe website has won website of the day and best in all categories from CSS Design Awards. It has also won FWA of the day by The FWA.\n\nCreated in collaboration with Hei and Singapore Institute of Technology.",
+      "disciplines": null,
+      "featured": false,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/63be03b374cd1fedb08e75fd252a5ca70c451200-681x681.png",
+      "orderRank": "0|090002:",
+      "projectLink": "https://www.singaporetech.edu.sg/openhouse/virtual-campus-tour/",
+      "slug": "sit-open-house-2026",
+      "tags": [
+        "Interactive",
+        "Blender",
+        "3D"
+      ],
+      "title": "SIT Open House 2026",
+      "videoEmbeds": [
+        {
+          "_key": "167192221e66",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/gqAygM0_N6I?si=2arJZbYEyVMQD-ye\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+          "title": "SIT Open House 2026"
+        }
+      ]
+    },
+    {
+      "_id": "e66165bf-e44e-489e-b0f3-bda746df25e0",
+      "_updatedAt": "2026-04-04T13:59:33Z",
+      "arsenal": [
+        {
+          "_key": "0920119dd9a8",
+          "_type": "tool",
+          "name": "Houdini"
+        },
+        {
+          "_key": "59b3db4c3d25",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "I wanted to challenge myself to create a complex sand effect.\n\nUsing Houdini for the core simulation, I focused on achieving realistic particle flow and texture. ",
+      "disciplines": null,
+      "featured": false,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/0ee98f34526b7158fb0bd519660eca9daea6f798-1080x1920.png",
+      "orderRank": "0|0i0004:",
+      "projectLink": "https://www.youtube.com/shorts/oXrsisamET0",
+      "slug": "dune sand",
+      "tags": [
+        "3D",
+        "Houdini"
+      ],
+      "title": "Dune sand ",
+      "videoEmbeds": [
+        {
+          "_key": "6763bd4f0f84",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe\n\nwidth=\"540\"\n\nheight=\"960\"\n\nsrc=\"https://www.youtube.com/embed/oXrsisamET0\"\n\nframeborder=\"0\"\n\nallow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"\n\nallowfullscreen>\n\n</iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "13f2854e-b7b9-4dd6-81d7-ae7db468f09b",
+      "_updatedAt": "2026-04-04T13:59:36Z",
+      "arsenal": [
+        {
+          "_key": "875ac40cd614",
+          "_type": "tool",
+          "name": "Maya"
+        },
+        {
+          "_key": "401f9a934fc4",
+          "_type": "tool",
+          "name": "Redshift"
+        },
+        {
+          "_key": "1012cb638a4d",
+          "_type": "tool",
+          "name": "Unreal Engine"
+        },
+        {
+          "_key": "09dc377ea1da",
+          "_type": "tool",
+          "name": "OBS"
+        },
+        {
+          "_key": "109455fce38d",
+          "_type": "tool",
+          "name": "Xsens"
+        }
+      ],
+      "description": "Spearheaded the development of Cinder, a pioneering virtual influencer, leading the team at WAS Singapore.\n\nWe brought Cinder to life using Unreal Engine, integrating real-time, full-body and facial motion capture for seamless interactivity.\n\nThis groundbreaking technology enabled Cinder to engage audiences dynamically across diverse platforms – from captivating Twitch gaming streams and presenting at conferences, to starring in a complex, interactive live event at SXSW in Austin, Texas, where she personally mixed drinks and played games with attendees.",
+      "disciplines": null,
+      "featured": false,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/6cb458474016f4b556f7de38ba5798f4b979bfef-350x350.jpg",
+      "orderRank": "0|100008:",
+      "projectLink": "https://www.youtube.com/watch?v=Zg7VXwn8b2M",
+      "slug": "cinder",
+      "tags": [
+        "3D",
+        "Unreal Engine",
+        "Maya"
+      ],
+      "title": "Cinder",
+      "videoEmbeds": [
+        {
+          "_key": "52165af9fe7a",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/ryMhM8AqxGM?si=fpMwokvePJgBPfTN\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        },
+        {
+          "_key": "e00fe8827af3",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Zg7VXwn8b2M?si=mjFY0-_l6K82kDgq\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "2a63559b-03a3-49a6-bde5-71b9ff46373a",
+      "_updatedAt": "2026-03-31T10:04:50Z",
+      "arsenal": [
+        {
+          "_key": "7fec9bcf4f7f",
+          "_type": "tool",
+          "name": "Premiere Pro"
+        }
+      ],
+      "description": "A series of videos done for the Samsung Galaxy Watch.\n\nAs the editor, I flew with the shooting team to 5 countries and edited while the crew shot the influencers. These are two of the 10 videos done.",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/f7b67e73fc12bcb4fd53c911cc68f2c22ff90d05-360x640.png",
+      "orderRank": "0|10000g:",
+      "projectLink": null,
+      "slug": "what-s-your-energy-score-samsung",
+      "tags": [
+        "Editing"
+      ],
+      "title": "What's Your Energy Score - Samsung",
+      "videoEmbeds": [
+        {
+          "_key": "5ca1ce55d881",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/6c7VN8Q3N-I?si=g8sUoLTNiSxGVtH7\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        },
+        {
+          "_key": "6c604dc1ce38",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Ilv7Ja86hz8?si=xQcuaTasg31gFlVC\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "ffa719bd-696e-4467-a795-afd03898d8d9",
+      "_updatedAt": "2026-03-31T10:05:17Z",
+      "arsenal": [
+        {
+          "_key": "f553b65b9975",
+          "_type": "tool",
+          "name": "3ds Max"
+        },
+        {
+          "_key": "f339570c58ea",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "Performed the majority of the keying, compositing, and UI motion graphics animation, integrating digital elements seamlessly with extensive green screen footage.\n\nExecuted complex composites involving 3D backgrounds and camera movements, notably featured in the \"Smart Data / Home Buying Assistant\" sequence (2:55 onwards).\n\nSupervised and ensured the quality of green screen keying work completed by junior animators.\n\nDelivered polished, high-fidelity visual effects essential to the video's futuristic aesthetic and conceptual storytelling.",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/d692d506c0755c264b47c76a8dae9f2eb0202e62-350x350.jpg",
+      "orderRank": "0|10000o:",
+      "projectLink": "https://www.youtube.com/watch?v=qMt4t6bVV_M",
+      "slug": "visafw",
+      "tags": [
+        "3D",
+        "3ds Max"
+      ],
+      "title": "Visa - Future View",
+      "videoEmbeds": [
+        {
+          "_key": "bad8a4c7d07c",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/T5G8bhMAY54?si=6tuO4cMz7uR84ETN\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+          "title": "visa1"
+        },
+        {
+          "_key": "78bd608a5537",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/qMt4t6bVV_M?si=9gAWFwKubRJ7mJ1U\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+          "title": "visa 2"
+        }
+      ]
+    },
+    {
+      "_id": "9c01c12d-6ab1-42ba-a840-373f55ea1dfa",
+      "_updatedAt": "2026-03-31T10:05:22Z",
+      "arsenal": [
+        {
+          "_key": "7c29a152c270",
+          "_type": "tool",
+          "name": "Maya"
+        },
+        {
+          "_key": "42c150ab318b",
+          "_type": "tool",
+          "name": "Vray"
+        },
+        {
+          "_key": "5a45ba506c52",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "Provided on-set Visual Effects Supervision during the shoot.\n\nExecuted the entire 3D and VFX pipeline post-shoot for the animated 'Antibiotic' character.\n\nResponsibilities included: 3D modeling, texturing, lighting, rendering, and final compositing.\n\nEnsured seamless and photorealistic integration of the 3D character into live-action environments.",
+      "disciplines": null,
+      "featured": false,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/7cd6a183b0435f6b4ff5128477c586e6f7997fca-350x350.jpg",
+      "orderRank": "0|100014:",
+      "projectLink": null,
+      "slug": "hpb",
+      "tags": [
+        "3D",
+        "Maya",
+        "AfterEffects"
+      ],
+      "title": "HPB",
+      "videoEmbeds": [
+        {
+          "_key": "bc1644bdac37",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/oBaRNGZ0A1U?si=1BWU5XDzR4bu-lne\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "1401b46f-3ed1-4f58-8700-9a3ae726ef17",
+      "_updatedAt": "2026-03-31T10:05:26Z",
+      "arsenal": [
+        {
+          "_key": "b90f9f7420bd",
+          "_type": "tool",
+          "name": "3ds Max"
+        },
+        {
+          "_key": "d695369d72e1",
+          "_type": "tool",
+          "name": "Vray"
+        },
+        {
+          "_key": "6feeea6f53b3",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "Provided on-set Visual Effects Supervision to guide the filming process for optimal integration.\n\nSolely responsible for the entire post-production digital pipeline: 3D, Compositing, and Motion Graphics.\n\nCreated the 3D virtual stage environment.\n\nComposited live-action host (Kumar) and virtual call participants seamlessly into the set.\n\nDesigned and animated all motion graphics, including the countdown, title sequences, lower thirds, and screen layouts.",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/d2ec5ee6fe29f73b5cb683d055e596e8a42ce235-350x350.jpg",
+      "orderRank": "0|10001k:",
+      "projectLink": null,
+      "slug": "NUHS",
+      "tags": [
+        "3D",
+        "3ds Max",
+        "AfterEffects"
+      ],
+      "title": "NUHS Nurses Day",
+      "videoEmbeds": [
+        {
+          "_key": "1e6edc7f5d77",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/3YNk3EZH9UM?si=WchJZXHTpOPM7TIt\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "9046ce0e-98fa-4d86-ae7c-64e784ac6234",
+      "_updatedAt": "2026-03-31T10:06:12Z",
+      "arsenal": [
+        {
+          "_key": "2c02da1379bf",
+          "_type": "tool",
+          "name": "Maya"
+        },
+        {
+          "_key": "91642b367241",
+          "_type": "tool",
+          "name": "Vray"
+        },
+        {
+          "_key": "c5ac0399e06e",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "Solely responsible for crafting the entire 3D workflow and visual execution for this Betadine Sore Throat Lozenge advertisement. Brought the central 'germ' character from concept to screen through dynamic animation, texturing, lighting, and rendering, integrated via compositing. Engineered the interactive rope rig and simulation, key to visualizing the product's efficacy.",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/50a0f4c952ec54e6f925e85a7f295c8e186fd4e8-400x400.jpg",
+      "orderRank": "0|10001s:",
+      "projectLink": null,
+      "slug": "betadine-sore-throat-lozenges",
+      "tags": [
+        "3D",
+        "Maya",
+        "AfterEffects"
+      ],
+      "title": "Betadine Sore Throat Lozenges",
+      "videoEmbeds": [
+        {
+          "_key": "6df98319c00f",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/-jxSneQwaLU?si=Ww6i6zEKOicYkmjI\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "1ce93d2c-93e1-4a9e-be06-2f82562c3a8b",
+      "_updatedAt": "2026-03-31T10:06:31Z",
+      "arsenal": [
+        {
+          "_key": "1595cf2a188a",
+          "_type": "tool",
+          "name": "Maya"
+        },
+        {
+          "_key": "38c281e2f7fa",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "Provided on-set Visual Effects Supervision during the shoot involving Manchester City players.\n\nHandled compositing to integrate the animated 3D elements realistically into the live-action environments and shots with players.",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/4e2ba83d2d7134963244c08463595ed784505311-350x350.jpg",
+      "orderRank": "0|100020:",
+      "projectLink": null,
+      "slug": "betadine-sore-throat-spray",
+      "tags": [
+        "3D",
+        "Maya",
+        "AfterEffects"
+      ],
+      "title": "Betadine Sore Throat Spray",
+      "videoEmbeds": [
+        {
+          "_key": "71d46a9eb920",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/inzXuSWji30?si=VjTwMdt02VzjZhPE\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "aff48c48-a72f-4da2-a770-58e3bc7c143c",
+      "_updatedAt": "2026-03-31T10:06:44Z",
+      "arsenal": [
+        {
+          "_key": "afff94df68eb",
+          "_type": "tool",
+          "name": "Houdini"
+        }
+      ],
+      "description": "Particle Sea Experiments",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/f7347eb2cf7e9b9a3ef8c3b92d90c09d0008ba5a-1080x1350.png",
+      "orderRank": "0|10002g:",
+      "projectLink": null,
+      "slug": "particle-sea",
+      "tags": [
+        "3D",
+        "Houdini",
+        "AfterEffects"
+      ],
+      "title": "Particle Sea",
+      "videoEmbeds": [
+        {
+          "_key": "73be4d8dd2da",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Jz-w5jMb410?si=ppGb2WIC7hNMwdbF\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "ecd20989-3f6d-4ebf-82ad-6b9fe96371bc",
+      "_updatedAt": "2026-03-31T10:06:59Z",
+      "arsenal": [
+        {
+          "_key": "5cd6af0a360d",
+          "_type": "tool",
+          "name": "3ds Max"
+        },
+        {
+          "_key": "4a50af8ff018",
+          "_type": "tool",
+          "name": "Vray"
+        }
+      ],
+      "description": "Worked on the Frog, Penguin, Bee, Bird and Lion models.\n\nSet up rendering for some scenes",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/4749519cd8c1b35999c4382dbd6512d6f31b99d7-1280x720.jpg",
+      "orderRank": "0|10002w:",
+      "projectLink": null,
+      "slug": "save-my-world-mediacorp",
+      "tags": [
+        "3D"
+      ],
+      "title": "Save My World - Mediacorp",
+      "videoEmbeds": [
+        {
+          "_key": "f3f4f531c07b",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/SQ2ufFGm9xE?si=GQH_6_X3ro4zR3if\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    },
+    {
+      "_id": "431b632f-108c-4a71-ac81-78abc2b1a163",
+      "_updatedAt": "2026-03-31T10:07:08Z",
+      "arsenal": [
+        {
+          "_key": "b11c298809ca",
+          "_type": "tool",
+          "name": "After Effects"
+        }
+      ],
+      "description": "Compositing footage onto stock footage with tracking and audio matching\n\nMain point was to make them look like projections while not compromising on the recognizability",
+      "disciplines": null,
+      "featured": null,
+      "imageUrl": "https://cdn.sanity.io/images/5gu0ubge/production/5d00793c490930307af7dbbc61c426a8c8292270-1280x720.jpg",
+      "orderRank": "0|10003c:",
+      "projectLink": null,
+      "slug": "stop-asian-hate",
+      "tags": [
+        "AfterEffects"
+      ],
+      "title": "Stop Asian Hate - ONE Championship",
+      "videoEmbeds": [
+        {
+          "_key": "217bc9a1d2eb",
+          "_type": "videoEmbed",
+          "embedCode": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/_9Epk-j-4ow?si=9bRzdpJmQyGpelcR\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+      ]
+    }
+  ]
+}

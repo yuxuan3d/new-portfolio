@@ -5,6 +5,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { FaBars, FaInstagram, FaLinkedin, FaTimes } from 'react-icons/fa';
 import { HOME_NAV_ITEMS } from '../content/siteContent';
 import { SOCIAL_LINKS } from '../constants/social';
+import { getSafeSectionHash } from '../lib/navigation';
 import { MEDIA } from '../styles/breakpoints';
 
 const overlayFade = keyframes`
@@ -29,6 +30,7 @@ export default function SiteHeader() {
   const headerRef = useRef(null);
   const triggerRef = useRef(null);
   const firstLinkRef = useRef(null);
+  const drawerRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [visibleSectionId, setVisibleSectionId] = useState('home');
   const sectionIds = useMemo(
@@ -42,7 +44,7 @@ export default function SiteHeader() {
       return;
     }
 
-    const nextId = decodeURIComponent(location.hash.replace('#', '')) || 'home';
+    const nextId = getSafeSectionHash(location.hash) || 'home';
     setVisibleSectionId(nextId);
   }, [location.hash, location.pathname]);
 
@@ -75,9 +77,10 @@ export default function SiteHeader() {
     };
   }, []);
 
-  useEffect(() => {
+  const closeMenu = (restoreFocus = false) => {
     setIsMenuOpen(false);
-  }, [location.pathname, location.hash]);
+    if (restoreFocus) window.requestAnimationFrame(() => triggerRef.current?.focus());
+  };
 
   useEffect(() => {
     if (location.pathname !== '/') return undefined;
@@ -96,7 +99,7 @@ export default function SiteHeader() {
         const element = document.getElementById(id);
         if (!element) return;
 
-        if (element.offsetTop <= probe) {
+        if (element.getBoundingClientRect().top + window.scrollY <= probe) {
           nextSectionId = id;
         }
       });
@@ -144,10 +147,15 @@ export default function SiteHeader() {
     if (!isMenuOpen) return undefined;
 
     const previousOverflow = document.body.style.overflow;
+    const appRoot = document.getElementById('root');
     document.body.style.overflow = 'hidden';
+    appRoot?.setAttribute('inert', '');
+    appRoot?.setAttribute('aria-hidden', 'true');
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      appRoot?.removeAttribute('inert');
+      appRoot?.removeAttribute('aria-hidden');
     };
   }, [isMenuOpen]);
 
@@ -157,8 +165,25 @@ export default function SiteHeader() {
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        setIsMenuOpen(false);
-        window.requestAnimationFrame(() => triggerRef.current?.focus());
+        closeMenu(true);
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusable = drawerRef.current?.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusable?.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -173,8 +198,9 @@ export default function SiteHeader() {
 
   const drawer = isMenuOpen
     ? createPortal(
-      <DrawerBackdrop onClick={() => setIsMenuOpen(false)} role="presentation">
+      <DrawerBackdrop onClick={() => closeMenu(true)} role="presentation">
         <Drawer
+          ref={drawerRef}
           id={menuId}
           role="dialog"
           aria-modal="true"
@@ -182,8 +208,8 @@ export default function SiteHeader() {
           onClick={(event) => event.stopPropagation()}
         >
           <DrawerHeader>
-            <DrawerBrand to="/">yxperiments</DrawerBrand>
-            <DrawerClose type="button" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">
+            <DrawerBrand to="/#home" onClick={() => closeMenu(false)}>yxperiments</DrawerBrand>
+            <DrawerClose type="button" onClick={() => closeMenu(true)} aria-label="Close menu">
               <FaTimes size={16} />
             </DrawerClose>
           </DrawerHeader>
@@ -200,6 +226,8 @@ export default function SiteHeader() {
                   to={item.to}
                   $active={activeSectionId === item.id}
                   $cta={item.id === 'contact'}
+                  aria-current={activeSectionId === item.id ? 'page' : undefined}
+                  onClick={() => closeMenu(false)}
                 >
                   <span>{item.label}</span>
                   <DrawerSuffix $cta={item.id === 'contact'}>/</DrawerSuffix>
@@ -230,7 +258,7 @@ export default function SiteHeader() {
       <Header ref={headerRef}>
         <HeaderInner>
           <BrandCluster>
-            <Brand to="/">yxperiments</Brand>
+            <Brand to="/#home">yxperiments</Brand>
           </BrandCluster>
 
           <HeaderActions>
@@ -241,6 +269,7 @@ export default function SiteHeader() {
                   to={item.to}
                   $active={activeSectionId === item.id}
                   $cta={item.id === 'contact'}
+                  aria-current={activeSectionId === item.id ? 'page' : undefined}
                 >
                   {item.label}
                 </DesktopNavLink>
@@ -265,21 +294,22 @@ export default function SiteHeader() {
 }
 
 const Header = styled.header`
+  font-family: 'Space Grotesk', sans-serif;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 90;
   padding: 0 var(--site-gutter);
-  background: ${({ theme }) => theme.chromeStrong};
-  border-bottom: 1px solid ${({ theme }) => theme.border};
+  background: rgba(9, 10, 11, 0.96);
+  border-bottom: 1px solid rgba(255,255,255,.1);
   pointer-events: none;
 `;
 
 const HeaderInner = styled.div`
   width: 100%;
   margin: 0 auto;
-  min-height: 102px;
+  min-height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -287,8 +317,9 @@ const HeaderInner = styled.div`
   pointer-events: none;
 
   ${MEDIA.tabletDown} {
-    min-height: 76px;
+    min-height: 64px;
   }
+  @media(max-width: 767px) { min-height: 56px; }
 `;
 
 const BrandCluster = styled.div`
@@ -298,10 +329,11 @@ const BrandCluster = styled.div`
 `;
 
 const Brand = styled(Link)`
+  font-family: 'Space Grotesk', sans-serif;
   text-decoration: none;
   font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: -0.03em;
+  font-size: 1.25rem;
+  letter-spacing: -0.055em;
   color: ${({ theme }) => theme.text.primary};
 `;
 
@@ -343,21 +375,23 @@ const DesktopNav = styled.nav`
 
 const DesktopNavLink = styled(Link)`
   position: relative;
-  min-height: ${({ $cta }) => ($cta ? '42px' : 'auto')};
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   padding: ${({ $cta }) => ($cta ? '0.72rem 1rem' : '0')};
   border: ${({ theme, $cta }) => ($cta ? `1px solid ${theme.accent}` : '0')};
-  border-radius: ${({ $cta }) => ($cta ? '999px' : '0')};
+  border-radius: 0;
   background: ${({ theme, $cta, $active }) => {
     if (!$cta) return 'transparent';
-    return $active ? theme.button.hover : theme.button.background;
+    return $active ? theme.accentSurface : 'transparent';
   }};
   text-decoration: none;
   color: ${({ theme, $active, $cta }) => {
-    if ($cta) return theme.button.text;
+    if ($cta) return theme.accent;
     return $active ? theme.text.primary : theme.text.secondary;
   }};
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 500;
   letter-spacing: -0.02em;
   box-shadow: ${({ $cta, theme }) => ($cta ? `0 16px 34px -24px ${theme.earthGlow}` : 'none')};
   transition:
@@ -383,8 +417,8 @@ const DesktopNavLink = styled(Link)`
   }
 
   &:hover {
-    color: ${({ theme, $cta }) => ($cta ? theme.button.text : theme.text.primary)};
-    background: ${({ theme, $cta }) => ($cta ? theme.button.hover : 'transparent')};
+    color: ${({ theme }) => theme.accent};
+    background: ${({ theme, $cta }) => ($cta ? theme.accentSurface : 'transparent')};
     transform: ${({ $cta }) => ($cta ? 'translateY(-1px)' : 'none')};
     box-shadow: ${({ $cta, theme }) => ($cta ? `0 20px 38px -24px ${theme.earthGlow}` : 'none')};
   }

@@ -1,0 +1,464 @@
+{
+  "baseUrl": "http://localhost:5173",
+  "outDir": "/app/playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z",
+  "startedAt": "2026-09-09T03:44:30.852Z",
+  "results": [
+    {
+      "viewport": "desktop",
+      "route": "/",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/desktop-home.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        },
+        "body": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        }
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "/about",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/desktop-about.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        },
+        "body": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        }
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "/contact",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/desktop-contact.png",
+      "signals": {
+        "title": "Contact — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        },
+        "body": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        }
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "/rnd",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/desktop-rnd.png",
+      "signals": {
+        "title": "R&D — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        },
+        "body": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        }
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "first-rnd-post",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/desktop-rnd-post.png",
+      "signals": {
+        "title": "R&D — Yu Xuan | yxperiments",
+        "h1Count": 0,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        },
+        "body": {
+          "clientWidth": 1440,
+          "scrollWidth": 1440
+        }
+      }
+    },
+    {
+      "viewport": "laptop",
+      "route": "/",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/laptop-home.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "body": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        }
+      }
+    },
+    {
+      "viewport": "laptop",
+      "route": "/about",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/laptop-about.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "body": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        }
+      }
+    },
+    {
+      "viewport": "laptop",
+      "route": "/contact",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/laptop-contact.png",
+      "signals": {
+        "title": "Contact — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "body": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        }
+      }
+    },
+    {
+      "viewport": "laptop",
+      "route": "/rnd",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/laptop-rnd.png",
+      "signals": {
+        "title": "R&D — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "body": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        }
+      }
+    },
+    {
+      "viewport": "laptop",
+      "route": "first-project",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/laptop-project.png",
+      "signals": {
+        "title": "Project — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "body": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        }
+      }
+    },
+    {
+      "viewport": "laptop",
+      "route": "first-rnd-post",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/laptop-rnd-post.png",
+      "signals": {
+        "title": "Shophouse Generator — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "body": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        }
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "/",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/tablet-home.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        },
+        "body": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        }
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "/about",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/tablet-about.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        },
+        "body": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        }
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "/contact",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/tablet-contact.png",
+      "signals": {
+        "title": "Contact — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        },
+        "body": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        }
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "/rnd",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/tablet-rnd.png",
+      "signals": {
+        "title": "R&D — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        },
+        "body": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        }
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "first-project",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/tablet-project.png",
+      "signals": {
+        "title": "SIT Open House 2026 — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        },
+        "body": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        }
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "first-rnd-post",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/tablet-rnd-post.png",
+      "signals": {
+        "title": "Shophouse Generator — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        },
+        "body": {
+          "clientWidth": 768,
+          "scrollWidth": 768
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "/",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-home.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "/#menu",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-home-menu.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "/about",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-about.png",
+      "signals": {
+        "title": "Yu Xuan — 3D Motion Designer | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "/contact",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-contact.png",
+      "signals": {
+        "title": "Contact — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "/rnd",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-rnd.png",
+      "signals": {
+        "title": "R&D — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "first-project",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-project.png",
+      "signals": {
+        "title": "SIT Open House 2026 — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "first-rnd-post",
+      "screenshot": "playwright-artifacts/design-audit/2026-09-09T03-44-30-588Z/mobile-rnd-post.png",
+      "signals": {
+        "title": "Shophouse Generator — Yu Xuan | yxperiments",
+        "h1Count": 1,
+        "hasMain": true,
+        "overflowX": false,
+        "root": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "body": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        }
+      }
+    }
+  ],
+  "finishedAt": "2026-09-09T03:44:54.368Z"
+}

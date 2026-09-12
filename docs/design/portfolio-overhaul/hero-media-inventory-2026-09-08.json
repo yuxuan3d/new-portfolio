@@ -1,0 +1,346 @@
+{
+  "fetchedAt": "2026-09-08T13:02:34.537Z",
+  "source": "https://5gu0ubge.api.sanity.io/v2024-03-14/data/query/production?perspective=published&query=*%5B_type%20%3D%3D%20%22portfolioItem%22%20%26%26%20slug.current%20in%20%5B%22sit-open-house-2026%22%2C%22jpmorgan-saei%22%2C%22cinder%22%5D%20%26%26%20!(_id%20in%20path(%22drafts.**%22))%5D%7B_id%2Ctitle%2C%22slug%22%3Aslug.current%2CmainImage%7Bcrop%2Chotspot%2C%22asset%22%3Aasset-%3E%7B_id%2Curl%2Cmetadata%7Bdimensions%7D%7D%7D%2CadditionalImages%5B%5D%7Bcrop%2Chotspot%2C%22asset%22%3Aasset-%3E%7B_id%2Curl%2Cmetadata%7Bdimensions%7D%7D%7D%2CprojectLink%7D",
+  "projects": [
+    {
+      "_id": "13f2854e-b7b9-4dd6-81d7-ae7db468f09b",
+      "additionalImages": [
+        {
+          "asset": {
+            "_id": "image-be8828d4785d430e30f16b4be57141c6abf1d844-500x500-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 500,
+                "width": 500
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/be8828d4785d430e30f16b4be57141c6abf1d844-500x500.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        }
+      ],
+      "mainImage": {
+        "asset": {
+          "_id": "image-6cb458474016f4b556f7de38ba5798f4b979bfef-350x350-jpg",
+          "metadata": {
+            "dimensions": {
+              "_type": "sanity.imageDimensions",
+              "aspectRatio": 1,
+              "height": 350,
+              "width": 350
+            }
+          },
+          "url": "https://cdn.sanity.io/images/5gu0ubge/production/6cb458474016f4b556f7de38ba5798f4b979bfef-350x350.jpg"
+        },
+        "crop": null,
+        "hotspot": null
+      },
+      "projectLink": "https://www.youtube.com/watch?v=Zg7VXwn8b2M",
+      "slug": "cinder",
+      "title": "Cinder"
+    },
+    {
+      "_id": "76792a18-7e92-45e9-b4a7-854304deee3f",
+      "additionalImages": [
+        {
+          "asset": {
+            "_id": "image-b301d8dd88918c60006f454274c60a575675806b-1920x1080-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1.7777777777777777,
+                "height": 1080,
+                "width": 1920
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/b301d8dd88918c60006f454274c60a575675806b-1920x1080.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-0d5d39853bce0e58e4970b0b367f0096104ff369-1920x1080-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1.7777777777777777,
+                "height": 1080,
+                "width": 1920
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/0d5d39853bce0e58e4970b0b367f0096104ff369-1920x1080.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-dc88f077c715af19373cc9429a481498f9bcdf09-1920x1000-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1.92,
+                "height": 1000,
+                "width": 1920
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/dc88f077c715af19373cc9429a481498f9bcdf09-1920x1000.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        }
+      ],
+      "mainImage": {
+        "asset": {
+          "_id": "image-ea495433d01714c174f7f534bcb617b7c69ac3e9-1920x1080-jpg",
+          "metadata": {
+            "dimensions": {
+              "_type": "sanity.imageDimensions",
+              "aspectRatio": 1.7777777777777777,
+              "height": 1080,
+              "width": 1920
+            }
+          },
+          "url": "https://cdn.sanity.io/images/5gu0ubge/production/ea495433d01714c174f7f534bcb617b7c69ac3e9-1920x1080.jpg"
+        },
+        "crop": {
+          "_type": "sanity.imageCrop",
+          "bottom": 0.1668711656441718,
+          "left": 0.06257668711656443,
+          "right": 0.03865030674846627,
+          "top": 0
+        },
+        "hotspot": {
+          "_type": "sanity.imageHotspot",
+          "height": 0.8331288343558282,
+          "width": 0.8987730061349694,
+          "x": 0.5119631901840491,
+          "y": 0.4165644171779141
+        }
+      },
+      "projectLink": "https://youtu.be/FvYGMrBt3bE",
+      "slug": "jpmorgan-saei",
+      "title": "JPMorgan SAEI"
+    },
+    {
+      "_id": "7cbc83f8-b6dd-4ba0-8345-4d74de7530fe",
+      "additionalImages": [
+        {
+          "asset": {
+            "_id": "image-b5754a6ed96d03bb04f81972fbac2a03f5182585-220x220-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 220,
+                "width": 220
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/b5754a6ed96d03bb04f81972fbac2a03f5182585-220x220.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-786000662fc1a251ed6d6af05479033098060f61-220x220-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 220,
+                "width": 220
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/786000662fc1a251ed6d6af05479033098060f61-220x220.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-02e8e15c30e4ef7d09a9b7b4905116e1dfbf6710-220x220-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 220,
+                "width": 220
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/02e8e15c30e4ef7d09a9b7b4905116e1dfbf6710-220x220.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-02eb044ea7a04e0398ef780bd4451bed517e9dbe-220x220-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 220,
+                "width": 220
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/02eb044ea7a04e0398ef780bd4451bed517e9dbe-220x220.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-e1127430ea97f7b0b299f239a791ca350b451db1-1320x1842-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 0.7166123778501629,
+                "height": 1842,
+                "width": 1320
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/e1127430ea97f7b0b299f239a791ca350b451db1-1320x1842.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-a49d0d8c5f0bbc8947fba081ea779545bbb225fa-1080x1080-png",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 1080,
+                "width": 1080
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/a49d0d8c5f0bbc8947fba081ea779545bbb225fa-1080x1080.png"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-9f49e24fa8f25162a44a4314e8386b4a237c2438-1080x1080-png",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 1080,
+                "width": 1080
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/9f49e24fa8f25162a44a4314e8386b4a237c2438-1080x1080.png"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-51afde07df8421194186f86a7b061e19b37441eb-1920x1080-png",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1.7777777777777777,
+                "height": 1080,
+                "width": 1920
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/51afde07df8421194186f86a7b061e19b37441eb-1920x1080.png"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-4fb270893e389aa1e813ae10cde973bedc891a84-3840x2160-png",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1.7777777777777777,
+                "height": 2160,
+                "width": 3840
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/4fb270893e389aa1e813ae10cde973bedc891a84-3840x2160.png"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-055ceff6c90024e48a8235196b65b9cc8ccc9d9d-2902x1346-png",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 2.1560178306092124,
+                "height": 1346,
+                "width": 2902
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/055ceff6c90024e48a8235196b65b9cc8ccc9d9d-2902x1346.png"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-51104b22bfdf5cb3949262c60eee624825ec4c98-1080x1080-jpg",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 1080,
+                "width": 1080
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/51104b22bfdf5cb3949262c60eee624825ec4c98-1080x1080.jpg"
+          },
+          "crop": null,
+          "hotspot": null
+        },
+        {
+          "asset": {
+            "_id": "image-8f7ee71e06e1a7430407dbd132fcbbb52308ae1d-1080x1080-png",
+            "metadata": {
+              "dimensions": {
+                "_type": "sanity.imageDimensions",
+                "aspectRatio": 1,
+                "height": 1080,
+                "width": 1080
+              }
+            },
+            "url": "https://cdn.sanity.io/images/5gu0ubge/production/8f7ee71e06e1a7430407dbd132fcbbb52308ae1d-1080x1080.png"
+          },
+          "crop": null,
+          "hotspot": null
+        }
+      ],
+      "mainImage": {
+        "asset": {
+          "_id": "image-63be03b374cd1fedb08e75fd252a5ca70c451200-681x681-png",
+          "metadata": {
+            "dimensions": {
+              "_type": "sanity.imageDimensions",
+              "aspectRatio": 1,
+              "height": 681,
+              "width": 681
+            }
+          },
+          "url": "https://cdn.sanity.io/images/5gu0ubge/production/63be03b374cd1fedb08e75fd252a5ca70c451200-681x681.png"
+        },
+        "crop": null,
+        "hotspot": null
+      },
+      "projectLink": "https://www.singaporetech.edu.sg/openhouse/virtual-campus-tour/",
+      "slug": "sit-open-house-2026",
+      "title": "SIT Open House 2026"
+    }
+  ]
+}

@@ -1,5 +1,4 @@
-import React, { useRef, useState } from 'react';
-import emailjs from '@emailjs/browser';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { FaEnvelope, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { CONTACT_CONTENT } from '../content/siteContent';
@@ -38,34 +37,42 @@ function normalizeFormData(formData) {
 }
 
 function validateFormData(formData) {
+  const errors = {};
+
   if (!formData.name || formData.name.length > FIELD_LIMITS.name) {
-    return 'Enter a valid name.';
+    errors.name = 'Enter a valid name.';
   }
 
-  if (!formData.email || formData.email.length > FIELD_LIMITS.email) {
-    return 'Enter a valid email address.';
+  if (
+    !formData.email ||
+    formData.email.length > FIELD_LIMITS.email ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+  ) {
+    errors.email = 'Enter a valid email address.';
   }
 
   if (!formData.subject || formData.subject.length > FIELD_LIMITS.subject) {
-    return 'Enter a valid subject.';
+    errors.subject = 'Enter a valid subject.';
   }
 
   if (!formData.message || formData.message.length > FIELD_LIMITS.message) {
-    return 'Enter a valid message.';
+    errors.message = 'Enter a valid message.';
   }
 
-  return null;
+  return errors;
 }
 
-export default function ContactSection({ id, standalone = false }) {
+export default function ContactSection({ id, standalone = false, embedded = false }) {
   const formRef = useRef(null);
   const mountedAtRef = useRef(Date.now());
+  const successTimeoutRef = useRef(null);
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [status, setStatus] = useState({
     submitting: false,
     submitted: false,
     error: null,
   });
+  const [fieldErrors, setFieldErrors] = useState({});
   const title = CONTACT_CONTENT?.title ?? 'Contact';
   const contactMethods = Array.isArray(CONTACT_CONTENT?.contactMethods)
     ? CONTACT_CONTENT.contactMethods
@@ -79,19 +86,44 @@ export default function ContactSection({ id, standalone = false }) {
     emailJsConfig.serviceId && emailJsConfig.templateId && emailJsConfig.publicKey,
   );
 
+  useEffect(() => () => {
+    window.clearTimeout(successTimeoutRef.current);
+  }, []);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
+    setFieldErrors((current) => {
+      if (!current[name]) return current;
+      const next = { ...current };
+      delete next[name];
+      return next;
+    });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setStatus({ submitting: true, submitted: false, error: null });
+    setFieldErrors({});
 
     const honeypotValue =
       formRef.current?.elements?.namedItem(HONEYPOT_FIELD_NAME)?.value?.trim() ?? '';
     if (honeypotValue) {
       setStatus({ submitting: false, submitted: true, error: null });
+      return;
+    }
+
+    const normalizedFormData = normalizeFormData(formData);
+    const validationErrors = validateFormData(normalizedFormData);
+    if (Object.keys(validationErrors).length > 0) {
+      const firstField = Object.keys(validationErrors)[0];
+      setFieldErrors(validationErrors);
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: 'Please correct the highlighted fields.',
+      });
+      window.requestAnimationFrame(() => formRef.current?.elements?.namedItem(firstField)?.focus());
       return;
     }
 
@@ -113,19 +145,9 @@ export default function ContactSection({ id, standalone = false }) {
       return;
     }
 
-    const normalizedFormData = normalizeFormData(formData);
-    const validationError = validateFormData(normalizedFormData);
-    if (validationError) {
-      setStatus({
-        submitting: false,
-        submitted: false,
-        error: validationError,
-      });
-      return;
-    }
-
     try {
       setFormData(normalizedFormData);
+      const { default: emailjs } = await import('@emailjs/browser');
       await emailjs.sendForm(
         emailJsConfig.serviceId,
         emailJsConfig.templateId,
@@ -136,7 +158,7 @@ export default function ContactSection({ id, standalone = false }) {
       setFormData(INITIAL_FORM_STATE);
       setStatus({ submitting: false, submitted: true, error: null });
 
-      window.setTimeout(() => {
+      successTimeoutRef.current = window.setTimeout(() => {
         setStatus((current) => ({ ...current, submitted: false }));
       }, 5000);
     } catch (error) {
@@ -150,14 +172,14 @@ export default function ContactSection({ id, standalone = false }) {
   };
 
   return (
-    <Section id={id} $standalone={standalone}>
-      <SectionHeader>
-        <Title>{title}</Title>
-      </SectionHeader>
+    <Section id={id} $standalone={standalone} $embedded={embedded}>
+      {!embedded && <SectionHeader>
+        <Title as={standalone ? 'h1' : 'h2'}>{title}</Title>
+      </SectionHeader>}
 
-      <BodyGrid>
+      <BodyGrid $embedded={embedded}>
         <FormPanel>
-          <Form ref={formRef} onSubmit={handleSubmit}>
+          <Form ref={formRef} noValidate onSubmit={handleSubmit}>
             <HoneypotField aria-hidden="true">
               <label htmlFor={HONEYPOT_FIELD_NAME}>Company</label>
               <input
@@ -182,7 +204,10 @@ export default function ContactSection({ id, standalone = false }) {
                 onChange={handleChange}
                 disabled={status.submitting}
                 required
+                aria-invalid={Boolean(fieldErrors.name)}
+                aria-describedby={fieldErrors.name ? 'name-error' : undefined}
               />
+              {fieldErrors.name ? <FieldError id="name-error">{fieldErrors.name}</FieldError> : null}
             </FieldGroup>
 
             <FieldRow>
@@ -199,7 +224,10 @@ export default function ContactSection({ id, standalone = false }) {
                   onChange={handleChange}
                   disabled={status.submitting}
                   required
+                  aria-invalid={Boolean(fieldErrors.email)}
+                  aria-describedby={fieldErrors.email ? 'email-error' : undefined}
                 />
+                {fieldErrors.email ? <FieldError id="email-error">{fieldErrors.email}</FieldError> : null}
               </FieldGroup>
 
               <FieldGroup>
@@ -213,7 +241,10 @@ export default function ContactSection({ id, standalone = false }) {
                   onChange={handleChange}
                   disabled={status.submitting}
                   required
+                  aria-invalid={Boolean(fieldErrors.subject)}
+                  aria-describedby={fieldErrors.subject ? 'subject-error' : undefined}
                 />
+                {fieldErrors.subject ? <FieldError id="subject-error">{fieldErrors.subject}</FieldError> : null}
               </FieldGroup>
             </FieldRow>
 
@@ -228,12 +259,15 @@ export default function ContactSection({ id, standalone = false }) {
                 onChange={handleChange}
                 disabled={status.submitting}
                 required
+                aria-invalid={Boolean(fieldErrors.message)}
+                aria-describedby={fieldErrors.message ? 'message-error' : undefined}
               />
+              {fieldErrors.message ? <FieldError id="message-error">{fieldErrors.message}</FieldError> : null}
             </FieldGroup>
 
-            {status.error && <StatusMessage $tone="error">{status.error}</StatusMessage>}
+            {status.error && <StatusMessage role="alert" $tone="error">{status.error}</StatusMessage>}
             {status.submitted && (
-              <StatusMessage $tone="success">Message sent successfully.</StatusMessage>
+              <StatusMessage role="status" aria-live="polite" $tone="success">Message sent successfully.</StatusMessage>
             )}
 
             <SubmitButton type="submit" disabled={status.submitting || !canSubmit}>
@@ -242,7 +276,7 @@ export default function ContactSection({ id, standalone = false }) {
           </Form>
         </FormPanel>
 
-        {contactMethods.length > 0 ? (
+        {!embedded && contactMethods.length > 0 ? (
           <InfoPanel>
             <MethodList>
               {contactMethods.map((method) => {
@@ -271,8 +305,8 @@ export default function ContactSection({ id, standalone = false }) {
 }
 
 const Section = styled.section`
-  width: ${({ $standalone }) =>
-    $standalone
+  width: ${({ $standalone, $embedded }) =>
+    $standalone || $embedded
       ? 'min(var(--site-max-width), 100%)'
       : 'min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)))'};
   margin: 0 auto;
@@ -303,7 +337,7 @@ const Title = styled.h2`
 
 const BodyGrid = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
+  grid-template-columns: ${({ $embedded }) => $embedded ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(260px, 0.34fr)'};
   gap: clamp(1rem, 3vw, 2rem);
   align-items: start;
   min-width: 0;
@@ -360,6 +394,11 @@ const FieldGroup = styled.div`
   display: grid;
   gap: 0.45rem;
   min-width: 0;
+`;
+
+const FieldError = styled.p`
+  color: #ffb2a6;
+  font-size: 0.78rem;
 `;
 
 const Label = styled.label`

@@ -1,0 +1,89 @@
+{
+  "measuredAt": "2026-09-10T07:05:14.334Z",
+  "environment": "Container Chromium, production bundle, unthrottled local CPU/network; lab observations, not field Core Web Vitals or INP.",
+  "profiles": [
+    {
+      "name": "laptop",
+      "width": 1280,
+      "height": 800,
+      "deviceScaleFactor": 1,
+      "lcp": 356,
+      "cls": 0.001494942033290863,
+      "cueBottom": 799,
+      "awardsTop": 887,
+      "stage": {
+        "x": 199.109375,
+        "y": 127,
+        "width": 881.78125,
+        "height": 496,
+        "top": 127,
+        "right": 1080.890625,
+        "bottom": 623,
+        "left": 199.109375
+      },
+      "poster": "https://cdn.sanity.io/images/5gu0ubge/production/51afde07df8421194186f86a7b061e19b37441eb-1920x1080.png?w=1100&q=78&auto=format",
+      "running": "true",
+      "overflow": false,
+      "contourCueGap": 12,
+      "contourMotion": "Traveling SVG swell, 30fps cap; approximately 20s and 33s wave periods",
+      "posterBytes": 41566,
+      "posterContentType": "image/avif",
+      "effectsOn": {
+        "medianMs": 16.69999999999999,
+        "p95Ms": 16.700000000000045
+      },
+      "effectsReducedMotion": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.800000000000182
+      },
+      "projectSwitch": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.800000000000182
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 2,
+      "lcp": 224,
+      "cls": 0,
+      "cueBottom": 760,
+      "awardsTop": 888,
+      "stage": {
+        "x": 20,
+        "y": 116,
+        "width": 350,
+        "height": 420,
+        "top": 116,
+        "right": 370,
+        "bottom": 536,
+        "left": 20
+      },
+      "poster": "https://cdn.sanity.io/images/5gu0ubge/production/51afde07df8421194186f86a7b061e19b37441eb-1920x1080.png?w=1344&q=78&auto=format",
+      "running": "true",
+      "overflow": false,
+      "contourCueGap": 12,
+      "contourMotion": "Traveling SVG swell, 30fps cap; approximately 20s and 33s wave periods",
+      "posterBytes": 61377,
+      "posterContentType": "image/avif",
+      "effectsOn": {
+        "medianMs": 16.699999999999932,
+        "p95Ms": 16.700000000000045
+      },
+      "effectsReducedMotion": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.799999999999727
+      },
+      "projectSwitch": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.800000000000182
+      },
+      "errors": []
+    }
+  ],
+  "isolatedHeroGzipEstimateBytes": 8232,
+  "bundleNote": "Isolated minified gallery plus local helpers, excluding shared packages; estimate, not a before/after production chunk delta.",
+  "originNote": "Local production preview served through localhost:5173 in the test browser to retain the existing Sanity CORS allowlist. Telemetry endpoints are intercepted."
+}

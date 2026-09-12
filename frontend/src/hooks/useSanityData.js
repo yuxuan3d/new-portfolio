@@ -14,13 +14,27 @@ const safeStringify = (value) => {
 };
 
 export function useSanityData(query, params = {}) {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [isValidating, setIsValidating] = useState(false);
   const paramsKey = safeStringify(params);
+  const requestKey = `${query}::${paramsKey}`;
+  const [requestState, setRequestState] = useState({
+    key: null,
+    data: null,
+    error: null,
+    isValidating: false,
+    hasResolved: false,
+  });
   const paramsRef = useRef(params);
   const activeRequestRef = useRef(0);
   const mountedRef = useRef(false);
+  const currentState = requestState.key === requestKey
+    ? requestState
+    : {
+        key: requestKey,
+        data: null,
+        error: null,
+        isValidating: true,
+        hasResolved: false,
+      };
 
   useEffect(() => {
     mountedRef.current = true;
@@ -37,7 +51,7 @@ export function useSanityData(query, params = {}) {
 
   const fetchData = useCallback(
     async (shouldUpdateState = true, bypassCache = false) => {
-      const cacheKey = `${query}::${paramsKey}`;
+      const cacheKey = requestKey;
       const requestId = shouldUpdateState
         ? activeRequestRef.current + 1
         : activeRequestRef.current;
@@ -54,17 +68,26 @@ export function useSanityData(query, params = {}) {
           const cachedData = cache.get(cacheKey);
           if (cachedData && Date.now() - cachedData.timestamp < CACHE_TIME) {
             if (canUpdateState()) {
-              setData(cachedData.data);
-              setError(null);
+              setRequestState({
+                key: requestKey,
+                data: cachedData.data,
+                error: null,
+                isValidating: false,
+                hasResolved: true,
+              });
             }
             return cachedData.data;
           }
         }
 
         if (canUpdateState()) {
-          setData(null);
-          setError(null);
-          setIsValidating(true);
+          setRequestState({
+            key: requestKey,
+            data: null,
+            error: null,
+            isValidating: true,
+            hasResolved: false,
+          });
         }
 
         const result = await client.fetch(query, paramsRef.current);
@@ -75,8 +98,13 @@ export function useSanityData(query, params = {}) {
         });
 
         if (canUpdateState()) {
-          setData(result);
-          setError(null);
+          setRequestState({
+            key: requestKey,
+            data: result,
+            error: null,
+            isValidating: false,
+            hasResolved: true,
+          });
         }
 
         return result;
@@ -85,17 +113,19 @@ export function useSanityData(query, params = {}) {
         const errorMessage = 'Failed to load data. Please try again later.';
 
         if (canUpdateState()) {
-          setError(errorMessage);
+          setRequestState({
+            key: requestKey,
+            data: null,
+            error: errorMessage,
+            isValidating: false,
+            hasResolved: true,
+          });
         }
 
         throw new Error(errorMessage);
-      } finally {
-        if (canUpdateState()) {
-          setIsValidating(false);
-        }
       }
     },
-    [query, paramsKey]
+    [query, requestKey]
   );
 
   // Initial fetch
@@ -113,9 +143,13 @@ export function useSanityData(query, params = {}) {
           if (
             mountedRef.current &&
             activeRequestRef.current === requestId &&
-            safeStringify(newData) !== safeStringify(data)
+            safeStringify(newData) !== safeStringify(currentState.data)
           ) {
-            setData(newData);
+            setRequestState((current) => (
+              current.key === requestKey
+                ? { ...current, data: newData, error: null, hasResolved: true }
+                : current
+            ));
           }
         })
         .catch(() => {
@@ -124,9 +158,17 @@ export function useSanityData(query, params = {}) {
     }, CACHE_TIME / 2);
 
     return () => clearInterval(interval);
-  }, [fetchData, data]);
+  }, [currentState.data, fetchData, requestKey]);
 
   const mutate = useCallback(async () => fetchData(), [fetchData]);
 
-  return [data, error, { isValidating, mutate }];
+  return [
+    currentState.data,
+    currentState.error,
+    {
+      isValidating: currentState.isValidating,
+      hasResolved: currentState.hasResolved,
+      mutate,
+    },
+  ];
 }

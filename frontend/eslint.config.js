@@ -44,9 +44,9 @@ export default [
 
   // Node-based tooling (Vite config, scripts, lint config itself).
   {
-    files: ['eslint.config.js', 'vite.config.js', 'scripts/**/*.js'],
+    files: ['eslint.config.js', 'vite.config.js', 'playwright.config.js', 'scripts/**/*.js', 'tests/**/*.js'],
     languageOptions: {
-      globals: globals.node,
+      globals: { ...globals.node, ...globals.browser },
     },
   },
 ];

@@ -1,17 +1,20 @@
-import React from 'react';
-import { Analytics } from '@vercel/analytics/react';
-import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import styled, { ThemeProvider as StyledThemeProvider, createGlobalStyle } from 'styled-components';
-import BlogPost from './components/BlogPost';
-import Contact from './components/Contact';
-import ProjectDetail from './components/ProjectDetail';
-import RnDBlog from './components/RnDBlog';
+import LazyRouteBoundary from './components/LazyRouteBoundary';
+import LoadingState from './components/LoadingState';
+import NotFound from './components/NotFound';
 import SiteFooter from './components/SiteFooter';
 import SiteHeader from './components/SiteHeader';
-import { initAnalytics, trackPageView } from './lib/analytics';
+import { initAnalytics, trackPageView } from './lib/siteEvents';
+import { getSafeSectionHash } from './lib/navigation';
 import Home from './pages/Home';
 import { BREAKPOINTS } from './styles/breakpoints';
 import { siteTheme } from './styles/theme';
+
+const OptionalAnalytics = React.lazy(() => import('@vercel/analytics/react')
+  .then(({ Analytics }) => ({ default: Analytics }))
+  .catch(() => ({ default: () => null })));
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -22,9 +25,9 @@ const GlobalStyle = createGlobalStyle`
 
   :root {
     color-scheme: dark;
-    --site-max-width: 1240px;
-    --site-header-height: 102px;
-    --site-gutter: clamp(1.5rem, 2vw, 2.25rem);
+    --site-max-width: 1312px;
+    --site-header-height: 64px;
+    --site-gutter: 64px;
     --section-gap: clamp(3rem, 5vw, 4.5rem);
     --panel-padding: 24px;
     --bg-base: ${({ theme }) => theme.background};
@@ -54,10 +57,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     position: relative;
     min-height: 100vh;
-    background:
-      radial-gradient(56rem 28rem at 50% -10%, var(--bg-accent-a), transparent 60%),
-      radial-gradient(34rem 24rem at 84% 10%, var(--bg-accent-b), transparent 60%),
-      linear-gradient(180deg, #101010 0%, #0f0f0f 100%);
+    background: var(--bg-base);
     color: var(--text-primary);
     font-family: 'Poppins', 'Segoe UI', sans-serif;
     line-height: 1.6;
@@ -65,29 +65,6 @@ const GlobalStyle = createGlobalStyle`
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 1) 0.85px, transparent 1.05px);
-    background-size: 28px 28px;
-    background-position: center top;
-    opacity: 0.15;
-  }
-
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%, transparent 78%, rgba(0, 0, 0, 0.32));
-    opacity: 0.32;
   }
 
   a {
@@ -137,6 +114,8 @@ const GlobalStyle = createGlobalStyle`
     background: ${({ theme }) => theme.accent};
   }
 
+  @media(max-width: 359px) { :root { --site-gutter: 16px; } }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -152,7 +131,7 @@ const GlobalStyle = createGlobalStyle`
 
   @media (max-width: ${BREAKPOINTS.tablet}px) {
     :root {
-      --site-header-height: 76px;
+      --site-header-height: 64px;
       --site-gutter: 24px;
       --section-gap: 56px;
       --panel-padding: 24px;
@@ -163,9 +142,10 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
-  @media (max-width: ${BREAKPOINTS.phone}px) {
+  @media (max-width: 767px) {
+    :root { --site-header-height: 56px; }
     :root {
-      --site-gutter: 16px;
+      --site-gutter: 20px;
       --section-gap: 40px;
       --panel-padding: 20px;
     }
@@ -181,40 +161,148 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-function ScrollManager({ location }) {
+const ProjectDetail = React.lazy(() => import('./components/ProjectDetail'));
+const Contact = React.lazy(() => import('./components/Contact'));
+const RnDBlog = React.lazy(() => import('./components/RnDBlog'));
+const BlogPost = React.lazy(() => import('./components/BlogPost'));
+
+function getHeaderOffset() {
+  const measuredHeight = document.querySelector('header')?.getBoundingClientRect().height;
+  return measuredHeight || Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--site-header-height')) || 0;
+}
+
+function targetScrollPosition(element) {
+  return Math.max(0, element.getBoundingClientRect().top + window.scrollY - getHeaderOffset() - 20);
+}
+
+function scrollToTarget(element, behavior) {
+  const top = targetScrollPosition(element);
+  const isAligned = Math.abs(window.scrollY - top) <= 1;
+  if (isAligned && behavior !== 'smooth') return false;
+
+  if (behavior === 'auto') {
+    // Explicit instant positioning also respects reduced-motion navigation.
+    window.scrollTo({ top, left: 0, behavior: 'instant' });
+  } else {
+    window.scrollTo({ top, left: 0, behavior: 'smooth' });
+  }
+  return true;
+}
+
+function ScrollManager({ location, homeLayoutReady }) {
+  const navigationType = useNavigationType();
   React.useEffect(() => {
+    if (location.pathname === '/' && location.hash && !homeLayoutReady) {
+      return undefined;
+    }
+
     if (!location.hash) {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
       return undefined;
     }
 
-    const id = decodeURIComponent(location.hash.slice(1));
-    const timeout = window.setTimeout(() => {
+    const id = getSafeSectionHash(location.hash);
+    if (!id) return undefined;
+
+    let frameOne = 0;
+    let frameTwo = 0;
+    let settleTimer = 0;
+    let scrollEndTimer = 0;
+    let correctionApplied = false;
+    let layoutChanged = false;
+    let previousDocumentTop;
+    let stableChecks = 0;
+    let monitorStartedAt = 0;
+    let layoutObserver;
+
+    const alignAfterUserScroll = () => {
+      if (correctionApplied) return;
+      correctionApplied = true;
+      const element = document.getElementById(id);
+      if (element) scrollToTarget(element, 'auto');
+    };
+
+    const monitorAutoAlignment = () => {
       const element = document.getElementById(id);
       if (!element) return;
 
-      const headerHeight = Number.parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--site-header-height'),
-      ) || 0;
-      const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }, 60);
+      const documentTop = element.getBoundingClientRect().top + window.scrollY;
+      const moved = Math.abs((previousDocumentTop ?? documentTop) - documentTop) > 0.5;
+      if (moved || layoutChanged) {
+        scrollToTarget(element, 'auto');
+        stableChecks = 0;
+        layoutChanged = false;
+      } else {
+        stableChecks += 1;
+      }
+      previousDocumentTop = documentTop;
 
-    return () => window.clearTimeout(timeout);
-  }, [location.pathname, location.hash]);
+      const elapsed = performance.now() - monitorStartedAt;
+      if (elapsed >= 1600 || (elapsed >= 900 && stableChecks >= 3)) return;
+      settleTimer = window.setTimeout(monitorAutoAlignment, 100);
+    };
+
+    frameOne = window.requestAnimationFrame(() => {
+      frameTwo = window.requestAnimationFrame(() => {
+        const element = document.getElementById(id);
+        if (!element) return;
+
+        if (navigationType === 'PUSH') {
+          const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          scrollToTarget(element, reducedMotion ? 'auto' : 'smooth');
+          window.addEventListener('scrollend', alignAfterUserScroll, { once: true });
+          // Long pages can exceed 800ms of native smooth scrolling. Let scrollend
+          // settle it before the fallback, avoiding a queued final-frame offset.
+          scrollEndTimer = window.setTimeout(alignAfterUserScroll, 1800);
+          return;
+        }
+
+        scrollToTarget(element, 'auto');
+        previousDocumentTop = element.getBoundingClientRect().top + window.scrollY;
+        monitorStartedAt = performance.now();
+        if (typeof ResizeObserver !== 'undefined') {
+          layoutObserver = new ResizeObserver(() => {
+            layoutChanged = true;
+          });
+          layoutObserver.observe(document.body);
+        }
+        monitorAutoAlignment();
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameOne);
+      window.cancelAnimationFrame(frameTwo);
+      window.clearTimeout(settleTimer);
+      window.clearTimeout(scrollEndTimer);
+      window.removeEventListener('scrollend', alignAfterUserScroll);
+      layoutObserver?.disconnect();
+    };
+  }, [homeLayoutReady, location.hash, location.pathname, navigationType]);
 
   return null;
 }
 
-function AppRoutes({ location, onHomeReady }) {
+function LazyRoute({ children }) {
+  return (
+    <LazyRouteBoundary>
+      <Suspense fallback={<LoadingState label="Loading page" minHeight="360px" margin="0" />}>
+        {children}
+      </Suspense>
+    </LazyRouteBoundary>
+  );
+}
+
+function AppRoutes({ location, onHomeLayoutReady, overlayOpen }) {
   return (
     <Routes location={location}>
-      <Route path="/" element={<Home onHeroReady={onHomeReady} />} />
+      <Route path="/" element={<Home onLayoutReady={onHomeLayoutReady} overlayOpen={overlayOpen} />} />
       <Route path="/about" element={<Navigate replace to="/#resume" />} />
-      <Route path="/project/:slug" element={<ProjectDetail />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/rnd" element={<RnDBlog />} />
-      <Route path="/rnd/:slug" element={<BlogPost />} />
+      <Route path="/project/:slug" element={<LazyRoute><ProjectDetail /></LazyRoute>} />
+      <Route path="/contact" element={<LazyRoute><Contact /></LazyRoute>} />
+      <Route path="/rnd" element={<LazyRoute><RnDBlog /></LazyRoute>} />
+      <Route path="/rnd/:slug" element={<LazyRoute><BlogPost /></LazyRoute>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
@@ -223,75 +311,32 @@ function AppFrame() {
   const location = useLocation();
   const backgroundLocation = location.state?.backgroundLocation;
   const routeLocation = backgroundLocation || location;
-  const needsInitialHeroLoad =
-    !backgroundLocation && (routeLocation.pathname === '/' || routeLocation.pathname === '/about');
-  const [hasHeroLoaded, setHasHeroLoaded] = React.useState(() => !needsInitialHeroLoad);
-  const [loaderDismissed, setLoaderDismissed] = React.useState(() => !needsInitialHeroLoad);
-  const [loaderProgress, setLoaderProgress] = React.useState(() => (needsInitialHeroLoad ? 14 : 100));
+  const [readyHomeLocationKey, setReadyHomeLocationKey] = React.useState(null);
+  const homeLayoutReady = routeLocation.pathname !== '/' || readyHomeLocationKey === routeLocation.key;
 
   React.useEffect(() => {
     trackPageView();
   }, [location.pathname, location.search, location.hash]);
 
-  React.useEffect(() => {
-    if (!needsInitialHeroLoad) {
-      setHasHeroLoaded(true);
-      setLoaderDismissed(true);
-      setLoaderProgress(100);
-      return undefined;
-    }
-
-    if (hasHeroLoaded) {
-      const dismissTimeout = window.setTimeout(() => {
-        setLoaderDismissed(true);
-      }, 180);
-
-      return () => window.clearTimeout(dismissTimeout);
-    }
-
-    setLoaderDismissed(false);
-    const progressInterval = window.setInterval(() => {
-      setLoaderProgress((current) => {
-        if (current >= 88) return current;
-        const next = current + Math.max(2, (88 - current) * 0.16);
-        return Math.min(next, 88);
-      });
-    }, 120);
-
-    return () => window.clearInterval(progressInterval);
-  }, [hasHeroLoaded, needsInitialHeroLoad]);
-
-  const handleHeroReady = React.useCallback(() => {
-    setHasHeroLoaded(true);
-    setLoaderProgress(100);
-  }, []);
-
   return (
     <>
       <GlobalStyle />
-      <ScrollManager location={routeLocation} />
-      <PageShell $isVisible={loaderDismissed}>
+      <ScrollManager location={routeLocation} homeLayoutReady={homeLayoutReady} />
+      <PageShell data-site-shell>
         <SiteHeader />
         <MainContent>
-          <AppRoutes location={routeLocation} onHomeReady={handleHeroReady} />
+          <AppRoutes
+            location={routeLocation}
+            overlayOpen={Boolean(backgroundLocation)}
+            onHomeLayoutReady={() => setReadyHomeLocationKey(routeLocation.key)}
+          />
         </MainContent>
         <SiteFooter />
       </PageShell>
 
-      {!loaderDismissed ? (
-        <LoadingOverlay role="status" aria-live="polite" aria-label="Loading particle earth">
-          <LoadingWrap>
-            <LoadingLabel>Loading...</LoadingLabel>
-            <LoadingTrack aria-hidden="true">
-              <LoadingBar $progress={loaderProgress} />
-            </LoadingTrack>
-          </LoadingWrap>
-        </LoadingOverlay>
-      ) : null}
-
       {backgroundLocation ? (
         <Routes>
-          <Route path="/project/:slug" element={<ProjectDetail overlay />} />
+          <Route path="/project/:slug" element={<LazyRoute><ProjectDetail overlay /></LazyRoute>} />
         </Routes>
       ) : null}
     </>
@@ -310,7 +355,7 @@ function App() {
           <AppFrame />
         </Router>
       </StyledThemeProvider>
-      <Analytics />
+      <Suspense fallback={null}><OptionalAnalytics /></Suspense>
     </>
   );
 }
@@ -319,55 +364,11 @@ const PageShell = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-  visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
-  transition: opacity 0.28s ease;
 `;
 
 const MainContent = styled.main`
   flex: 1;
   width: 100%;
-`;
-
-const LoadingOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: grid;
-  place-items: center;
-  padding: 1.5rem;
-  background:
-    radial-gradient(34rem 22rem at 50% 18%, rgba(13, 59, 139, 0.28), transparent 68%),
-    #050608;
-`;
-
-const LoadingWrap = styled.div`
-  width: min(18rem, 100%);
-  display: grid;
-  gap: 0.9rem;
-`;
-
-const LoadingLabel = styled.p`
-  color: ${({ theme }) => theme.text.primary};
-  font-family: 'Roboto Mono', monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-`;
-
-const LoadingTrack = styled.div`
-  width: 100%;
-  height: 5px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
-`;
-
-const LoadingBar = styled.span`
-  display: block;
-  width: ${({ $progress }) => `${$progress}%`};
-  height: 100%;
-  background: ${({ theme }) => theme.accent};
-  transition: width 0.18s ease;
 `;
 
 export default App;

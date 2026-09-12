@@ -3,7 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { PortableText } from '@portabletext/react';
 import styled, { css } from 'styled-components';
 import { useSanityData } from '../hooks/useSanityData';
+import useDocumentMetadata, { toCanonicalUrl } from '../hooks/useDocumentMetadata';
 import { urlFor } from '../lib/sanityClient';
+import { formatWorkLabel } from '../lib/workDisciplines';
 import { MEDIA } from '../styles/breakpoints';
 import BlogLazyImage from './BlogLazyImage';
 import LoadingState from './LoadingState';
@@ -12,6 +14,7 @@ const QUERY = `*[_type == "blogPost" && slug.current == $slug][0]{
   title,
   "slug": slug.current,
   publishedAt,
+  excerpt,
   mainImage,
   body,
   tags
@@ -61,7 +64,18 @@ const portableTextComponents = {
 
 export default function BlogPost() {
   const { slug } = useParams();
-  const [post, error, { isValidating }] = useSanityData(QUERY, { slug });
+  const [post, error, { isValidating, hasResolved }] = useSanityData(QUERY, { slug });
+  const metadataImage = post?.mainImage
+    ? urlFor(post.mainImage).width(1200).height(630).fit('crop').auto('format').url()
+    : undefined;
+  useDocumentMetadata({
+    title: post ? `${post.title} — Yu Xuan | yxperiments` : 'R&D — Yu Xuan | yxperiments',
+    description: post?.excerpt?.trim().slice(0, 160) || 'Experiments, notes, and technical explorations by Yu Xuan.',
+    canonical: post ? toCanonicalUrl(`/rnd/${encodeURIComponent(post.slug)}`) : null,
+    image: metadataImage,
+    type: 'article',
+    noIndex: Boolean((hasResolved || error) && !post),
+  });
 
   if (isValidating && !post) {
     return (
@@ -119,7 +133,7 @@ export default function BlogPost() {
       {Array.isArray(post.tags) && post.tags.length > 0 ? (
         <TagRow>
           {post.tags.map((tag) => (
-            <Tag key={tag}>{tag}</Tag>
+            <Tag key={tag}>{formatWorkLabel(tag)}</Tag>
           ))}
         </TagRow>
       ) : null}

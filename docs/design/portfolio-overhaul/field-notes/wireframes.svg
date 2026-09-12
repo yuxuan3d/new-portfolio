@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1870" viewBox="0 0 1400 1870">
+<rect x="0" y="0" width="1400" height="1870" rx="0" fill="#0c0e11" stroke="#0c0e11"/>
+<text x="40" y="46" fill="#fff" font-family="Arial,sans-serif" font-size="24" font-weight="700">YXPERIMENTS / EXPERIMENTAL FIELD NOTES</text>
+<text x="40" y="76" fill="#aeb5bf" font-family="Arial,sans-serif" font-size="16" font-weight="400">Layout study · desktop + mobile · grayscale establishes hierarchy, not the final palette</text>
+<text x="40" y="117" fill="#c3c8d0" font-family="Arial,sans-serif" font-size="14" font-weight="700">01 / DESKTOP — ONE PAGE</text>
+<text x="950" y="117" fill="#c3c8d0" font-family="Arial,sans-serif" font-size="14" font-weight="700">02 / MOBILE — NATIVE SCROLL</text>
+<rect x="40" y="140" width="850" height="1470" rx="0" fill="#17191d" stroke="#464b52"/>
+<rect x="950" y="140" width="400" height="1470" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="68" y="174" fill="#fff" font-family="Arial,sans-serif" font-size="20" font-weight="700">yxperiments</text>
+<text x="550" y="174" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Work     Field notes     About     Contact</text>
+<path d="M68 194L862 194" stroke="#464b52"/>
+<text x="68" y="223" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="12" font-weight="400">YU XUAN / 3D · MOTION · INTERACTIVE</text>
+<text x="68" y="262" fill="#fff" font-family="Arial,sans-serif" font-size="32" font-weight="700">Selected work, in motion.</text>
+<rect x="623" y="232" width="108" height="35" rx="0" fill="#dae0e6" stroke="#464b52"/>
+<text x="640" y="255" fill="#161a1e" font-family="Arial,sans-serif" font-size="14" font-weight="700">Finished</text>
+<rect x="731" y="232" width="131" height="35" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="750" y="255" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Field notes</text>
+<rect x="55" y="315" width="100" height="176" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M55 315L155 491" stroke="#464b52"/>
+<path d="M155 315L55 491" stroke="#464b52"/>
+<rect x="65" y="386" width="80" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="75" y="408" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">PREV</text>
+<rect x="775" y="315" width="100" height="176" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M775 315L875 491" stroke="#464b52"/>
+<path d="M875 315L775 491" stroke="#464b52"/>
+<rect x="785" y="386" width="80" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="795" y="408" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">NEXT</text>
+<rect x="169" y="289" width="592" height="270" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M169 289L761 559" stroke="#464b52"/>
+<path d="M761 289L169 559" stroke="#464b52"/>
+<rect x="179" y="407" width="572" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="189" y="429" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">SIT OPEN HOUSE 2026 / ORIGINAL CAMPUS IMAGE</text>
+<text x="190" y="494" fill="#fff" font-family="Arial,sans-serif" font-size="31" font-weight="700">SIT OPEN HOUSE 2026</text>
+<text x="190" y="521" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Art direction · 3D · Character animation</text>
+<text x="169" y="587" fill="#fff" font-family="Arial,sans-serif" font-size="17" font-weight="700">Explore project ↗</text>
+<text x="576" y="587" fill="#eaedf0" font-family="Arial,sans-serif" font-size="16" font-weight="400">←    01 / 03    →</text>
+<path d="M169 608L169 636" stroke="#464b52"/>
+<text x="182" y="628" fill="#aeb5bf" font-family="Arial,sans-serif" font-size="10" font-weight="400">CLEAR AIR GAP</text>
+<path d="M41 647 C227.56 633, 312.36 674, 465 647 S702.44 632, 889 647" fill="none" stroke="#87919d" opacity="0.7"/>
+<path d="M41 654 C227.56 641, 312.36 681, 465 654 S702.44 638, 889 654" fill="none" stroke="#87919d" opacity="0.62"/>
+<path d="M41 661 C227.56 649, 312.36 688, 465 661 S702.44 644, 889 661" fill="none" stroke="#87919d" opacity="0.5399999999999999"/>
+<path d="M41 668 C227.56 657, 312.36 695, 465 668 S702.44 650, 889 668" fill="none" stroke="#87919d" opacity="0.45999999999999996"/>
+<path d="M41 675 C227.56 665, 312.36 702, 465 675 S702.44 656, 889 675" fill="none" stroke="#87919d" opacity="0.37999999999999995"/>
+<path d="M41 682 C227.56 673, 312.36 709, 465 682 S702.44 662, 889 682" fill="none" stroke="#87919d" opacity="0.29999999999999993"/>
+<path d="M41 689 C227.56 681, 312.36 716, 465 689 S702.44 668, 889 689" fill="none" stroke="#87919d" opacity="0.21999999999999997"/>
+<text x="68" y="728" fill="#9da6b2" font-family="Arial,sans-serif" font-size="10" font-weight="400">ONE FULL-WIDTH CONTOUR FIELD / NO REFLECTIONS</text>
+<text x="365" y="766" fill="#eaedf0" font-family="Arial,sans-serif" font-size="12" font-weight="400">SCROLL TO DISCOVER ↓</text>
+<path d="M68 794L862 794" stroke="#464b52"/>
+<text x="68" y="825" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="12" font-weight="400">01 / RECOGNITION</text>
+<text x="68" y="862" fill="#fff" font-family="Arial,sans-serif" font-size="25" font-weight="700">CSS Design Awards</text>
+<text x="519" y="862" fill="#fff" font-family="Arial,sans-serif" font-size="25" font-weight="700">The FWA</text>
+<text x="68" y="890" fill="#eaedf0" font-family="Arial,sans-serif" font-size="13" font-weight="400">SIT Open House 2026 · With Hei and Singapore Institute of Technology</text>
+<path d="M68 917L862 917" stroke="#464b52"/>
+<text x="68" y="951" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="12" font-weight="400">02 / SELECTED WORK</text>
+<text x="68" y="988" fill="#fff" font-family="Arial,sans-serif" font-size="33" font-weight="700">Made. Then made better.</text>
+<rect x="68" y="1011" width="476" height="160" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M68 1011L544 1171" stroke="#464b52"/>
+<path d="M544 1011L68 1171" stroke="#464b52"/>
+<rect x="78" y="1074" width="456" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="88" y="1096" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">JPMORGAN SAEI / FINISHED WORK</text>
+<rect x="568" y="1035" width="294" height="136" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M568 1035L862 1171" stroke="#464b52"/>
+<path d="M862 1035L568 1171" stroke="#464b52"/>
+<rect x="578" y="1086" width="274" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="588" y="1108" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">SIT / ALTERNATE FRAME</text>
+<text x="68" y="1194" fill="#fff" font-family="Arial,sans-serif" font-size="19" font-weight="700">JPMorgan SAEI</text>
+<text x="568" y="1194" fill="#fff" font-family="Arial,sans-serif" font-size="18" font-weight="700">SIT Open House 2026</text>
+<rect x="68" y="1220" width="140" height="121" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M68 1220L208 1341" stroke="#464b52"/>
+<path d="M208 1220L68 1341" stroke="#464b52"/>
+<rect x="78" y="1263.5" width="120" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="88" y="1285.5" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">PORTRAIT</text>
+<rect x="220" y="1220" width="140" height="121" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M220 1220L360 1341" stroke="#464b52"/>
+<path d="M360 1220L220 1341" stroke="#464b52"/>
+<rect x="230" y="1263.5" width="120" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="240" y="1285.5" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">CAPTURE</text>
+<text x="385" y="1250" fill="#fff" font-family="Arial,sans-serif" font-size="23" font-weight="700">Cinder / a closer look</text>
+<text x="385" y="1282" fill="#eaedf0" font-family="Arial,sans-serif" font-size="16" font-weight="400">From performance to character.</text>
+<text x="385" y="1318" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Finished   /   Field notes →</text>
+<path d="M68 1362L862 1362" stroke="#464b52"/>
+<text x="68" y="1392" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="12" font-weight="400">03 / FIELD NOTES</text>
+<rect x="68" y="1410" width="381" height="58" rx="0" fill="#17191d" stroke="#464b52"/>
+<rect x="469" y="1410" width="393" height="58" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="85" y="1445" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">R&amp;D preview / selection pending</text>
+<text x="486" y="1445" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">R&amp;D preview / selection pending</text>
+<text x="68" y="1502" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="12" font-weight="400">04 / ABOUT</text>
+<text x="68" y="1528" fill="#eaedf0" font-family="Arial,sans-serif" font-size="17" font-weight="400">Brief introduction · Resume · Showreel</text>
+<text x="68" y="1582" fill="#fff" font-family="Arial,sans-serif" font-size="27" font-weight="700">Have something in mind?</text>
+<text x="674" y="1582" fill="#fff" font-family="Arial,sans-serif" font-size="21" font-weight="700">Let's talk ↗</text>
+<text x="972" y="174" fill="#fff" font-family="Arial,sans-serif" font-size="20" font-weight="700">yxperiments</text>
+<text x="1285" y="174" fill="#eaedf0" font-family="Arial,sans-serif" font-size="13" font-weight="400">Menu</text>
+<path d="M972 194L1328 194" stroke="#464b52"/>
+<text x="972" y="224" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="11" font-weight="400">YU XUAN / 3D · MOTION · INTERACTIVE</text>
+<rect x="972" y="242" width="122" height="38" rx="0" fill="#dae0e6" stroke="#464b52"/>
+<text x="992" y="266" fill="#161a1e" font-family="Arial,sans-serif" font-size="14" font-weight="700">Finished</text>
+<rect x="1094" y="242" width="139" height="38" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="1113" y="266" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Field notes</text>
+<rect x="972" y="300" width="356" height="204" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M972 300L1328 504" stroke="#464b52"/>
+<path d="M1328 300L972 504" stroke="#464b52"/>
+<rect x="982" y="385" width="336" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="992" y="407" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">ONE ACTIVE PROJECT / NO SIDE CARDS</text>
+<text x="972" y="539" fill="#fff" font-family="Arial,sans-serif" font-size="27" font-weight="700">SIT OPEN HOUSE</text>
+<text x="972" y="571" fill="#fff" font-family="Arial,sans-serif" font-size="27" font-weight="700">2026</text>
+<text x="972" y="599" fill="#eaedf0" font-family="Arial,sans-serif" font-size="12" font-weight="400">Art direction · 3D · Character animation</text>
+<text x="972" y="636" fill="#fff" font-family="Arial,sans-serif" font-size="17" font-weight="700">Explore project ↗</text>
+<rect x="972" y="653" width="44" height="44" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="986" y="681" fill="#eaedf0" font-family="Arial,sans-serif" font-size="20" font-weight="400">←</text>
+<text x="1112" y="681" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">01 / 03</text>
+<rect x="1284" y="653" width="44" height="44" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="1297" y="681" fill="#eaedf0" font-family="Arial,sans-serif" font-size="20" font-weight="400">→</text>
+<text x="972" y="726" fill="#aeb5bf" font-family="Arial,sans-serif" font-size="10" font-weight="400">CLEAR AIR GAP</text>
+<path d="M951 748 C1038.56 734, 1078.36 775, 1150 748 S1261.44 733, 1349 748" fill="none" stroke="#87919d" opacity="0.7"/>
+<path d="M951 755 C1038.56 742, 1078.36 782, 1150 755 S1261.44 739, 1349 755" fill="none" stroke="#87919d" opacity="0.62"/>
+<path d="M951 762 C1038.56 750, 1078.36 789, 1150 762 S1261.44 745, 1349 762" fill="none" stroke="#87919d" opacity="0.5399999999999999"/>
+<path d="M951 769 C1038.56 758, 1078.36 796, 1150 769 S1261.44 751, 1349 769" fill="none" stroke="#87919d" opacity="0.45999999999999996"/>
+<path d="M951 776 C1038.56 766, 1078.36 803, 1150 776 S1261.44 757, 1349 776" fill="none" stroke="#87919d" opacity="0.37999999999999995"/>
+<path d="M951 783 C1038.56 774, 1078.36 810, 1150 783 S1261.44 763, 1349 783" fill="none" stroke="#87919d" opacity="0.29999999999999993"/>
+<path d="M951 790 C1038.56 782, 1078.36 817, 1150 790 S1261.44 769, 1349 790" fill="none" stroke="#87919d" opacity="0.21999999999999997"/>
+<text x="1058" y="839" fill="#eaedf0" font-family="Arial,sans-serif" font-size="11" font-weight="400">SCROLL TO DISCOVER ↓</text>
+<path d="M972 861L1328 861" stroke="#464b52"/>
+<text x="972" y="890" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="11" font-weight="400">01 / RECOGNITION</text>
+<text x="972" y="919" fill="#fff" font-family="Arial,sans-serif" font-size="20" font-weight="700">CSS Design Awards / The FWA</text>
+<text x="972" y="944" fill="#eaedf0" font-family="Arial,sans-serif" font-size="13" font-weight="400">SIT Open House 2026</text>
+<text x="972" y="966" fill="#eaedf0" font-family="Arial,sans-serif" font-size="11" font-weight="400">With Hei and Singapore Institute of Technology</text>
+<path d="M972 986L1328 986" stroke="#464b52"/>
+<text x="972" y="1014" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="11" font-weight="400">02 / SELECTED WORK</text>
+<rect x="972" y="1032" width="356" height="95" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M972 1032L1328 1127" stroke="#464b52"/>
+<path d="M1328 1032L972 1127" stroke="#464b52"/>
+<rect x="982" y="1062.5" width="336" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="992" y="1084.5" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">JPMORGAN SAEI</text>
+<text x="972" y="1151" fill="#eaedf0" font-family="Arial,sans-serif" font-size="13" font-weight="400">Project title · one contribution sentence</text>
+<rect x="972" y="1171" width="356" height="86" rx="0" fill="#262a30" stroke="#464b52"/>
+<path d="M972 1171L1328 1257" stroke="#464b52"/>
+<path d="M1328 1171L972 1257" stroke="#464b52"/>
+<rect x="982" y="1197" width="336" height="34" rx="0" fill="#262a30" stroke="#262a30"/>
+<text x="992" y="1219" fill="#eaedf0" font-family="Arial,sans-serif" font-size="15" font-weight="400">NEXT PROJECT / STACKED</text>
+<text x="972" y="1281" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Cinder: finished + capture view</text>
+<path d="M972 1302L1328 1302" stroke="#464b52"/>
+<text x="972" y="1330" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="11" font-weight="400">03 / FIELD NOTES</text>
+<rect x="972" y="1344" width="356" height="49" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="988" y="1374" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Curated R&amp;D preview / pending</text>
+<rect x="972" y="1404" width="356" height="49" rx="0" fill="#17191d" stroke="#464b52"/>
+<text x="988" y="1434" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Curated R&amp;D preview / pending</text>
+<text x="972" y="1482" fill="#b4bbc5" font-family="Arial,sans-serif" font-size="11" font-weight="400">04 / ABOUT</text>
+<text x="972" y="1507" fill="#eaedf0" font-family="Arial,sans-serif" font-size="14" font-weight="400">Short intro · Resume · Showreel</text>
+<text x="972" y="1545" fill="#fff" font-family="Arial,sans-serif" font-size="27" font-weight="700">Have something</text>
+<text x="972" y="1575" fill="#fff" font-family="Arial,sans-serif" font-size="23" font-weight="700">in mind?   Let's talk ↗</text>
+<text x="40" y="1653" fill="#fff" font-family="Arial,sans-serif" font-size="15" font-weight="700">READING THIS STUDY</text>
+<text x="40" y="1685" fill="#eaedf0" font-family="Arial,sans-serif" font-size="17" font-weight="400">01   The hero remains the opening experience; SIT leads. Other projects stay directly reachable.</text>
+<text x="40" y="1717" fill="#eaedf0" font-family="Arial,sans-serif" font-size="17" font-weight="400">02   Finished / Field notes appears only where useful, approved process material exists.</text>
+<text x="40" y="1749" fill="#eaedf0" font-family="Arial,sans-serif" font-size="17" font-weight="400">03   One decorative contour field sits below the project content and fades before the scroll cue.</text>
+<text x="40" y="1781" fill="#eaedf0" font-family="Arial,sans-serif" font-size="17" font-weight="400">04   Phone views stack naturally; controls have 44px minimum targets. No forced scrolling.</text>
+<text x="40" y="1813" fill="#eaedf0" font-family="Arial,sans-serif" font-size="17" font-weight="400">05   Lower-page image rhythm and brief process notes add depth. R&amp;D slots require real CMS selections.</text>
+<text x="40" y="1847" fill="#aeb5bf" font-family="Arial,sans-serif" font-size="12" font-weight="400">SCHEMATIC / final spacing, responsive sizing and source-image limits follow the accompanying review notes.</text>
+</svg>

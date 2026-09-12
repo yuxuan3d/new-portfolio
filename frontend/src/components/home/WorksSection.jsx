@@ -1,523 +1,139 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import styled, { css } from 'styled-components';
-import { WORKS_CONTENT } from '../../content/siteContent';
-import { trackProjectOpen } from '../../lib/analytics';
+import styled from 'styled-components';
+import { trackProjectOpen } from '../../lib/siteEvents';
 import { urlFor } from '../../lib/sanityClient';
-import { MEDIA } from '../../styles/breakpoints';
-import LoadingState from '../LoadingState';
-import LazyImage from '../LazyImage';
+import { getProjectDisciplines, WORK_DISCIPLINES } from '../../lib/workDisciplines';
+import { heroPresentation, HERO_PROJECTS, imageDimensions, imageReference, projectPath, selectHeroProjects } from '../../lib/heroProjects';
+import { SanityImage } from './ProjectMedia';
 
-function getTopTags(projects, limit = 8) {
-  const counts = new Map();
-
-  projects.forEach((project) => {
-    if (!Array.isArray(project.tags)) return;
-    project.tags.forEach((tag) => {
-      if (!tag) return;
-      counts.set(tag, (counts.get(tag) || 0) + 1);
-    });
-  });
-
-  return Array.from(counts.entries())
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, limit)
-    .map(([tag]) => tag);
+function WorkImage({ project }) {
+  const [failed, setFailed] = useState(false);
+  const landscape = project.additionalImages?.find((image) => imageReference(image) === 'image-4fb270893e389aa1e813ae10cde973bedc891a84-3840x2160-png');
+  const image = landscape || project.mainImage;
+  const rect = heroPresentation(project).rect;
+  const dimensions = imageDimensions(image);
+  let src = '';
+  if (dimensions) {
+    const source = { ...image, asset: { _ref: imageReference(image) } };
+    if (rect) { delete source.crop; delete source.hotspot; }
+    let builder = urlFor(source).auto('format').width(Math.min(1000, dimensions.width)).quality(80);
+    if (rect) builder = builder.rect(...rect);
+    src = builder.url();
+  }
+  return <Media>
+    {src && !failed ? <img src={src} width={dimensions.width} height={dimensions.height} loading="lazy" decoding="async" alt={project.title} onError={() => setFailed(true)} /> : <span>Preview unavailable</span>}
+  </Media>;
 }
 
-const FILTER_FADE_MS = 200;
-const FLIP_TRANSITION = 'transform 280ms cubic-bezier(0.22, 1, 0.36, 1)';
-
-function matchesActiveTag(project, activeTag) {
-  if (activeTag === 'All') return true;
-  return Array.isArray(project.tags) && project.tags.includes(activeTag);
-}
-
-function sameRenderedProjects(currentItems, nextItems) {
-  if (currentItems.length !== nextItems.length) return false;
-  return currentItems.every((project, index) => {
-    const nextProject = nextItems[index];
-    return project._id === nextProject?._id && project === nextProject;
-  });
-}
-
-export default function WorksSection({ projects, error, isLoading }) {
+export default function WorksSection({ projects, error, isLoading, onRetry }) {
   const location = useLocation();
-  const [activeTag, setActiveTag] = useState('All');
-  const [displayedItems, setDisplayedItems] = useState([]);
-  const [exitingIds, setExitingIds] = useState([]);
-  const [enteringIds, setEnteringIds] = useState([]);
-  const itemRefs = useRef(new Map());
-  const previousRectsRef = useRef(new Map());
-  const flipIdsRef = useRef([]);
-  const filterTimeoutRef = useRef(null);
-
-  const featuredCandidates = useMemo(
-    () => projects.filter((project) => Boolean(project.featured)),
-    [projects],
-  );
-  const featuredItems = useMemo(
-    () => (featuredCandidates.length > 0 ? featuredCandidates : projects).slice(0, 3),
-    [featuredCandidates, projects],
-  );
-  const featuredIds = useMemo(() => new Set(featuredItems.map((project) => project._id)), [featuredItems]);
-  const archiveItems = useMemo(
-    () => projects.filter((project) => !featuredIds.has(project._id)),
-    [featuredIds, projects],
-  );
-  const orderedItems = useMemo(() => [...featuredItems, ...archiveItems], [featuredItems, archiveItems]);
-  const tags = useMemo(() => getTopTags(orderedItems), [orderedItems]);
-  const filteredItems = useMemo(
-    () => orderedItems.filter((project) => matchesActiveTag(project, activeTag)),
-    [activeTag, orderedItems],
-  );
-
-  const setItemRef = useCallback((projectId, node) => {
-    if (!node) {
-      itemRefs.current.delete(projectId);
-      return;
-    }
-
-    itemRefs.current.set(projectId, node);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (filterTimeoutRef.current !== null) {
-        window.clearTimeout(filterTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (displayedItems.length === 0 && filteredItems.length > 0) {
-      setDisplayedItems(filteredItems);
-      return;
-    }
-
-    if (filterTimeoutRef.current !== null) {
-      window.clearTimeout(filterTimeoutRef.current);
-      filterTimeoutRef.current = null;
-    }
-
-    if (sameRenderedProjects(displayedItems, filteredItems)) {
-      setExitingIds([]);
-      setEnteringIds([]);
-      flipIdsRef.current = [];
-      previousRectsRef.current = new Map();
-      return;
-    }
-
-    const nextIds = new Set(filteredItems.map((project) => project._id));
-    const currentIds = new Set(displayedItems.map((project) => project._id));
-    const sharedIds = displayedItems
-      .filter((project) => nextIds.has(project._id))
-      .map((project) => project._id);
-    const exiting = displayedItems
-      .filter((project) => !nextIds.has(project._id))
-      .map((project) => project._id);
-    const entering = filteredItems
-      .filter((project) => !currentIds.has(project._id))
-      .map((project) => project._id);
-    const firstRects = new Map();
-
-    sharedIds.forEach((projectId) => {
-      const node = itemRefs.current.get(projectId);
-      if (node) {
-        firstRects.set(projectId, node.getBoundingClientRect());
-      }
-    });
-
-    previousRectsRef.current = firstRects;
-    flipIdsRef.current = sharedIds;
-
-    if (displayedItems.length === 0) {
-      setDisplayedItems(filteredItems);
-      setExitingIds([]);
-      setEnteringIds([]);
-      return;
-    }
-
-    if (exiting.length === 0) {
-      setDisplayedItems(filteredItems);
-      setExitingIds([]);
-      setEnteringIds(entering);
-      return;
-    }
-
-    setExitingIds(exiting);
-    filterTimeoutRef.current = window.setTimeout(() => {
-      setDisplayedItems(filteredItems);
-      setExitingIds([]);
-      setEnteringIds(entering);
-      filterTimeoutRef.current = null;
-    }, FILTER_FADE_MS);
-  }, [displayedItems, filteredItems]);
-
-  useEffect(() => {
-    if (enteringIds.length === 0) return undefined;
-
-    const frame = window.requestAnimationFrame(() => {
-      setEnteringIds([]);
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, [enteringIds]);
-
-  useLayoutEffect(() => {
-    const idsToFlip = flipIdsRef.current;
-    if (!idsToFlip.length) {
-      return;
-    }
-
-    const cleanupFns = [];
-    idsToFlip.forEach((projectId) => {
-      const node = itemRefs.current.get(projectId);
-      const firstRect = previousRectsRef.current.get(projectId);
-
-      if (!node || !firstRect) {
-        return;
-      }
-
-      const lastRect = node.getBoundingClientRect();
-      const deltaX = firstRect.left - lastRect.left;
-      const deltaY = firstRect.top - lastRect.top;
-
-      if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) {
-        return;
-      }
-
-      node.style.transition = 'none';
-      node.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-      node.style.willChange = 'transform';
-
-      const frame = window.requestAnimationFrame(() => {
-        node.style.transition = FLIP_TRANSITION;
-        node.style.transform = 'translate(0, 0)';
-      });
-
-      const cleanup = () => {
-        window.cancelAnimationFrame(frame);
-        node.style.transition = '';
-        node.style.transform = '';
-        node.style.willChange = '';
-      };
-
-      node.addEventListener('transitionend', cleanup, { once: true });
-      cleanupFns.push(cleanup);
-    });
-
-    flipIdsRef.current = [];
-    previousRectsRef.current = new Map();
-
-    return () => {
-      cleanupFns.forEach((cleanup) => cleanup());
-    };
-  }, [displayedItems]);
-
-  return (
-    <Section id="works">
-      <SectionHeader>
-        <Title>{WORKS_CONTENT.title}</Title>
-      </SectionHeader>
-
-      {error ? <ErrorCard>{error}</ErrorCard> : null}
-
-      <SectionBlock>
-        {!isLoading && orderedItems.length > 0 ? (
-          <FilterRail>
-            <FilterButton type="button" $active={activeTag === 'All'} onClick={() => setActiveTag('All')}>
-              All
-            </FilterButton>
-            {tags.map((tag) => (
-              <FilterButton key={tag} type="button" $active={activeTag === tag} onClick={() => setActiveTag(tag)}>
-                {tag}
-              </FilterButton>
-            ))}
-          </FilterRail>
-        ) : null}
-
-        {isLoading ? (
-          <LoadingState label="Loading Projects" minHeight="340px" margin="0" />
-        ) : displayedItems.length > 0 ? (
-          <ArchiveGrid aria-label="Projects">
-            {displayedItems.map((project, index) => {
-              const isFeature = index === 0;
-              const isSideFeature = index === 1;
-
-              return (
-                <ArchiveItem
-                  key={project._id}
-                  ref={(node) => setItemRef(project._id, node)}
-                  $isExiting={exitingIds.includes(project._id)}
-                  $isEntering={enteringIds.includes(project._id)}
-                  $feature={isFeature}
-                  $sideFeature={isSideFeature}
-                >
-                  <ArchiveLink
-                    to={`/project/${project.slug}`}
-                    state={{ backgroundLocation: location }}
-                    onClick={() => trackProjectOpen(project, 'works_grid', {
-                      position: index + 1,
-                      featured: isFeature || isSideFeature,
-                      active_tag: activeTag,
-                    })}
-                    tabIndex={exitingIds.includes(project._id) ? -1 : undefined}
-                    aria-hidden={exitingIds.includes(project._id)}
-                  >
-                    <ArchiveCard $feature={isFeature} $sideFeature={isSideFeature}>
-                      <ArchiveImage>
-                        <LazyImage
-                          src={urlFor(project.mainImage).auto('format').width(900).height(720).fit('crop').quality(90).url()}
-                          alt={project.title}
-                          sizes={isFeature ? '(max-width: 720px) 100vw, (max-width: 1100px) 100vw, 66vw' : '(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw'}
-                        />
-                      </ArchiveImage>
-                      <ArchiveOverlay $feature={isFeature} $sideFeature={isSideFeature}>
-                        {isFeature ? <ArchiveEyebrow>Selected project</ArchiveEyebrow> : null}
-                        <ArchiveTitle $feature={isFeature} $sideFeature={isSideFeature}>{project.title}</ArchiveTitle>
-                        {isFeature && Array.isArray(project.tags) && project.tags.length > 0 ? (
-                          <ArchiveTagRow>
-                            {project.tags.slice(0, 4).map((tag) => (
-                              <ArchiveTag key={tag}>{tag}</ArchiveTag>
-                            ))}
-                          </ArchiveTagRow>
-                        ) : null}
-                      </ArchiveOverlay>
-                    </ArchiveCard>
-                  </ArchiveLink>
-                </ArchiveItem>
-              );
-            })}
-          </ArchiveGrid>
-        ) : (
-          <EmptyState>
-            {activeTag === 'All' ? 'No projects found.' : `No projects found for ${activeTag}.`}
-          </EmptyState>
-        )}
-      </SectionBlock>
-    </Section>
-  );
+  const [expanded, setExpanded] = useState(false);
+  const [activeTag, setActiveTag] = useState('all');
+  const selected = useMemo(() => {
+    const items = selectHeroProjects(projects);
+    const jpm = items.find((p) => p._id === HERO_PROJECTS[1].id);
+    return jpm ? [jpm, ...items.filter((p) => p !== jpm)] : items;
+  }, [projects]);
+  const ordered = useMemo(() => [...selected, ...projects.filter((p) => p.slug && !selected.some((s) => s._id === p._id))], [projects, selected]);
+  const items = (expanded ? ordered : selected).filter((project) => activeTag === 'all' || getProjectDisciplines(project).includes(activeTag));
+  const processProject = !expanded && selected.find((project) => heroPresentation(project).companion);
+  const processMedia = processProject ? heroPresentation(processProject) : null;
+  return <Section id="works">
+    <Label>02 / Selected work</Label>
+    <Heading><h2>{expanded ? 'All projects' : 'Selected projects'}<span aria-hidden="true">↗</span></h2></Heading>
+    {error && <Error role="alert">{error} <button type="button" onClick={onRetry}>Try again</button></Error>}
+    {expanded && <Filters aria-label="Filter projects by discipline">
+      {WORK_DISCIPLINES.map((discipline) => <Filter key={discipline.id} type="button" aria-pressed={activeTag === discipline.id}
+        aria-controls="work-project-grid" onClick={() => setActiveTag(discipline.id)}>{discipline.label}</Filter>)}
+    </Filters>}
+    <Status aria-live="polite">{items.length} {items.length === 1 ? 'project' : 'projects'} shown{expanded ? ` for ${WORK_DISCIPLINES.find((d) => d.id === activeTag)?.label}.` : '.'}</Status>
+    {isLoading ? <Error role="status">Loading projects…</Error> :
+      <Grid id="work-project-grid" aria-label="Projects" $expanded={expanded}>
+        {items.filter((project) => project !== processProject).map((project, i) => <Card key={project._id}>
+          <Link to={projectPath(project)} state={{ backgroundLocation: location }} onClick={() => trackProjectOpen(project, 'works_grid', { position: i + 1, active_tag: activeTag })}>
+            <WorkImage project={project} />
+            <Caption><h3>{project.title}</h3><span aria-hidden="true">↗</span></Caption>
+            <Role>{heroPresentation(project).role === 'Selected portfolio work'
+              ? getProjectDisciplines(project).map((id) => WORK_DISCIPLINES.find((d) => d.id === id)?.label).filter(Boolean).join(' · ')
+              : heroPresentation(project).role}</Role>
+            {!expanded && heroPresentation(project).summary && <Contribution>{heroPresentation(project).summary}</Contribution>}
+          </Link>
+        </Card>)}
+      </Grid>}
+    {processProject && <ProcessFeature aria-label="Cinder field note">
+      <ProcessImages>
+        <figure><SanityImage image={processMedia.image} sizes="(max-width: 767px) 42vw, 300px" maxWidth={350} alt="Cinder virtual character" /><figcaption>Character</figcaption></figure>
+        <figure><SanityImage image={processMedia.companion} sizes="(max-width: 767px) 42vw, 300px" maxWidth={500} alt="Cinder motion-capture setup, with the original face blur" /><figcaption>Capture setup</figcaption></figure>
+      </ProcessImages>
+      <div><Label>Field note / Cinder</Label><h3>From performance<br />to character.</h3>
+        <Role>Leading a team to bring full-body and facial motion capture into a real-time virtual character.</Role>
+        <ProcessLink to={projectPath(processProject)} state={{ backgroundLocation: location }} onClick={() => trackProjectOpen(processProject, 'works_process')}>Explore Cinder ↗</ProcessLink>
+      </div>
+    </ProcessFeature>}
+    {!isLoading && !items.length && !error && <Error>No projects found{activeTag !== 'all' ? ' for this discipline' : ''}.</Error>}
+    {ordered.length > selected.length && <Expand type="button" aria-expanded={expanded} aria-controls="work-project-grid"
+      onClick={() => { setExpanded((value) => !value); setActiveTag('all'); }}>
+      {expanded ? 'Show selected work' : `Explore all ${ordered.length} projects`} <span aria-hidden="true">{expanded ? '−' : '+'}</span>
+    </Expand>}
+  </Section>;
 }
-
-const panelStyles = css`
-  border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 0;
-  background: ${({ theme }) => theme.surface};
-`;
-
 const Section = styled.section`
-  width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
-  margin: 0 auto;
-  padding: clamp(1rem, 3vw, 1.6rem) 0 0;
-  display: grid;
-  gap: 0.95rem;
+  width: min(var(--site-max-width), calc(100% - var(--site-gutter) * 2)); margin: 0 auto;
 `;
-
-const SectionHeader = styled.header`
-  display: grid;
-  gap: 0.35rem;
-  padding-left: var(--panel-padding);
-
-  ${MEDIA.phone} {
-    padding-left: 0;
-  }
+const Heading = styled.div`
+  display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 32px;
+  h2 { width: 100%; display: flex; justify-content: space-between; gap: 20px; font: 600 clamp(48px, 6.5vw, 88px)/1 'Barlow Condensed', sans-serif; letter-spacing: -.025em; }
+  h2 span { color: var(--accent); font-weight: 400; }
+  p { color: var(--text-secondary); font-size: 14px; }
+  @media(max-width: 767px) { display: grid; gap: 12px; }
 `;
-
-const Title = styled.h2`
-  max-width: 20ch;
-  font-size: clamp(1.55rem, 2.45vw, 2.35rem);
-  color: ${({ theme }) => theme.text.primary};
-  text-wrap: pretty;
+const Label = styled.p`font: 10px/1.5 'Roboto Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px;`;
+const Grid = styled.div`
+  display: grid; grid-template-columns: ${({ $expanded }) => $expanded ? 'repeat(2, minmax(0, 1fr))' : '1.55fr 1fr'}; gap: 32px 32px; align-items: start;
+  > article:nth-child(2) { margin-top: ${({ $expanded }) => $expanded ? '0' : '64px'}; }
+  @media(max-width: 900px) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media(max-width: 767px) { grid-template-columns: 1fr; > article:nth-child(2) { margin-top: 0; } }
 `;
-
-const ErrorCard = styled.div`
-  ${panelStyles}
-  padding: 1rem 1.1rem;
-  color: #ffb2a6;
-  border-color: rgba(255, 178, 166, 0.24);
-  background: rgba(140, 44, 32, 0.18);
+const Card = styled.article`
+  min-width: 0; a { color: inherit; text-decoration: none; display: block; }
+  a:hover h3 { color: var(--accent); }
 `;
-
-const SectionBlock = styled.div`
-  padding: var(--panel-padding);
-  display: grid;
-  gap: clamp(1rem, 2vw, 1.35rem);
+const Media = styled.div`
+  aspect-ratio: 1.65; border-radius: 4px; overflow: hidden; background: var(--surface); display: flex; align-items: center; justify-content: center;
+  img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms cubic-bezier(.22, 1, .36, 1); }
+  a:hover & img { transform: scale(1.035); }
+  @media(prefers-reduced-motion: reduce) { img { transition: none; } }
+  > span { color: var(--text-secondary); font-size: 14px; }
 `;
-
-const FilterRail = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-
-  ${MEDIA.phone} {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    margin-inline: calc(var(--panel-padding) * -1);
-    padding-inline: var(--panel-padding);
-    padding-bottom: 0.15rem;
-    scrollbar-width: thin;
-  }
+const Caption = styled.div`
+  display: flex; justify-content: space-between; gap: 12px; margin-top: 20px;
+  h3 { font: 600 clamp(28px, 2.8vw, 40px)/1.1 'Barlow Condensed', sans-serif; } > span { color: var(--accent); }
 `;
-
-const FilterButton = styled.button`
-  min-height: 38px;
-  padding: 0.5rem 0.8rem;
-  border-radius: 0;
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.borderStrong : theme.border)};
-  background: ${({ theme, $active }) => ($active ? theme.accentSurface : 'rgba(255, 255, 255, 0.03)')};
-  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.secondary)};
-  cursor: pointer;
-  font-size: 0.68rem;
-  font-family: 'Roboto Mono', monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  flex: 0 0 auto;
+const Role = styled.p`color: var(--text-secondary); font-size: 14px; line-height: 1.7; margin-top: 8px;`;
+const Filters = styled.div`display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;`;
+const Filter = styled.button`
+  min-height: 44px; padding: 8px 16px; border-radius: 24px; border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--text-secondary); font-size: 14px; cursor: pointer;
+  &[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
 `;
-
-const ArchiveGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 1rem;
-
-  ${MEDIA.tabletDown} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  ${MEDIA.phone} {
-    grid-template-columns: 1fr;
-  }
+const Expand = styled(Filter)`display: flex; align-items: center; gap: 24px; margin: 32px auto 0;`;
+const Error = styled.div`
+  padding: 24px; color: var(--text-secondary); border: 1px solid #ffffff25; border-radius: 12px;
+  button { min-height: 44px; padding: 8px 16px; margin-left: 16px; cursor: pointer; }
 `;
-
-const ArchiveItem = styled.div`
-  min-width: 0;
-  grid-column: ${({ $feature }) => ($feature ? 'span 8' : 'span 4')};
-  opacity: ${({ $isExiting, $isEntering }) => {
-    if ($isExiting || $isEntering) return 0;
-    return 1;
-  }};
-  transition: opacity ${FILTER_FADE_MS}ms ease;
-  pointer-events: ${({ $isExiting }) => ($isExiting ? 'none' : 'auto')};
-
-  ${MEDIA.tabletDown} {
-    grid-column: ${({ $feature }) => ($feature ? '1 / -1' : 'span 1')};
-  }
-
-  ${MEDIA.phone} {
-    grid-column: 1;
-  }
+const Status = styled.p`position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden;`;
+const Contribution = styled.p`color: var(--text-primary); font-size: 16px; line-height: 1.7; margin-top: 12px; max-width: 45ch;`;
+const ProcessFeature = styled.article`
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center;
+  padding: 40px 0; margin-top: 48px; border-block: 1px solid var(--border-strong);
+  h3 { font: 600 clamp(36px, 4vw, 56px)/1 'Barlow Condensed', sans-serif; }
+  @media(max-width: 767px) { grid-template-columns: 1fr; gap: 28px; }
 `;
-
-const ArchiveLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
+const ProcessImages = styled.div`
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+  figure { min-width: 0; }
+  img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 4px; }
+  figcaption { font: 12px/1.5 'Roboto Mono', monospace; color: var(--text-secondary); margin-top: 12px; }
 `;
-
-const ArchiveCard = styled.article`
-  position: relative;
-  aspect-ratio: ${({ $feature, $sideFeature }) => {
-    if ($feature) return '16 / 8.6';
-    if ($sideFeature) return '1 / 1.1';
-    return '1 / 0.78';
-  }};
-  overflow: hidden;
-  border-radius: 0;
-  border: 1px solid ${({ theme }) => theme.border};
-  background: rgba(255, 255, 255, 0.03);
-
-  ${MEDIA.tabletDown} {
-    aspect-ratio: ${({ $feature }) => ($feature ? '16 / 8.6' : '1 / 0.78')};
-  }
-
-  ${MEDIA.phone} {
-    aspect-ratio: 1 / 0.86;
-  }
-`;
-
-const ArchiveImage = styled.div`
-  position: absolute;
-  inset: 0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease, filter 0.3s ease;
-  }
-
-  ${ArchiveLink}:hover & img {
-    transform: scale(1.04);
-    filter: brightness(0.6);
-  }
-`;
-
-const ArchiveOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  padding: ${({ $feature, $sideFeature }) => ($feature || $sideFeature ? 'clamp(1.1rem, 3.3vw, 2rem)' : 'clamp(1rem, 2.8vw, 1.35rem)')};
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  gap: 0.55rem;
-  background: linear-gradient(180deg, transparent 28%, rgba(0, 0, 0, 0.78) 100%);
-`;
-
-const ArchiveTitle = styled.h4`
-  width: 100%;
-  color: white;
-  text-align: left;
-  font-size: ${({ $feature, $sideFeature }) => {
-    if ($feature) return 'clamp(1.35rem, 3vw, 2.35rem)';
-    if ($sideFeature) return 'clamp(1.1rem, 1.6vw, 1.35rem)';
-    return '0.98rem';
-  }};
-  line-height: ${({ $feature }) => ($feature ? 1.02 : 1.2)};
-  text-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.85),
-    0 1px 3px rgba(0, 0, 0, 0.95);
-`;
-
-const ArchiveEyebrow = styled.p`
-  color: ${({ theme }) => theme.accent};
-  font-family: 'Roboto Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-`;
-
-const ArchiveTagRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-`;
-
-const ArchiveTag = styled.span`
-  min-height: 28px;
-  padding: 0.38rem 0.58rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(5, 6, 8, 0.44);
-  color: ${({ theme }) => theme.text.primary};
-  font-family: 'Roboto Mono', monospace;
-  font-size: 0.66rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-`;
-
-const EmptyState = styled.div`
-  min-height: 180px;
-  display: grid;
-  place-items: center;
-  border-radius: 0;
-  border: 1px dashed ${({ theme }) => theme.border};
-  color: ${({ theme }) => theme.text.secondary};
-  text-align: center;
-  padding: 1rem;
-`;
+const ProcessLink = styled(Link)`display: inline-flex; align-items: center; min-height: 44px; margin-top: 16px; color: var(--accent); text-underline-offset: 6px; font-size: 14px;`;

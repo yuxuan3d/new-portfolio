@@ -76,6 +76,7 @@ export default defineConfig(({ command, mode }) => {
       exclude: ['@vercel/analytics']
     },
     server: {
+      watch: { usePolling: process.env.CONTAINER_DEV === 'true', interval: 250 },
       hmr: {
         overlay: true
       }

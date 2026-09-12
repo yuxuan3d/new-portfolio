@@ -20,6 +20,9 @@ dist-ssr
 playwright-artifacts
 playwright-report
 test-results
+artifacts/overhaul
+artifacts/kinetic
+artifacts/*-review.png
 
 # Editor directories and files
 .vscode/*

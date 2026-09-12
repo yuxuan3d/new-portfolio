@@ -1,0 +1,82 @@
+{
+  "measuredAt": "2026-09-10T14:59:40.318Z",
+  "environment": "Local production bundle in container Chromium, live read-only Sanity content. Unthrottled lab observations, not field Web Vitals or INP.",
+  "profiles": [
+    {
+      "name": "laptop",
+      "width": 1440,
+      "height": 900,
+      "lcp": 296,
+      "cls": 0.017521150816615226,
+      "h1s": 1,
+      "overflow": false,
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "top": 0,
+        "right": 1440,
+        "bottom": 900,
+        "left": 0
+      },
+      "image": "https://cdn.sanity.io/images/5gu0ubge/production/f7347eb2cf7e9b9a3ef8c3b92d90c09d0008ba5a-1080x1350.png?w=1080&q=78&auto=format",
+      "video": {
+        "width": 720,
+        "height": 900,
+        "duration": 4.5,
+        "muted": true,
+        "loop": true,
+        "playing": true
+      },
+      "effectsOn": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000273
+      },
+      "effectsReduced": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000273
+      },
+      "errors": [],
+      "brokenImages": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "lcp": 248,
+      "cls": 0,
+      "h1s": 1,
+      "overflow": false,
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "top": 0,
+        "right": 390,
+        "bottom": 844,
+        "left": 0
+      },
+      "image": "https://cdn.sanity.io/images/5gu0ubge/production/f7347eb2cf7e9b9a3ef8c3b92d90c09d0008ba5a-1080x1350.png?w=700&q=78&auto=format",
+      "video": {
+        "width": 720,
+        "height": 900,
+        "duration": 4.5,
+        "muted": true,
+        "loop": true,
+        "playing": true
+      },
+      "effectsOn": {
+        "medianMs": 16.700000000000045,
+        "p95Ms": 16.799999999999955
+      },
+      "effectsReduced": {
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.800000000000182
+      },
+      "errors": [],
+      "brokenImages": []
+    }
+  ]
+}

@@ -7,13 +7,19 @@ export default function ScrollReveal({
   className,
   delay = 0,
   distance = '28px',
+  immediate = false,
 }) {
   const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(immediate);
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return undefined;
+
+    if (immediate) {
+      setIsVisible(true);
+      return undefined;
+    }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') {
@@ -36,14 +42,15 @@ export default function ScrollReveal({
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [immediate]);
 
   return (
     <RevealElement
       as={as}
       ref={ref}
       className={className}
-      data-visible={isVisible ? 'true' : 'false'}
+      data-visible={immediate || isVisible ? 'true' : 'false'}
+      data-immediate={immediate ? 'true' : 'false'}
       style={{
         '--reveal-delay': `${delay}ms`,
         '--reveal-distance': distance,
@@ -67,6 +74,10 @@ const RevealElement = styled.div`
     opacity: 1;
     transform: translate3d(0, 0, 0);
     will-change: auto;
+  }
+
+  &[data-immediate='true'] {
+    transition: none;
   }
 
   @media (max-width: 640px) {
